@@ -67,7 +67,7 @@ export default {
 
       responsePrompt: [
         { text: '1st question', repeatQuestion: false, repeatText: 'Already been answered' },
-        { text: '2nd question', repeatQuestion: false, repeatText: 'This question is done' },
+        { text: '2nd question', repeatQuestion: false, repeatText: 'This question is done  ' },
         {
           text: '3rd question',
           repeatQuestion: false,

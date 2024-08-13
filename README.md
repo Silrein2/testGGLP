@@ -34,5 +34,8 @@ npm run build
 npm run lint
 ```
 
-*npm version = 10.7.0
-*nvm version = 1.1.12
+\*npm version = 10.7.0
+
+\*nvm version = 1.1.12
+
+staging site = https://payback-copycat.web.app/

@@ -1,12 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app'
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase } from 'firebase/database'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyCp4Pj6-b4Wf5Po_bUs4MNV_bH6jaO99f4',
   authDomain: 'payback-copycat.firebaseapp.com',
+  databaseURL: 'https://payback-copycat-default-rtdb.asia-southeast1.firebasedatabase.app/',
   projectId: 'payback-copycat',
   storageBucket: 'payback-copycat.appspot.com',
   messagingSenderId: '426806339248',
@@ -16,4 +16,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseInitApp = initializeApp(firebaseConfig)
 
-export { firebaseInitApp }
+const database = getDatabase()
+
+export { firebaseInitApp, database }

@@ -1,18 +1,9 @@
 <template>
   <div id="background-container">
-    <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
+    <h1 ref="mainText" class="welcome-text">{{ welcomeText }} {{ testFirebase }}</h1>
     <h3 ref="secondaryText" class="secondary-text">
       {{ noticeText }}
     </h3>
-    <!-- <div
-      v-for="(text, index) in subTexts"
-      :key="index"
-      style="display: flex; align-items: center; margin-bottom: 10px"
-    >
-      <button @click="animateText(index)" style="margin-right: 10px">Animate Text</button>
-      <p style="color: white" :ref="`subText${index}`">{{ text }}</p>
-    </div> -->
-
     <div ref="responseDiv" class="response-div" v-if="responseBool">
       <div class="content-container">
         <h1>{{ responsePrompt[currentIndex].text }}</h1>
@@ -20,42 +11,59 @@
           {{ responsePrompt[currentIndex].repeatText }}
         </h1>
 
+        <!-- <div class="button-container">
+          <button
+            v-for="(button, index) in decisionButtons"
+            :key="index"
+            class="decision-button"
+            ref="responseBtn"
+            @click="responseToResult(button.direction)"
+          >
+            {{ button.direction }}
+          </button> -->
+
         <div class="button-container">
           <button
+            v-if="responsePrompt[currentIndex].resultLeft"
+            @click="responseToResult('Left', responsePrompt[currentIndex].resultLeft)"
             class="decision-button"
             ref="responseBtn"
-            @click="responseToResult(decisionButtons[0].direction)"
           >
-            {{ decisionButtons[0].direction }}
+            Left
           </button>
           <button
+            v-if="responsePrompt[currentIndex].resultBottom"
+            @click="responseToResult('Bottom', responsePrompt[currentIndex].resultBottom)"
             class="decision-button"
             ref="responseBtn"
-            @click="responseToResult(decisionButtons[2].direction)"
           >
-            {{ decisionButtons[2].direction }}
+            Bottom
           </button>
           <button
+            v-if="responsePrompt[currentIndex].resultRight"
+            @click="responseToResult('Right', responsePrompt[currentIndex].resultRight)"
             class="decision-button"
             ref="responseBtn"
-            @click="responseToResult(decisionButtons[1].direction)"
           >
-            {{ decisionButtons[1].direction }}
+            Right
           </button>
         </div>
       </div>
     </div>
     <div ref="resultDiv" class="result-div" @click="resultToResponse()">
-      <h1>{{ resultPrompt[currentIndex].text }}</h1>
-      <h1 v-if="resultPrompt[currentIndex].repeatResult">
+      <h1>{{ currentResult }}</h1>
+      <!-- <h1 v-if="resultPrompt[currentIndex].repeatResult">
         {{ resultPrompt[currentIndex].repeatText }}
-      </h1>
+      </h1> -->
     </div>
   </div>
 </template>
 
 <script>
 import { gsap } from 'gsap'
+
+import { ref, onValue } from 'firebase/database'
+import { database } from '@/firebase'
 
 export default {
   name: 'App',
@@ -66,24 +74,44 @@ export default {
         'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
 
       responsePrompt: [
-        { text: '1st question', repeatQuestion: false, repeatText: 'Already been answered' },
-        { text: '2nd question', repeatQuestion: false, repeatText: 'This question is done  ' },
+        {
+          text: '1st question',
+          repeatQuestion: false,
+          repeatText: 'Already been answered',
+          resultLeft: 'Left Result 1',
+          resultRight: 'Right Result 1',
+          resultBottom: 'Bottom Result 1',
+          questionDone: false //meant to be triggered after user answered the question, then removed from the question pool
+        },
+        {
+          text: '2nd question',
+          repeatQuestion: false,
+          repeatText: 'This question is done  ',
+          resultLeft: 'Left Result 2',
+          resultRight: 'Right Result 2',
+          resultBottom: 'Bottom Result 2',
+          questionDone: false
+        },
         {
           text: '3rd question',
           repeatQuestion: false,
-          repeatText: 'You already gave a response to this question'
+          repeatText: 'You already gave a response to this question',
+          resultLeft: 'Left Result 3',
+          resultRight: 'Right Result 3',
+          resultBottom: 'Bottom Result 3',
+          questionDone: false
         }
       ],
 
-      resultPrompt: [
-        { text: '1st result', repeatResult: false, repeatText: 'Result has been given' },
-        {
-          text: '2nd result',
-          repeatResult: false,
-          repeatText: 'You already know the result to this'
-        },
-        { text: '3rd result', repeatResult: false, repeatText: 'This is a repeat result' }
-      ],
+      // resultPrompt: [
+      //   { text: '1st result', repeatResult: false, repeatText: 'Result has been given' },
+      //   {
+      //     text: '2nd result',
+      //     repeatResult: false,
+      //     repeatText: 'You already know the result to this'
+      //   },
+      //   { text: '3rd result', repeatResult: false, repeatText: 'This is a repeat result' }
+      // ],
 
       decisionButtons: [{ direction: 'Left' }, { direction: 'Right' }, { direction: 'Bottom' }],
 
@@ -100,12 +128,18 @@ export default {
       destX: window.windowWidth / 2,
       destY: window.innerHeight * 0.4,
 
-      bottomBool: false
+      bottomBool: false,
+
+      testFirebase: null,
+
+      currentResult: null
     }
   },
   mounted() {
     this.setBackgroundImage()
     this.updateBackgroundSize()
+
+    this.getFirebaseVariables()
 
     this.animateTexts()
     this.initResponse()
@@ -197,7 +231,7 @@ export default {
       //   )
       // })
     },
-    responseToResult(answerDirection) {
+    responseToResult(answerDirection, resultString) {
       // const tl = gsap.timeline()
 
       this.bottomBool = false
@@ -234,6 +268,8 @@ export default {
           break
       }
 
+      this.currentResult = resultString
+
       this.animateResponseExit()
     },
     animateResponseExit() {
@@ -263,7 +299,7 @@ export default {
       const tl = gsap.timeline({
         onComplete: () => {
           this.responsePrompt[this.currentIndex].repeatQuestion = true
-          this.resultPrompt[this.currentIndex].repeatResult = true
+          // this.resultPrompt[this.currentIndex].repeatResult = true
 
           this.currentIndex = this.getRandomIndex()
 
@@ -299,6 +335,21 @@ export default {
     },
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
+    },
+    getFirebaseVariables() {
+      // const databaseRef = ref(database, 'TestArray/First')
+      // onValue(databaseRef, (snapshot) => {
+      //   this.testFirebase = snapshot.val()
+      // })
+      // const databasePrompt = ref(database, 'ResponsesArray')
+      // onValue(databasePrompt, (snapshot) => {
+      //   this.responsePrompt = snapshot.val()
+      // })
+
+      const databasePrompt = ref(database, 'responsePrompt')
+      onValue(databasePrompt, (snapshot) => {
+        this.responsePrompt = Object.values(snapshot.val() || [])
+      })
     }
   }
 }

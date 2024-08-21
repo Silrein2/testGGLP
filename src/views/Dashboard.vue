@@ -1,6 +1,6 @@
 <template>
   <div id="background-container">
-    <button class="dashboard-button decision-button" @click="toDashboard()">Dashboard</button>
+    <button class="dashboard-button decision-button" @click="toMainPage()">Main Page</button>
 
     <h1 ref="mainText" class="welcome-text">{{ welcomeText }} {{ testFirebase }}</h1>
     <h3 ref="secondaryText" class="secondary-text">
@@ -71,9 +71,8 @@ export default {
   name: 'App',
   data() {
     return {
-      welcomeText: 'Main Page',
-      noticeText:
-        'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
+      welcomeText: 'Dashboard',
+      noticeText: '',
 
       responsePrompt: [
         {
@@ -160,8 +159,8 @@ export default {
         { x: '10%', y: '20%', opacity: 1, duration: 2, delay: 0 }
       )
     },
-    toDashboard() {
-      this.$router.push('/dashboard')
+    toMainPage() {
+      this.$router.push('/')
     },
     setBackgroundImage() {
       const backgroundElement = document.getElementById('background-container')

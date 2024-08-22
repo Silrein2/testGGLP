@@ -22,7 +22,7 @@
 
     <div class="button-row">
       <button class="action-button" @click="checkForm()">Submit</button>
-      <button class="action-button" @click="handleCancel">Cancel</button>
+      <button class="action-button" @click="resetForm()">Reset</button>
     </div>
   </div>
 </template>
@@ -106,6 +106,14 @@ export default {
         .catch((error) => {
           console.error('Error updating database:', error)
         })
+    },
+    resetForm() {
+      this.bottomResult = ''
+      this.leftResult = ''
+      this.rightResult = ''
+      this.questionText = ''
+
+      alert('Form resetted')
     }
   }
 }

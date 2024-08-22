@@ -7,10 +7,25 @@
       {{ noticeText }}
     </h3>
 
-    <div ref="dashboardList" class="dashboard-list-buttons"></div>
+    <div ref="dashboardList" class="dashboard-list-buttons">
+      <button class="form-list-button" @click="animateFormExit('addQuestion')">
+        <h3>Add Questions</h3>
+      </button>
+      <button class="form-list-button" @click="animateFormExit('test')"><h3>Test Form</h3></button>
+    </div>
 
     <div ref="formDiv" class="form-div">
-      <AddQuestions />
+      <AddQuestions v-if="addQuestionBool" />
+      <div class="planned-forms" v-if="testBool">
+        <h3 style="margin-left: 5%">
+          Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
+        </h3>
+        <h4 style="margin-left: 10%">- Add Questions</h4>
+        <h4 style="margin-left: 10%">- View Questions</h4>
+        <h5 style="margin-left: 15%">+ Edit Questions</h5>
+        <h5 style="margin-left: 15%">+ Delete Questions</h5>
+        <h3 style="margin-left: 5%">Edit and Delete will be within View Questions</h3>
+      </div>
     </div>
   </div>
 </template>
@@ -33,7 +48,10 @@ export default {
       welcomeText: 'Dashboard',
       noticeText: '',
 
-      arrayLength: null
+      arrayLength: null,
+
+      addQuestionBool: false,
+      testBool: false
     }
   },
   mounted() {
@@ -125,6 +143,36 @@ export default {
         { x: -window.innerWidth, opacity: 0 },
         { x: '5%', duration: 2, delay: 2, opacity: 1 }
       )
+    },
+    animateFormExit(formName) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          this.changeForm(formName)
+
+          gsap.fromTo(
+            this.$refs.formDiv,
+            { x: window.innerWidth, opacity: 0 },
+            { x: '0%', duration: 2, opacity: 1 }
+          )
+        }
+      })
+
+      tl.fromTo(
+        this.$refs.formDiv,
+        { opacity: 1 },
+        { x: window.innerWidth, duration: 2, opacity: 0 }
+      )
+    },
+    changeForm(formName) {
+      //meant to change forms
+
+      if (formName == 'addQuestion') {
+        this.addQuestionBool = true
+        this.testBool = false
+      } else {
+        this.addQuestionBool = false
+        this.testBool = true
+      }
     }
   }
 }
@@ -183,6 +231,25 @@ export default {
   top: 5vh;
 }
 
+.form-list-button {
+  background-color: blueviolet;
+
+  border: none;
+  color: white;
+
+  padding: 0px 20px;
+  text-align: center;
+  text-decoration: none;
+
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 10px;
+  cursor: pointer;
+
+  width: 80%;
+  height: 10%;
+}
+
 .dashboard-list-buttons {
   position: fixed;
 
@@ -191,10 +258,16 @@ export default {
 
   transform: translateY(-50%);
 
-  width: 20vw;
+  width: 15vw;
   height: 70vh;
 
   background-color: #4caf50;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .form-div {
@@ -211,5 +284,23 @@ export default {
   background-color: aqua;
 
   opacity: 0;
+}
+
+.planned-forms {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 90%;
+  height: 90%;
+
+  background-color: brown;
+
+  color: white;
+
+  text-align: left;
 }
 </style>

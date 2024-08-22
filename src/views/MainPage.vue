@@ -13,17 +13,6 @@
           {{ responsePrompt[currentIndex].repeatText }}
         </h1>
 
-        <!-- <div class="button-container">
-          <button
-            v-for="(button, index) in decisionButtons"
-            :key="index"
-            class="decision-button"
-            ref="responseBtn"
-            @click="responseToResult(button.direction)"
-          >
-            {{ button.direction }}
-          </button> -->
-
         <div class="button-container">
           <button
             v-if="responsePrompt[currentIndex].resultLeft"
@@ -54,9 +43,6 @@
     </div>
     <div ref="resultDiv" class="result-div" @click="resultToResponse()">
       <h1>{{ currentResult }}</h1>
-      <!-- <h1 v-if="resultPrompt[currentIndex].repeatResult">
-        {{ resultPrompt[currentIndex].repeatText }}
-      </h1> -->
     </div>
   </div>
 </template>
@@ -105,21 +91,8 @@ export default {
         }
       ],
 
-      // resultPrompt: [
-      //   { text: '1st result', repeatResult: false, repeatText: 'Result has been given' },
-      //   {
-      //     text: '2nd result',
-      //     repeatResult: false,
-      //     repeatText: 'You already know the result to this'
-      //   },
-      //   { text: '3rd result', repeatResult: false, repeatText: 'This is a repeat result' }
-      // ],
-
-      decisionButtons: [{ direction: 'Left' }, { direction: 'Right' }, { direction: 'Bottom' }],
-
       currentIndex: 0,
       responseBool: true,
-      resultBool: false,
 
       entranceX: null,
       entranceY: null,
@@ -131,8 +104,6 @@ export default {
       destY: window.innerHeight * 0.4,
 
       bottomBool: false,
-
-      testFirebase: null,
 
       currentResult: null
     }
@@ -218,27 +189,8 @@ export default {
         { x: this.destX, y: window.innerHeight, opacity: 0 },
         { y: this.destY, duration: 2, delay: 2, opacity: 1 }
       )
-
-      // const buttons = Array.from(this.$refs.responseBtn)
-
-      // buttons.forEach((btn) => {
-      //   gsap.fromTo(
-      //     btn,
-      //     {
-      //       opacity: 0
-      //     },
-      //     {
-      //       opacity: 1,
-      //       duration: 0.5,
-      //       delay: 4,
-      //       ease: 'power2.out'
-      //     }
-      //   )
-      // })
     },
     responseToResult(answerDirection, resultString) {
-      // const tl = gsap.timeline()
-
       this.bottomBool = false
 
       switch (answerDirection) {
@@ -304,9 +256,6 @@ export default {
       const tl = gsap.timeline({
         onComplete: () => {
           this.responsePrompt[this.currentIndex].repeatQuestion = true
-          // this.resultPrompt[this.currentIndex].repeatResult = true
-
-          // this.currentIndex = this.getRandomIndex()
 
           this.currentIndex += 1
 
@@ -344,15 +293,6 @@ export default {
       return Math.floor(Math.random() * 3)
     },
     getFirebaseVariables() {
-      // const databaseRef = ref(database, 'TestArray/First')
-      // onValue(databaseRef, (snapshot) => {
-      //   this.testFirebase = snapshot.val()
-      // })
-      // const databasePrompt = ref(database, 'ResponsesArray')
-      // onValue(databasePrompt, (snapshot) => {
-      //   this.responsePrompt = snapshot.val()
-      // })
-
       const databasePrompt = ref(database, 'responsePrompt')
       onValue(databasePrompt, (snapshot) => {
         this.responsePrompt = Object.values(snapshot.val() || [])
@@ -431,11 +371,14 @@ export default {
 
 button {
   background-color: white;
+
   border: none;
   color: blue;
+
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
+
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
@@ -457,10 +400,12 @@ button {
   background-color: #4caf50;
   border: none;
   color: white;
+
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
+
   font-size: 16px;
   margin: 0 10px;
   cursor: pointer;

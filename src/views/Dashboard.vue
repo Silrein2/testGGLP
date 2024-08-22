@@ -11,32 +11,6 @@
 
     <div ref="formDiv" class="form-div">
       <AddQuestions />
-      <!-- <div ref="formContent" class="form-content">
-        <h3 style="color: white">Question</h3>
-        <div class="text-box top-box">
-          <textarea placeholder="Enter your sentence here..."></textarea>
-        </div>
-
-        <div class="row-boxes">
-          <div class="text-box">
-            <h3 style="color: white">Left Result</h3>
-            <textarea placeholder="Enter first sentence..."></textarea>
-          </div>
-          <div class="text-box">
-            <h3 style="color: white">Bottom Result</h3>
-            <textarea placeholder="Enter second sentence..."></textarea>
-          </div>
-          <div class="text-box">
-            <h3 style="color: white">Right Result</h3>
-            <textarea placeholder="Enter third sentence..."></textarea>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="action-button" @click="handleSubmit">Submit</button>
-          <button class="action-button" @click="handleCancel">Cancel</button>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -157,14 +131,6 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
 .welcome-text {
   position: absolute;
 
@@ -183,37 +149,21 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-button {
-  background-color: white;
-  border: none;
-  color: blue;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-/* Hide the scrollbar */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
 }
 
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
 .decision-button {
   background-color: #4caf50;
+
   border: none;
   color: white;
+
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
+
   display: inline-block;
   font-size: 16px;
   margin: 0 10px;
@@ -221,13 +171,6 @@ button {
 
   width: 5vw;
   height: 5vh;
-}
-
-.content-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 .mainpage-button {

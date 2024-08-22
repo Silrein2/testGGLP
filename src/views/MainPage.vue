@@ -2,7 +2,7 @@
   <div id="background-container">
     <button class="dashboard-button decision-button" @click="toDashboard()">Dashboard</button>
 
-    <h1 ref="mainText" class="welcome-text">{{ welcomeText }} {{ testFirebase }}</h1>
+    <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
     <h3 ref="secondaryText" class="secondary-text">
       {{ noticeText }}
     </h3>

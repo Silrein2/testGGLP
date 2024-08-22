@@ -2,7 +2,7 @@
   <div id="background-container">
     <button class="mainpage-button decision-button" @click="toMainPage()">Main Page</button>
 
-    <h1 ref="mainText" class="welcome-text">{{ welcomeText }} {{ testFirebase }}</h1>
+    <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
     <h3 ref="secondaryText" class="secondary-text">
       {{ noticeText }}
     </h3>
@@ -59,73 +59,12 @@ export default {
       welcomeText: 'Dashboard',
       noticeText: '',
 
-      responsePrompt: [
-        {
-          text: '1st question',
-          repeatQuestion: false,
-          repeatText: 'Already been answered',
-          resultLeft: 'Left Result 1',
-          resultRight: 'Right Result 1',
-          resultBottom: 'Bottom Result 1',
-          questionDone: false //meant to be triggered after user answered the question, then removed from the question pool
-        },
-        {
-          text: '2nd question',
-          repeatQuestion: false,
-          repeatText: 'This question is done  ',
-          resultLeft: 'Left Result 2',
-          resultRight: 'Right Result 2',
-          resultBottom: 'Bottom Result 2',
-          questionDone: false
-        },
-        {
-          text: '3rd question',
-          repeatQuestion: false,
-          repeatText: 'You already gave a response to this question',
-          resultLeft: 'Left Result 3',
-          resultRight: 'Right Result 3',
-          resultBottom: 'Bottom Result 3',
-          questionDone: false
-        }
-      ],
-
-      // resultPrompt: [
-      //   { text: '1st result', repeatResult: false, repeatText: 'Result has been given' },
-      //   {
-      //     text: '2nd result',
-      //     repeatResult: false,
-      //     repeatText: 'You already know the result to this'
-      //   },
-      //   { text: '3rd result', repeatResult: false, repeatText: 'This is a repeat result' }
-      // ],
-
-      currentIndex: 0,
-      responseBool: true,
-      resultBool: false,
-
-      entranceX: null,
-      entranceY: null,
-
-      exitX: null,
-      exitY: null,
-
-      destX: window.windowWidth / 2,
-      destY: window.innerHeight * 0.4,
-
-      bottomBool: false,
-
-      testFirebase: null,
-
-      currentResult: null,
-
       arrayLength: null
     }
   },
   mounted() {
     this.setBackgroundImage()
     this.updateBackgroundSize()
-
-    // this.getFirebaseVariables()
 
     this.animateTexts()
     this.animateDashboardList()
@@ -196,71 +135,6 @@ export default {
       backgroundContainer.style.height = `${this.containerHeight}px`
       backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
     },
-    initResponse() {
-      gsap.fromTo(
-        this.$refs.responseDiv,
-        { x: this.destX, y: window.innerHeight, opacity: 0 },
-        { y: this.destY, duration: 2, delay: 2, opacity: 1 }
-      )
-
-      // const buttons = Array.from(this.$refs.responseBtn)
-
-      // buttons.forEach((btn) => {
-      //   gsap.fromTo(
-      //     btn,
-      //     {
-      //       opacity: 0
-      //     },
-      //     {
-      //       opacity: 1,
-      //       duration: 0.5,
-      //       delay: 4,
-      //       ease: 'power2.out'
-      //     }
-      //   )
-      // })
-    },
-    responseToResult(answerDirection, resultString) {
-      // const tl = gsap.timeline()
-
-      this.bottomBool = false
-
-      switch (answerDirection) {
-        case 'Left':
-          this.entranceX = -window.innerWidth
-          this.entranceY = window.innerHeight * 0.4
-
-          this.exitX = window.innerWidth
-          this.exitY = this.entranceY
-
-          break
-        case 'Right':
-          this.entranceX = window.innerWidth
-          this.entranceY = window.innerHeight * 0.4
-
-          this.exitX = -window.innerWidth
-          this.exitY = this.entranceY
-
-          break
-        case 'Bottom':
-          this.entranceX = this.destX
-          this.entranceY = window.innerHeight
-
-          this.exitX = this.entranceX
-          this.exitY = -window.innerHeight - 20 * (window.innerHeight / 100)
-
-          this.bottomBool = true
-
-          break
-
-        default:
-          break
-      }
-
-      this.currentResult = resultString
-
-      this.animateResponseExit()
-    },
     animateDashboardList() {
       const tl = gsap.timeline({
         onComplete: () => {
@@ -277,93 +151,7 @@ export default {
         { x: -window.innerWidth, opacity: 0 },
         { x: '5%', duration: 2, delay: 2, opacity: 1 }
       )
-    },
-    animateResponseExit() {
-      gsap.to(this.$refs.responseDiv, {
-        x: this.exitX,
-        y: this.exitY,
-        opacity: 0,
-        duration: 4,
-        delay: 0
-      })
-
-      if (this.bottomBool == true) {
-        gsap.fromTo(
-          this.$refs.resultDiv,
-          { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { y: this.destY, duration: 2, delay: 2, opacity: 1 }
-        )
-      } else {
-        gsap.fromTo(
-          this.$refs.resultDiv,
-          { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: this.destX, y: this.destY, duration: 2, delay: 2, opacity: 1 }
-        )
-      }
-    },
-    resultToResponse() {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          this.responsePrompt[this.currentIndex].repeatQuestion = true
-          // this.resultPrompt[this.currentIndex].repeatResult = true
-
-          // this.currentIndex = this.getRandomIndex()
-
-          this.currentIndex += 1
-
-          if (this.currentIndex >= this.responsePrompt.length) {
-            this.currentIndex = 0
-          }
-
-          this.animateResponseEnter()
-        }
-      })
-
-      tl.to(this.$refs.resultDiv, {
-        x: this.exitX,
-        y: this.exitY,
-        opacity: 0,
-        duration: 4
-      })
-    },
-    animateResponseEnter() {
-      if (this.bottomBool == true) {
-        gsap.fromTo(
-          this.$refs.responseDiv,
-          { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { y: this.destY, duration: 2, opacity: 1 }
-        )
-      } else {
-        gsap.fromTo(
-          this.$refs.responseDiv,
-          { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: this.destX, y: this.destY, duration: 2, opacity: 1 }
-        )
-      }
-    },
-    getRandomIndex() {
-      return Math.floor(Math.random() * 3)
     }
-    // getFirebaseVariables() {
-    //   // const databaseRef = ref(database, 'TestArray/First')
-    //   // onValue(databaseRef, (snapshot) => {
-    //   //   this.testFirebase = snapshot.val()
-    //   // })
-    //   // const databasePrompt = ref(database, 'ResponsesArray')
-    //   // onValue(databasePrompt, (snapshot) => {
-    //   //   this.responsePrompt = snapshot.val()
-    //   // })
-
-    //   const databasePrompt = ref(database, 'responsePrompt')
-
-    //   onValue(databasePrompt, (snapshot) => {
-    //     const data = snapshot.val()
-
-    //     if (data) {
-    //       this.arrayLength = Object.keys(data).length
-    //     }
-    //   })
-    // },
   }
 }
 </script>

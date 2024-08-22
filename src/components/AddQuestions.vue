@@ -42,17 +42,7 @@ export default {
       questionText: '',
       leftResult: '',
       bottomResult: '',
-      rightResult: '',
-
-      keyStrings: [
-        'questionDone',
-        'repeatQuestion',
-        'repeatText',
-        'resultBottom',
-        'resultLeft',
-        'resultRight',
-        'text'
-      ]
+      rightResult: ''
     }
   },
   mounted() {

@@ -2,26 +2,26 @@
   <div ref="formContent" class="form-content">
     <h3 style="color: white">Question</h3>
     <div class="text-box top-box">
-      <textarea v-model="questionText" placeholder="Enter your sentence here..."></textarea>
+      <textarea v-model="questionText" placeholder="Enter question here"></textarea>
     </div>
 
     <div class="row-boxes">
       <div class="text-box">
         <h3 style="color: white">Left Result</h3>
-        <textarea v-model="leftResult" placeholder="Enter first sentence..."></textarea>
+        <textarea v-model="leftResult" placeholder="Enter left result"></textarea>
       </div>
       <div class="text-box">
         <h3 style="color: white">Bottom Result</h3>
-        <textarea v-model="bottomResult" placeholder="Enter second sentence..."></textarea>
+        <textarea v-model="bottomResult" placeholder="Enter bottom result"></textarea>
       </div>
       <div class="text-box">
         <h3 style="color: white">Right Result</h3>
-        <textarea v-model="rightResult" placeholder="Enter third sentence..."></textarea>
+        <textarea v-model="rightResult" placeholder="Enter right result"></textarea>
       </div>
     </div>
 
     <div class="button-row">
-      <button class="action-button" @click="saveFirebaseVariables()">Submit</button>
+      <button class="action-button" @click="checkForm()">Submit</button>
       <button class="action-button" @click="handleCancel">Cancel</button>
     </div>
   </div>
@@ -70,6 +70,15 @@ export default {
           console.log(this.arrayLength)
         }
       })
+    },
+    checkForm() {
+      if (this.questionText == '') {
+        alert('The question part must be filled')
+      } else if (this.leftResult == '' && this.bottomResult == '' && this.rightResult == '') {
+        alert('At least 1 result must be filled in')
+      } else {
+        this.saveFirebaseVariables()
+      }
     },
     saveFirebaseVariables() {
       const responsesToAdd = {

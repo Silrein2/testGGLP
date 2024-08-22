@@ -10,7 +10,8 @@
     <div ref="dashboardList" class="dashboard-list-buttons"></div>
 
     <div ref="formDiv" class="form-div">
-      <div ref="formContent" class="form-content">
+      <AddQuestions />
+      <!-- <div ref="formContent" class="form-content">
         <h3 style="color: white">Question</h3>
         <div class="text-box top-box">
           <textarea placeholder="Enter your sentence here..."></textarea>
@@ -35,7 +36,7 @@
           <button class="action-button" @click="handleSubmit">Submit</button>
           <button class="action-button" @click="handleCancel">Cancel</button>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -43,11 +44,16 @@
 <script>
 import { gsap } from 'gsap'
 
-import { ref, onValue, update } from 'firebase/database'
-import { database } from '@/firebase'
+// import { ref, onValue, update } from 'firebase/database'
+// import { database } from '@/firebase'
+
+import AddQuestions from '@/components/AddQuestions.vue'
 
 export default {
   name: 'App',
+  components: {
+    AddQuestions
+  },
   data() {
     return {
       welcomeText: 'Dashboard',
@@ -93,8 +99,6 @@ export default {
       //   { text: '3rd result', repeatResult: false, repeatText: 'This is a repeat result' }
       // ],
 
-      decisionButtons: [{ direction: 'Left' }, { direction: 'Right' }, { direction: 'Bottom' }],
-
       currentIndex: 0,
       responseBool: true,
       resultBool: false,
@@ -112,14 +116,16 @@ export default {
 
       testFirebase: null,
 
-      currentResult: null
+      currentResult: null,
+
+      arrayLength: null
     }
   },
   mounted() {
     this.setBackgroundImage()
     this.updateBackgroundSize()
 
-    this.getFirebaseVariables()
+    // this.getFirebaseVariables()
 
     this.animateTexts()
     this.animateDashboardList()
@@ -337,22 +343,27 @@ export default {
     },
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
-    },
-    getFirebaseVariables() {
-      // const databaseRef = ref(database, 'TestArray/First')
-      // onValue(databaseRef, (snapshot) => {
-      //   this.testFirebase = snapshot.val()
-      // })
-      // const databasePrompt = ref(database, 'ResponsesArray')
-      // onValue(databasePrompt, (snapshot) => {
-      //   this.responsePrompt = snapshot.val()
-      // })
-
-      const databasePrompt = ref(database, 'responsePrompt')
-      onValue(databasePrompt, (snapshot) => {
-        this.responsePrompt = Object.values(snapshot.val() || [])
-      })
     }
+    // getFirebaseVariables() {
+    //   // const databaseRef = ref(database, 'TestArray/First')
+    //   // onValue(databaseRef, (snapshot) => {
+    //   //   this.testFirebase = snapshot.val()
+    //   // })
+    //   // const databasePrompt = ref(database, 'ResponsesArray')
+    //   // onValue(databasePrompt, (snapshot) => {
+    //   //   this.responsePrompt = snapshot.val()
+    //   // })
+
+    //   const databasePrompt = ref(database, 'responsePrompt')
+
+    //   onValue(databasePrompt, (snapshot) => {
+    //     const data = snapshot.val()
+
+    //     if (data) {
+    //       this.arrayLength = Object.keys(data).length
+    //     }
+    //   })
+    // },
   }
 }
 </script>
@@ -469,72 +480,5 @@ button {
   background-color: aqua;
 
   opacity: 0;
-}
-
-.form-content {
-  position: absolute;
-
-  top: 50%;
-  left: 50%;
-
-  transform: translate(-50%, -50%);
-
-  width: 95%;
-  height: 95%;
-
-  background-color: black;
-
-  overflow: auto;
-}
-
-.text-box {
-  margin-bottom: 1%;
-}
-
-.text-box textarea {
-  position: relative;
-
-  margin-top: 1%;
-  top: 5%;
-
-  width: 90%;
-  height: 150px;
-
-  resize: none;
-  overflow: auto;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.row-boxes {
-  display: flex;
-  gap: 2%;
-}
-
-.row-boxes .text-box {
-  flex: 1;
-}
-
-.button-row {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.action-button {
-  padding: 10px 20px;
-  margin: 0 2.5%;
-
-  background-color: #007bff;
-  color: white;
-
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.action-button:hover {
-  background-color: #0056b3;
 }
 </style>

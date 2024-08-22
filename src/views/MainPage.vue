@@ -477,7 +477,11 @@ button {
 }
 
 .dashboard-button {
-  position: fixed;
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   width: 7vw;
   height: 5vh;

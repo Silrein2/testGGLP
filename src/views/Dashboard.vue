@@ -1,62 +1,41 @@
 <template>
   <div id="background-container">
-    <button class="dashboard-button decision-button" @click="toMainPage()">Main Page</button>
+    <button class="mainpage-button decision-button" @click="toMainPage()">Main Page</button>
 
     <h1 ref="mainText" class="welcome-text">{{ welcomeText }} {{ testFirebase }}</h1>
     <h3 ref="secondaryText" class="secondary-text">
       {{ noticeText }}
     </h3>
-    <div ref="responseDiv" class="response-div" v-if="responseBool">
-      <div class="content-container">
-        <h1>{{ responsePrompt[currentIndex].text }}</h1>
-        <h1 v-if="responsePrompt[currentIndex].repeatQuestion">
-          {{ responsePrompt[currentIndex].repeatText }}
-        </h1>
 
-        <!-- <div class="button-container">
-          <button
-            v-for="(button, index) in decisionButtons"
-            :key="index"
-            class="decision-button"
-            ref="responseBtn"
-            @click="responseToResult(button.direction)"
-          >
-            {{ button.direction }}
-          </button> -->
+    <div ref="dashboardList" class="dashboard-list-buttons"></div>
 
-        <div class="button-container">
-          <button
-            v-if="responsePrompt[currentIndex].resultLeft"
-            @click="responseToResult('Left', responsePrompt[currentIndex].resultLeft)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Left
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].resultBottom"
-            @click="responseToResult('Bottom', responsePrompt[currentIndex].resultBottom)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Bottom
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].resultRight"
-            @click="responseToResult('Right', responsePrompt[currentIndex].resultRight)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Right
-          </button>
+    <div ref="formDiv" class="form-div">
+      <div ref="formContent" class="form-content">
+        <h3 style="color: white">Question</h3>
+        <div class="text-box top-box">
+          <textarea placeholder="Enter your sentence here..."></textarea>
+        </div>
+
+        <div class="row-boxes">
+          <div class="text-box">
+            <h3 style="color: white">Left Result</h3>
+            <textarea placeholder="Enter first sentence..."></textarea>
+          </div>
+          <div class="text-box">
+            <h3 style="color: white">Bottom Result</h3>
+            <textarea placeholder="Enter second sentence..."></textarea>
+          </div>
+          <div class="text-box">
+            <h3 style="color: white">Right Result</h3>
+            <textarea placeholder="Enter third sentence..."></textarea>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="action-button" @click="handleSubmit">Submit</button>
+          <button class="action-button" @click="handleCancel">Cancel</button>
         </div>
       </div>
-    </div>
-    <div ref="resultDiv" class="result-div" @click="resultToResponse()">
-      <h1>{{ currentResult }}</h1>
-      <!-- <h1 v-if="resultPrompt[currentIndex].repeatResult">
-        {{ resultPrompt[currentIndex].repeatText }}
-      </h1> -->
     </div>
   </div>
 </template>
@@ -64,7 +43,7 @@
 <script>
 import { gsap } from 'gsap'
 
-import { ref, onValue } from 'firebase/database'
+import { ref, onValue, update } from 'firebase/database'
 import { database } from '@/firebase'
 
 export default {
@@ -143,7 +122,7 @@ export default {
     this.getFirebaseVariables()
 
     this.animateTexts()
-    this.initResponse()
+    this.animateDashboardList()
   },
   methods: {
     animateTexts() {
@@ -276,6 +255,23 @@ export default {
 
       this.animateResponseExit()
     },
+    animateDashboardList() {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          gsap.fromTo(
+            this.$refs.formDiv,
+            { x: window.innerWidth, opacity: 0 },
+            { x: '0%', duration: 2, opacity: 1 }
+          )
+        }
+      })
+
+      tl.fromTo(
+        this.$refs.dashboardList,
+        { x: -window.innerWidth, opacity: 0 },
+        { x: '5%', duration: 2, delay: 2, opacity: 1 }
+      )
+    },
     animateResponseExit() {
       gsap.to(this.$refs.responseDiv, {
         x: this.exitX,
@@ -388,46 +384,6 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.response-div {
-  position: absolute;
-
-  top: 0vh;
-  left: 25vw;
-
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
-  width: 50vw;
-  height: 25vh;
-
-  background-color: black;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 20px;
-}
-
-.result-div {
-  position: absolute;
-
-  top: 0vh;
-  left: 25vw;
-
-  width: 50vw;
-  height: 25vh;
-
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
-  opacity: 0;
-
-  background-color: #2c3e50;
-
-  border-radius: 20px;
-}
-
 button {
   background-color: white;
   border: none;
@@ -475,7 +431,7 @@ button {
   text-align: center;
 }
 
-.dashboard-button {
+.mainpage-button {
   position: fixed;
 
   width: 7vw;
@@ -483,5 +439,102 @@ button {
 
   right: 5vw;
   top: 5vh;
+}
+
+.dashboard-list-buttons {
+  position: fixed;
+
+  top: 50%;
+  left: 3vw;
+
+  transform: translateY(-50%);
+
+  width: 20vw;
+  height: 70vh;
+
+  background-color: #4caf50;
+}
+
+.form-div {
+  position: fixed;
+
+  top: 50%;
+  right: 3vw;
+
+  transform: translateY(-50%);
+
+  width: 70vw;
+  height: 70vh;
+
+  background-color: aqua;
+
+  opacity: 0;
+}
+
+.form-content {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 95%;
+  height: 95%;
+
+  background-color: black;
+
+  overflow: auto;
+}
+
+.text-box {
+  margin-bottom: 1%;
+}
+
+.text-box textarea {
+  position: relative;
+
+  margin-top: 1%;
+  top: 5%;
+
+  width: 90%;
+  height: 150px;
+
+  resize: none;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.row-boxes {
+  display: flex;
+  gap: 2%;
+}
+
+.row-boxes .text-box {
+  flex: 1;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-button {
+  padding: 10px 20px;
+  margin: 0 2.5%;
+
+  background-color: #007bff;
+  color: white;
+
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
 }
 </style>

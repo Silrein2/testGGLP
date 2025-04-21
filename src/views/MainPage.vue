@@ -2,42 +2,53 @@
   <div id="background-container">
     <button class="dashboard-button decision-button" @click="toDashboard()">Dashboard</button>
 
-    <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
-    <h3 ref="secondaryText" class="secondary-text">
-      {{ noticeText }}
-    </h3>
-    <div ref="responseDiv" class="response-div" v-if="responseBool">
-      <div class="content-container">
-        <h1>{{ responsePrompt[currentIndex].text }}</h1>
-        <h1 v-if="responsePrompt[currentIndex].repeatQuestion">
-          {{ responsePrompt[currentIndex].repeatText }}
-        </h1>
+    <!-- <div v-if="responsePrompt2.length > 0">
+      <h1 ref="mainText" class="welcome-text">
+        Question num 1: {{ responsePrompt2[0].questionNum }}
+      </h1>
+      <h3 ref="secondaryText" class="secondary-text">
+        Left: {{ responsePrompt2[0].leftAnswer[0] }} + " " + {{ responsePrompt2[0].leftAnswer[1] }}
+        <br />
+        Right: {{ responsePrompt2[0].rightAnswer[0] }} + " " +
+        {{ responsePrompt2[0].rightAnswer[1] }}
+        <br />
+        <span v-if="responsePrompt2[0].middleAnswer != null"
+          >Middle: {{ responsePrompt2[0].middleAnswer[0] }} + " " +
+          {{ responsePrompt2[0].middleAnswer[1] }}
+        </span>
+      </h3>
+    </div> -->
+    <div v-if="!loading">
+      <div ref="responseDiv" class="response-div" v-if="responseBool">
+        <div class="content-container">
+          <h1>{{ responsePrompt[currentIndex].question }}</h1>
 
-        <div class="button-container">
-          <button
-            v-if="responsePrompt[currentIndex].resultLeft"
-            @click="responseToResult('Left', responsePrompt[currentIndex].resultLeft)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Left
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].resultBottom"
-            @click="responseToResult('Bottom', responsePrompt[currentIndex].resultBottom)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Bottom
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].resultRight"
-            @click="responseToResult('Right', responsePrompt[currentIndex].resultRight)"
-            class="decision-button"
-            ref="responseBtn"
-          >
-            Right
-          </button>
+          <div class="button-container">
+            <button
+              v-if="responsePrompt[currentIndex].leftAnswer"
+              @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer[1])"
+              class="decision-button"
+              ref="responseBtn"
+            >
+              Left
+            </button>
+            <button
+              v-if="responsePrompt[currentIndex].middleAnswer"
+              @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer[1])"
+              class="decision-button"
+              ref="responseBtn"
+            >
+              Bottom
+            </button>
+            <button
+              v-if="responsePrompt[currentIndex].rightAnswer"
+              @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer[1])"
+              class="decision-button"
+              ref="responseBtn"
+            >
+              Right
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -50,46 +61,53 @@
 <script>
 import { gsap } from 'gsap'
 
+//Realtime Database references
 import { ref, onValue } from 'firebase/database'
 import { database } from '@/firebase'
+
+import { db } from '@/firebase'
+import { collection, onSnapshot } from 'firebase/firestore'
 
 export default {
   name: 'App',
   data() {
     return {
-      welcomeText: 'Main Page',
-      noticeText:
-        'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
+      // welcomeText: 'Main Page',
+      // noticeText:
+      //   'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
 
-      responsePrompt: [
-        {
-          text: '1st question',
-          repeatQuestion: false,
-          repeatText: 'Already been answered',
-          resultLeft: 'Left Result 1',
-          resultRight: 'Right Result 1',
-          resultBottom: 'Bottom Result 1',
-          questionDone: false //meant to be triggered after user answered the question, then removed from the question pool
-        },
-        {
-          text: '2nd question',
-          repeatQuestion: false,
-          repeatText: 'This question is done  ',
-          resultLeft: 'Left Result 2',
-          resultRight: 'Right Result 2',
-          resultBottom: 'Bottom Result 2',
-          questionDone: false
-        },
-        {
-          text: '3rd question',
-          repeatQuestion: false,
-          repeatText: 'You already gave a response to this question',
-          resultLeft: 'Left Result 3',
-          resultRight: 'Right Result 3',
-          resultBottom: 'Bottom Result 3',
-          questionDone: false
-        }
-      ],
+      // responsePrompt: [
+      //   {
+      //     text: '1st question',
+      //     repeatQuestion: false,
+      //     repeatText: 'Already been answered',
+      //     resultLeft: 'Left Result 1',
+      //     resultRight: 'Right Result 1',
+      //     resultBottom: 'Bottom Result 1',
+      //     questionDone: false //meant to be triggered after user answered the question, then removed from the question pool
+      //   },
+      //   {
+      //     text: '2nd question',
+      //     repeatQuestion: false,
+      //     repeatText: 'This question is done  ',
+      //     resultLeft: 'Left Result 2',
+      //     resultRight: 'Right Result 2',
+      //     resultBottom: 'Bottom Result 2',
+      //     questionDone: false
+      //   },
+      //   {
+      //     text: '3rd question',
+      //     repeatQuestion: false,
+      //     repeatText: 'You already gave a response to this question',
+      //     resultLeft: 'Left Result 3',
+      //     resultRight: 'Right Result 3',
+      //     resultBottom: 'Bottom Result 3',
+      //     questionDone: false
+      //   }
+      // ],
+
+      //For Firestore
+      responsePrompt: [],
 
       currentIndex: 0,
       responseBool: true,
@@ -105,14 +123,19 @@ export default {
 
       bottomBool: false,
 
-      currentResult: null
+      currentResult: null,
+
+      loading: true
     }
   },
   mounted() {
+    this.getFirestoreVariables()
+    this.loading = false
+
     this.setBackgroundImage()
     this.updateBackgroundSize()
 
-    this.getFirebaseVariables()
+    // this.getFirebaseVariables()
 
     this.animateTexts()
     this.initResponse()
@@ -255,8 +278,6 @@ export default {
     resultToResponse() {
       const tl = gsap.timeline({
         onComplete: () => {
-          this.responsePrompt[this.currentIndex].repeatQuestion = true
-
           this.currentIndex += 1
 
           if (this.currentIndex >= this.responsePrompt.length) {
@@ -296,6 +317,22 @@ export default {
       const databasePrompt = ref(database, 'responsePrompt')
       onValue(databasePrompt, (snapshot) => {
         this.responsePrompt = Object.values(snapshot.val() || [])
+      })
+    },
+    async getFirestoreVariables() {
+      const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
+        this.responsePrompt = snapshot.docs.map((doc) => {
+          const data = doc.data()
+          return {
+            questionNum: doc.id,
+            question: data.Question,
+            leftAnswer: data.LeftAnswer !== undefined ? data.LeftAnswer : null,
+            rightAnswer: data.RightAnswer !== undefined ? data.RightAnswer : null,
+            middleAnswer: data.MiddleAnswer !== undefined ? data.MiddleAnswer : null
+          }
+        })
+
+        console.log(this.responsePrompt)
       })
     }
   }

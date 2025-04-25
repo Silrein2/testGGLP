@@ -18,40 +18,45 @@
         </span>
       </h3>
     </div> -->
-    <div v-if="!loading">
-      <div ref="responseDiv" class="response-div" v-if="responseBool">
-        <div class="content-container">
-          <h1>{{ responsePrompt[currentIndex].question }}</h1>
 
-          <div class="button-container">
-            <button
-              v-if="responsePrompt[currentIndex].leftAnswer"
-              @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer[1])"
-              class="decision-button"
-              ref="responseBtn"
-            >
-              Left
-            </button>
-            <button
-              v-if="responsePrompt[currentIndex].middleAnswer"
-              @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer[1])"
-              class="decision-button"
-              ref="responseBtn"
-            >
-              Bottom
-            </button>
-            <button
-              v-if="responsePrompt[currentIndex].rightAnswer"
-              @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer[1])"
-              class="decision-button"
-              ref="responseBtn"
-            >
-              Right
-            </button>
-          </div>
+    <div ref="titleDiv" class="response-div" @click="animateTitleExit">
+      <h1>Title</h1>
+    </div>
+
+    <!-- <div v-if="!loading"> -->
+    <div ref="responseDiv" class="response-div" v-if="responseBool">
+      <div class="content-container">
+        <h1>{{ responsePrompt[currentIndex].question }}</h1>
+
+        <div class="button-container">
+          <button
+            v-if="responsePrompt[currentIndex].leftAnswer"
+            @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer[1])"
+            class="decision-button"
+            ref="responseBtn"
+          >
+            Left
+          </button>
+          <button
+            v-if="responsePrompt[currentIndex].middleAnswer"
+            @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer[1])"
+            class="decision-button"
+            ref="responseBtn"
+          >
+            Bottom
+          </button>
+          <button
+            v-if="responsePrompt[currentIndex].rightAnswer"
+            @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer[1])"
+            class="decision-button"
+            ref="responseBtn"
+          >
+            Right
+          </button>
         </div>
       </div>
     </div>
+    <!-- </div> -->
     <div ref="resultDiv" class="result-div" @click="resultToResponse()">
       <h1>{{ currentResult }}</h1>
     </div>
@@ -76,41 +81,11 @@ export default {
       // noticeText:
       //   'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
 
-      // responsePrompt: [
-      //   {
-      //     text: '1st question',
-      //     repeatQuestion: false,
-      //     repeatText: 'Already been answered',
-      //     resultLeft: 'Left Result 1',
-      //     resultRight: 'Right Result 1',
-      //     resultBottom: 'Bottom Result 1',
-      //     questionDone: false //meant to be triggered after user answered the question, then removed from the question pool
-      //   },
-      //   {
-      //     text: '2nd question',
-      //     repeatQuestion: false,
-      //     repeatText: 'This question is done  ',
-      //     resultLeft: 'Left Result 2',
-      //     resultRight: 'Right Result 2',
-      //     resultBottom: 'Bottom Result 2',
-      //     questionDone: false
-      //   },
-      //   {
-      //     text: '3rd question',
-      //     repeatQuestion: false,
-      //     repeatText: 'You already gave a response to this question',
-      //     resultLeft: 'Left Result 3',
-      //     resultRight: 'Right Result 3',
-      //     resultBottom: 'Bottom Result 3',
-      //     questionDone: false
-      //   }
-      // ],
-
       //For Firestore
       responsePrompt: [],
 
       currentIndex: 0,
-      responseBool: true,
+      responseBool: false,
 
       entranceX: null,
       entranceY: null,
@@ -125,35 +100,37 @@ export default {
 
       currentResult: null,
 
-      loading: true
+      titleButtonBool: false
+
+      // loading: true
     }
   },
   mounted() {
     this.getFirestoreVariables()
-    this.loading = false
+    // this.loading = false
 
     this.setBackgroundImage()
     this.updateBackgroundSize()
 
     // this.getFirebaseVariables()
 
-    this.animateTexts()
-    this.initResponse()
+    // this.animateTexts()
+    // this.initResponse()
   },
   methods: {
-    animateTexts() {
-      gsap.fromTo(
-        this.$refs.mainText,
-        { x: '10%', y: '-100%', opacity: 0 },
-        { x: '10%', y: '10%', opacity: 1, duration: 2, delay: 0 }
-      )
+    // animateTexts() {
+    //   gsap.fromTo(
+    //     this.$refs.mainText,
+    //     { x: '10%', y: '-100%', opacity: 0 },
+    //     { x: '10%', y: '10%', opacity: 1, duration: 2, delay: 0 }
+    //   )
 
-      gsap.fromTo(
-        this.$refs.secondaryText,
-        { x: '10%', y: '-100%', opacity: 0 },
-        { x: '10%', y: '20%', opacity: 1, duration: 2, delay: 0 }
-      )
-    },
+    //   gsap.fromTo(
+    //     this.$refs.secondaryText,
+    //     { x: '10%', y: '-100%', opacity: 0 },
+    //     { x: '10%', y: '20%', opacity: 1, duration: 2, delay: 0 }
+    //   )
+    // },
     toDashboard() {
       this.$router.push('/dashboard')
     },
@@ -206,12 +183,48 @@ export default {
       backgroundContainer.style.height = `${this.containerHeight}px`
       backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
     },
-    initResponse() {
+    initTitle() {
       gsap.fromTo(
-        this.$refs.responseDiv,
+        this.$refs.titleDiv,
         { x: this.destX, y: window.innerHeight, opacity: 0 },
-        { y: this.destY, duration: 2, delay: 2, opacity: 1 }
+        {
+          y: this.destY,
+          duration: 2,
+          delay: 2,
+          opacity: 1,
+          onComplete: () => {
+            this.titleButtonBool = true
+          }
+        }
       )
+    },
+    animateTitleExit() {
+      if (this.titleButtonBool == true) {
+        gsap.to(this.$refs.titleDiv, {
+          y: -window.innerHeight,
+          opacity: 0,
+          duration: 2.5,
+          delay: 0,
+          onComplete: () => {
+            this.initResponse()
+          }
+        })
+      }
+    },
+    initResponse() {
+      this.responseBool = true // Ensure responseDiv will be rendered
+      this.$nextTick(() => {
+        // Wait until the DOM updates
+        if (this.$refs.responseDiv) {
+          gsap.fromTo(
+            this.$refs.responseDiv,
+            { x: this.destX, y: window.innerHeight, opacity: 0 },
+            { y: this.destY, duration: 2, delay: 0, opacity: 1 }
+          )
+        } else {
+          console.warn('responseDiv not found for animation.') // Log a warning if not found
+        }
+      })
     },
     responseToResult(answerDirection, resultString) {
       this.bottomBool = false
@@ -321,6 +334,8 @@ export default {
     },
     async getFirestoreVariables() {
       const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
+        const dbLength = snapshot.size
+
         this.responsePrompt = snapshot.docs.map((doc) => {
           const data = doc.data()
           return {
@@ -333,6 +348,10 @@ export default {
         })
 
         console.log(this.responsePrompt)
+
+        if (this.responsePrompt.length === dbLength) {
+          this.initTitle()
+        }
       })
     }
   }

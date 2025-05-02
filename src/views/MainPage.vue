@@ -31,27 +31,27 @@
         <div class="button-container">
           <button
             v-if="responsePrompt[currentIndex].leftAnswer"
-            @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer[1])"
-            class="decision-button"
+            @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
+            class="button-decision"
             ref="responseBtn"
           >
-            Left
+            {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
           </button>
           <button
             v-if="responsePrompt[currentIndex].middleAnswer"
-            @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer[1])"
-            class="decision-button"
+            @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])"
+            class="button-decision"
             ref="responseBtn"
           >
-            Bottom
+            {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
           </button>
           <button
             v-if="responsePrompt[currentIndex].rightAnswer"
-            @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer[1])"
-            class="decision-button"
+            @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])"
+            class="button-decision"
             ref="responseBtn"
           >
-            Right
+            {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
           </button>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default {
       exitY: null,
 
       destX: window.windowWidth / 2,
-      destY: window.innerHeight * 0.4,
+      destY: window.innerHeight * 0.35,
 
       bottomBool: false,
 
@@ -144,7 +144,7 @@ export default {
       backgroundElement.style.transition = 'transform 0.3s'
       backgroundElement.style.overflow = 'hidden'
       backgroundElement.style.cursor = 'pointer'
-      backgroundElement.style.backgroundColor = 'blue'
+      backgroundElement.style.backgroundColor = '#4E2E1D'
 
       const beforeElement = document.createElement('div')
       beforeElement.style.content = ''
@@ -186,7 +186,7 @@ export default {
     initTitle() {
       gsap.fromTo(
         this.$refs.titleDiv,
-        { x: this.destX, y: window.innerHeight, opacity: 0 },
+        { x: 0, y: window.innerHeight, opacity: 0 },
         {
           y: this.destY,
           duration: 2,
@@ -222,7 +222,7 @@ export default {
             { y: this.destY, duration: 2, delay: 0, opacity: 1 }
           )
         } else {
-          console.warn('responseDiv not found for animation.') // Log a warning if not found
+          console.warn('responseDiv not found for animation.')
         }
       })
     },
@@ -389,19 +389,21 @@ export default {
   position: absolute;
 
   top: 0vh;
-  left: 25vw;
+  left: 12.5vw;
 
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
-  width: 50vw;
-  height: 25vh;
+  width: 75vw;
+  height: 35vh;
 
-  background-color: black;
+  background-color: #f1a159;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   border-radius: 20px;
 }
@@ -412,21 +414,22 @@ export default {
   top: 0vh;
   left: 25vw;
 
-  width: 50vw;
-  height: 25vh;
+  width: 75vw;
+  height: 35vh;
 
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   opacity: 0;
 
-  background-color: #2c3e50;
+  background-color: #f5962c;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   border-radius: 20px;
 }
 
 button {
-  background-color: white;
+  background-color: #fcdfc2;
 
   border: none;
   color: blue;
@@ -452,10 +455,10 @@ button {
   margin-top: 20px;
 }
 
-.decision-button {
-  background-color: #4caf50;
+.button-decision {
+  background-color: #fcdfc2;
   border: none;
-  color: white;
+  color: black;
 
   padding: 10px 20px;
   text-align: center;
@@ -465,9 +468,13 @@ button {
   font-size: 16px;
   margin: 0 10px;
   cursor: pointer;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
-  width: 5vw;
-  height: 5vh;
+  width: 10vw;
+  height: 7.5vh;
+
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .content-container {

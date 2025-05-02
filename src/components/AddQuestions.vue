@@ -7,16 +7,46 @@
 
     <div class="row-boxes">
       <div class="text-box">
-        <h3 style="color: white">Left Result</h3>
+        <h3 style="color: white">Left Answer</h3>
+        <textarea v-model="leftDesc" placeholder="Enter left description"></textarea>
         <textarea v-model="leftResult" placeholder="Enter left result"></textarea>
+
+        <h3 style="color: white">Care</h3>
+        <input type="number" v-model.number="leftCare" placeholder="Care" />
+
+        <h3 style="color: white">Respect</h3>
+        <input type="number" v-model.number="leftRespect" placeholder="Respect" />
+
+        <h3 style="color: white">Understanding</h3>
+        <input type="number" v-model.number="leftUnderstanding" placeholder="Understanding" />
       </div>
       <div class="text-box">
-        <h3 style="color: white">Bottom Result</h3>
-        <textarea v-model="bottomResult" placeholder="Enter bottom result"></textarea>
+        <h3 style="color: white">Middle Answer</h3>
+        <textarea v-model="middleDesc" placeholder="Enter middle description"></textarea>
+        <textarea v-model="middleResult" placeholder="Enter middle result"></textarea>
+
+        <h3 style="color: white">Care</h3>
+        <input type="number" v-model.number="middleCare" placeholder="Care" />
+
+        <h3 style="color: white">Respect</h3>
+        <input type="number" v-model.number="middleRespect" placeholder="Respect" />
+
+        <h3 style="color: white">Understanding</h3>
+        <input type="number" v-model.number="middleUnderstanding" placeholder="Understanding" />
       </div>
       <div class="text-box">
-        <h3 style="color: white">Right Result</h3>
+        <h3 style="color: white">Right Answer</h3>
+        <textarea v-model="rightDesc" placeholder="Enter right description"></textarea>
         <textarea v-model="rightResult" placeholder="Enter right result"></textarea>
+
+        <h3 style="color: white">Care</h3>
+        <input type="number" v-model.number="rightCare" placeholder="Care" />
+
+        <h3 style="color: white">Respect</h3>
+        <input type="number" v-model.number="rightRespect" placeholder="Respect" />
+
+        <h3 style="color: white">Understanding</h3>
+        <input type="number" v-model.number="rightUnderstanding" placeholder="Understanding" />
       </div>
     </div>
 
@@ -28,90 +58,106 @@
 </template>
 
 <script>
-// import { gsap } from 'gsap'
-
-import { ref, onValue, update, get } from 'firebase/database'
-import { database } from '@/firebase'
+import { db } from '@/firebase'
+import { collection, addDoc } from 'firebase/firestore'
 
 export default {
   name: 'AddQuestions',
   data() {
     return {
-      arrayLength: null,
-
       questionText: '',
+
+      leftDesc: '',
       leftResult: '',
-      bottomResult: '',
-      rightResult: ''
+      leftCare: 0,
+      leftRespect: 0,
+      leftUnderstanding: 0,
+
+      middleDesc: '',
+      middleResult: '',
+      middleCare: 0,
+      middleRespect: 0,
+      middleUnderstanding: 0,
+
+      rightDesc: '',
+      rightResult: '',
+      rightCare: 0,
+      rightRespect: 0,
+      rightUnderstanding: 0
     }
   },
-  mounted() {
-    this.getFirebaseVariables()
-  },
   methods: {
-    getFirebaseVariables() {
-      const databasePrompt = ref(database, 'responsePrompt')
-
-      onValue(databasePrompt, (snapshot) => {
-        const data = snapshot.val()
-
-        if (data) {
-          this.arrayLength = Object.keys(data).length
-          console.log(this.arrayLength)
-        }
-      })
-    },
     checkForm() {
-      if (this.questionText == '') {
+      if (this.questionText === '') {
         alert('The question part must be filled')
-      } else if (this.leftResult == '' && this.bottomResult == '' && this.rightResult == '') {
+      } else if (this.leftDesc === '' && this.middleDesc === '' && this.rightDesc === '') {
         alert('At least 1 result must be filled in')
       } else {
         this.saveFirebaseVariables()
       }
     },
-    saveFirebaseVariables() {
-      const responsesToAdd = {
-        questionDone: false,
-        repeatQuestion: false,
-        repeatText: 'Question has been answered',
-        resultBottom: this.bottomResult,
-        resultLeft: this.leftResult,
-        resultRight: this.rightResult,
-        text: this.questionText
+    async saveFirebaseVariables() {
+      try {
+        const docRef = await addDoc(collection(db, 'Question_Bank'), {
+          Question: this.questionText,
+          LeftAnswer:
+            this.leftDesc || this.leftResult
+              ? {
+                  Desc: this.leftDesc,
+                  Result: this.leftResult,
+                  Care: this.leftCare,
+                  Respect: this.leftRespect,
+                  Understanding: this.leftUnderstanding
+                }
+              : null,
+          MiddleAnswer:
+            this.middleDesc || this.middleResult
+              ? {
+                  Desc: this.middleDesc,
+                  Result: this.middleResult,
+                  Care: this.middleCare,
+                  Respect: this.middleRespect,
+                  Understanding: this.middleUnderstanding
+                }
+              : null,
+          RightAnswer:
+            this.rightDesc || this.rightResult
+              ? {
+                  Desc: this.rightDesc,
+                  Result: this.rightResult,
+                  Care: this.rightCare,
+                  Respect: this.rightRespect,
+                  Understanding: this.rightUnderstanding
+                }
+              : null
+        })
+        alert('Responses submitted with ID: ' + docRef.id)
+        this.resetForm()
+      } catch (error) {
+        console.error('Error adding document: ', error)
+        alert('Error submitting responses')
       }
-
-      const databaseRef = ref(database, 'responsePrompt')
-
-      get(databaseRef)
-        .then((snapshot) => {
-          const currentQuestions = snapshot.val() || {}
-          const questionCount = Object.keys(currentQuestions).length
-          const newQuestionKey = `question${questionCount + 1}`
-
-          const updates = {
-            [newQuestionKey]: responsesToAdd
-          }
-
-          return update(databaseRef, updates)
-        })
-        .then(() => {
-          alert('Responses submitted!')
-
-          this.bottomResult = ''
-          this.leftResult = ''
-          this.rightResult = ''
-          this.questionText = ''
-        })
-        .catch((error) => {
-          console.error('Error updating database:', error)
-        })
     },
     resetForm() {
-      this.bottomResult = ''
-      this.leftResult = ''
-      this.rightResult = ''
       this.questionText = ''
+
+      this.leftDesc = ''
+      this.leftResult = ''
+      this.leftCare = 0
+      this.leftRespect = 0
+      this.leftUnderstanding = 0
+
+      this.middleDesc = ''
+      this.middleResult = ''
+      this.middleCare = 0
+      this.middleRespect = 0
+      this.middleUnderstanding = 0
+
+      this.rightDesc = ''
+      this.rightResult = ''
+      this.rightCare = 0
+      this.rightRespect = 0
+      this.rightUnderstanding = 0
 
       alert('Form resetted')
     }
@@ -119,41 +165,39 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .form-content {
   position: absolute;
-
   top: 50%;
   left: 50%;
-
   transform: translate(-50%, -50%);
-
   width: 95%;
   height: 95%;
-
   background-color: black;
-
   overflow: auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .text-box {
-  margin-bottom: 1%;
+  margin-bottom: 15px;
+}
+
+.text-box textarea,
+.text-box input[type='number'] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+  color: #333;
 }
 
 .text-box textarea {
-  position: relative;
-
-  margin-top: 1%;
-  top: 5%;
-
-  width: 90%;
-  height: 150px;
-
-  resize: none;
-  overflow: auto;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  height: 100px;
 }
 
 .row-boxes {
@@ -174,16 +218,30 @@ export default {
 .action-button {
   padding: 10px 20px;
   margin: 0 2.5%;
-
   background-color: #007bff;
   color: white;
-
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .action-button:hover {
   background-color: #0056b3;
+}
+
+h3 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+/* Style for number inputs */
+input[type='number'] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 </style>

@@ -59,7 +59,7 @@
 
 <script>
 import { db } from '@/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, doc, setDoc, getDocs, query, orderBy, limit } from 'firebase/firestore'
 
 export default {
   name: 'AddQuestions',
@@ -98,7 +98,14 @@ export default {
     },
     async saveFirebaseVariables() {
       try {
-        const docRef = await addDoc(collection(db, 'Question_Bank'), {
+        const nextId = await this.getNextQuestionId()
+
+        const docRef = doc(collection(db, 'Question_Bank'), String(nextId))
+
+        // Set the data for the new document
+        await setDoc(docRef, {
+          id: String(nextId), // Include the id
+          showDescriptions: false, // Include showDescriptions, default to false
           Question: this.questionText,
           LeftAnswer:
             this.leftDesc || this.leftResult
@@ -131,7 +138,8 @@ export default {
                 }
               : null
         })
-        alert('Responses submitted with ID: ' + docRef.id)
+
+        alert('Responses submitted with ID: ' + nextId)
         this.resetForm()
       } catch (error) {
         console.error('Error adding document: ', error)
@@ -160,6 +168,19 @@ export default {
       this.rightUnderstanding = 0
 
       alert('Form resetted')
+    },
+    async getNextQuestionId() {
+      const questionBankCollection = collection(db, 'Question_Bank')
+      const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
+      const querySnapshot = await getDocs(q)
+
+      if (querySnapshot.empty) {
+        return 0
+      } else {
+        const lastDoc = querySnapshot.docs[0]
+        const lastId = parseInt(lastDoc.id, 10)
+        return isNaN(lastId) ? 0 : lastId + 1
+      }
     }
   }
 }

@@ -11,11 +11,15 @@
       <button class="form-list-button" @click="animateFormExit('addQuestion')">
         <h3>Add Questions</h3>
       </button>
+      <button class="form-list-button" @click="animateFormExit('listQuestion')">
+        <h3>Question List</h3>
+      </button>
       <button class="form-list-button" @click="animateFormExit('test')"><h3>Test Form</h3></button>
     </div>
 
     <div ref="formDiv" class="form-div">
       <AddQuestions v-if="addQuestionBool" />
+      <QuestionList v-if="listQuestionBool" />
       <div class="planned-forms" v-if="testBool">
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
@@ -37,11 +41,13 @@ import { gsap } from 'gsap'
 // import { database } from '@/firebase'
 
 import AddQuestions from '@/components/AddQuestions.vue'
+import QuestionList from '@/components/QuestionList.vue'
 
 export default {
   name: 'App',
   components: {
-    AddQuestions
+    AddQuestions,
+    QuestionList
   },
   data() {
     return {
@@ -51,6 +57,7 @@ export default {
       arrayLength: null,
 
       addQuestionBool: false,
+      listQuestionBool: false,
       testBool: false
     }
   },
@@ -166,8 +173,31 @@ export default {
     changeForm(formName) {
       //meant to change forms
 
+      switch (formName) {
+        case 'addQuestion':
+          this.addQuestionBool = true
+          this.listQuestionBool = false
+          this.testBool = false
+          break
+
+        case 'listQuestion':
+          this.addQuestionBool = false
+          this.listQuestionBool = true
+          this.testBool = false
+          break
+
+        case 'test':
+          this.addQuestionBool = false
+          this.listQuestionBool = false
+          this.testBool = true
+          break
+      }
+
       if (formName == 'addQuestion') {
         this.addQuestionBool = true
+        this.testBool = false
+      } else if (formName == 'listQuestion') {
+        this.addQuestionBool = false
         this.testBool = false
       } else {
         this.addQuestionBool = false
@@ -284,6 +314,8 @@ export default {
   background-color: aqua;
 
   opacity: 0;
+
+  overflow: hidden;
 }
 
 .planned-forms {

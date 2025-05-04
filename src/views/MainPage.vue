@@ -47,6 +47,9 @@
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
       <h1>{{ currentResult }}</h1>
+      <h3>{{ addedCareString }}</h3>
+      <h3>{{ addedRespectString }}</h3>
+      <h3>{{ addedUnderstandingString }}</h3>
     </div>
 
     <div
@@ -72,7 +75,7 @@
 <script>
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
-import { collection, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore' // Import setDoc
+import { collection, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore'
 
 export default {
   name: 'App',
@@ -97,6 +100,10 @@ export default {
       understandingScore: 0,
 
       totalScore: 0,
+
+      addedCareString: '',
+      addedRespectString: '',
+      addedUnderstandingString: '',
 
       userName: '' // Add userName data property
     }
@@ -196,6 +203,8 @@ export default {
       })
     },
     responseToResult(answerDirection, resultString) {
+      console.log('CurrentIndex: ' + this.currentIndex)
+
       this.bottomBool = false
 
       this.scoreTally(answerDirection)
@@ -241,31 +250,57 @@ export default {
         case 'Left':
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].leftAnswer['Care']
+          this.addedCareString =
+            'Care: +' + this.responsePrompt[this.currentIndex].leftAnswer['Care']
+
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
+          this.addedRespectString =
+            'Respect: +' + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
+
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+          this.addedUnderstandingString =
+            'Understanding: +' + this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
           break
         case 'Right':
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].rightAnswer['Care']
+          this.addedCareString =
+            'Care: +' + this.responsePrompt[this.currentIndex].rightAnswer['Care']
+
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
+          this.addedRespectString =
+            'Respect: +' + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
+
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+          this.addedUnderstandingString =
+            'Understanding: +' + this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
           break
         case 'Bottom':
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].middleAnswer['Care']
+          this.addedCareString =
+            'Care: +' + this.responsePrompt[this.currentIndex].middleAnswer['Care']
+
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
+          this.addedRespectString =
+            'Respect: +' + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
+
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+          this.addedUnderstandingString =
+            'Understanding: +' +
+            this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
           break
       }
+
       this.totalScore = this.careScore + this.respectScore + this.understandingScore
     },
     animateResponseExit() {
@@ -274,15 +309,7 @@ export default {
         y: this.exitY,
         opacity: 0,
         duration: 4,
-        delay: 0,
-        onComplete: () => {
-          if (this.currentIndex >= this.responsePrompt.length - 1) {
-            this.currentIndex++
-            this.animateScoreDivEnter()
-          } else {
-            this.currentIndex++
-          }
-        }
+        delay: 0
       })
 
       this.resultVisible = true
@@ -307,7 +334,9 @@ export default {
           this.currentIndex += 1
 
           if (this.currentIndex >= this.responsePrompt.length) {
-            this.animateScoreDivEnter()
+            this.$nextTick(() => {
+              this.animateScoreDivEnter()
+            })
           } else {
             this.animateResponseEnter()
           }
@@ -340,11 +369,15 @@ export default {
       }
     },
     animateScoreDivEnter() {
-      gsap.fromTo(
-        this.$refs.scoreDiv,
-        { x: 0, y: window.innerHeight, opacity: 0 },
-        { y: this.destY, duration: 2, delay: 0, opacity: 1 }
-      )
+      if (this.$refs.scoreDiv) {
+        gsap.fromTo(
+          this.$refs.scoreDiv,
+          { x: this.entranceX, y: this.entranceY, opacity: 0 },
+          { x: 0, y: this.destY, duration: 2, delay: 0, opacity: 1 }
+        )
+      } else {
+        console.warn('scoreDiv ref not found.  Animation skipped.')
+      }
     },
     async saveScoreToFirestore() {
       try {
@@ -363,7 +396,7 @@ export default {
           EmpathyScore: this.totalScore
         })
 
-        console.log('Score saved to Firestore!')
+        alert('Score is saved to FireStore')
       } catch (error) {
         console.error('Error saving score to Firestore:', error)
       }
@@ -473,7 +506,6 @@ button {
   background-color: #fcdfc2;
 
   border: none;
-  color: blue;
 
   padding: 10px 20px;
   text-align: center;
@@ -539,7 +571,6 @@ button {
   top: 5vh;
 }
 
-/* Styles for the new score div */
 .score-container {
   display: flex;
   flex-direction: column;
@@ -554,11 +585,19 @@ button {
 }
 
 .score-container .save-button {
-  background-color: #4caf50;
-  color: white;
+  background-color: #fcdfc2;
+  color: black;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
+  font-size: 16px;
+  margin: 0 10px;
+  cursor: pointer;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>

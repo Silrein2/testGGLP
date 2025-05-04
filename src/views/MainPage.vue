@@ -397,6 +397,7 @@ export default {
         })
 
         alert('Score is saved to FireStore')
+        window.location.reload()
       } catch (error) {
         console.error('Error saving score to Firestore:', error)
       }

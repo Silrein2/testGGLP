@@ -24,10 +24,10 @@
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
         </h3>
-        <h4 style="margin-left: 10%">- Add Questions</h4>
+        <h4 style="margin-left: 10%; text-decoration: line-through">- Add Questions</h4>
         <h4 style="margin-left: 10%">- View Questions</h4>
         <h5 style="margin-left: 15%">+ Edit Questions</h5>
-        <h5 style="margin-left: 15%">+ Delete Questions</h5>
+        <h5 style="margin-left: 15%; text-decoration: line-through">+ Delete Questions</h5>
         <h3 style="margin-left: 5%">Edit and Delete will be within View Questions</h3>
       </div>
     </div>
@@ -37,11 +37,10 @@
 <script>
 import { gsap } from 'gsap'
 
-// import { ref, onValue, update } from 'firebase/database'
-// import { database } from '@/firebase'
-
 import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
+
+import '@/assets/teaColor.css'
 
 export default {
   name: 'App',
@@ -67,6 +66,13 @@ export default {
 
     this.animateTexts()
     this.animateDashboardList()
+
+    // Add event listener for window resize
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeUnmount() {
+    // Remove event listener when component is unmounted
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     animateTexts() {
@@ -203,6 +209,10 @@ export default {
         this.addQuestionBool = false
         this.testBool = true
       }
+    },
+    handleResize() {
+      // Call updateBackgroundSize when the window is resized
+      this.updateBackgroundSize()
     }
   }
 }

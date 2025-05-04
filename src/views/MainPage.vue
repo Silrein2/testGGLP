@@ -1,30 +1,14 @@
 <template>
   <div id="background-container">
-    <button class="dashboard-button decision-button" @click="toDashboard()">Dashboard</button>
-
-    <!-- <div v-if="responsePrompt2.length > 0">
-      <h1 ref="mainText" class="welcome-text">
-        Question num 1: {{ responsePrompt2[0].questionNum }}
-      </h1>
-      <h3 ref="secondaryText" class="secondary-text">
-        Left: {{ responsePrompt2[0].leftAnswer[0] }} + " " + {{ responsePrompt2[0].leftAnswer[1] }}
-        <br />
-        Right: {{ responsePrompt2[0].rightAnswer[0] }} + " " +
-        {{ responsePrompt2[0].rightAnswer[1] }}
-        <br />
-        <span v-if="responsePrompt2[0].middleAnswer != null"
-          >Middle: {{ responsePrompt2[0].middleAnswer[0] }} + " " +
-          {{ responsePrompt2[0].middleAnswer[1] }}
-        </span>
-      </h3>
-    </div> -->
-
     <div ref="titleDiv" class="response-div" @click="animateTitleExit">
       <h1>Title</h1>
     </div>
 
-    <!-- <div v-if="!loading"> -->
-    <div ref="responseDiv" class="response-div" v-if="responseBool">
+    <div
+      ref="responseDiv"
+      class="response-div"
+      v-if="responseBool && currentIndex < responsePrompt.length"
+    >
       <div class="content-container">
         <h1>{{ responsePrompt[currentIndex].question }}</h1>
 
@@ -56,84 +40,73 @@
         </div>
       </div>
     </div>
-    <!-- </div> -->
-    <div ref="resultDiv" class="result-div" @click="resultToResponse()">
+    <div
+      ref="resultDiv"
+      class="result-div"
+      @click="resultToResponse()"
+      :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
+    >
       <h1>{{ currentResult }}</h1>
+    </div>
+
+    <div
+      ref="scoreDiv"
+      class="response-div"
+      v-if="responseBool && currentIndex >= responsePrompt.length"
+    >
+      <div class="score-container">
+        <h2>Enter Your Name:</h2>
+        <input type="text" v-model="userName" placeholder="Your Name" />
+
+        <p>Care Score: {{ careScore }}</p>
+        <p>Respect Score: {{ respectScore }}</p>
+        <p>Understanding Score: {{ understandingScore }}</p>
+        <p>Total Empathy Score: {{ totalScore }}</p>
+
+        <button @click="saveScoreToFirestore()" class="save-button">Save Score</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { gsap } from 'gsap'
-
-//Realtime Database references
-import { ref, onValue } from 'firebase/database'
-import { database } from '@/firebase'
-
 import { db } from '@/firebase'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { collection, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore' // Import setDoc
 
 export default {
   name: 'App',
   data() {
     return {
-      // welcomeText: 'Main Page',
-      // noticeText:
-      //   'Repeated questions and results are meant to be excluded in final product. The question pool are also randomized',
-
-      //For Firestore
       responsePrompt: [],
-
       currentIndex: 0,
       responseBool: false,
-
       entranceX: null,
       entranceY: null,
-
       exitX: null,
       exitY: null,
-
-      destX: window.windowWidth / 2,
-      destY: window.innerHeight * 0.35,
-
+      destX: window.innerWidth / 2,
+      destY: window.innerHeight * 0.25,
       bottomBool: false,
-
       currentResult: null,
+      titleButtonBool: false,
+      resultVisible: false,
 
-      titleButtonBool: false
+      careScore: 0,
+      respectScore: 0,
+      understandingScore: 0,
 
-      // loading: true
+      totalScore: 0,
+
+      userName: '' // Add userName data property
     }
   },
   mounted() {
     this.getFirestoreVariables()
-    // this.loading = false
-
     this.setBackgroundImage()
     this.updateBackgroundSize()
-
-    // this.getFirebaseVariables()
-
-    // this.animateTexts()
-    // this.initResponse()
   },
   methods: {
-    // animateTexts() {
-    //   gsap.fromTo(
-    //     this.$refs.mainText,
-    //     { x: '10%', y: '-100%', opacity: 0 },
-    //     { x: '10%', y: '10%', opacity: 1, duration: 2, delay: 0 }
-    //   )
-
-    //   gsap.fromTo(
-    //     this.$refs.secondaryText,
-    //     { x: '10%', y: '-100%', opacity: 0 },
-    //     { x: '10%', y: '20%', opacity: 1, duration: 2, delay: 0 }
-    //   )
-    // },
-    toDashboard() {
-      this.$router.push('/dashboard')
-    },
     setBackgroundImage() {
       const backgroundElement = document.getElementById('background-container')
       backgroundElement.style.position = 'absolute'
@@ -176,9 +149,6 @@ export default {
       this.containerHeight = Math.max(windowHeight, windowWidth / targetAspectRatio)
       this.containerWidth = Math.max(windowWidth, this.containerHeight * targetAspectRatio)
 
-      offsetX = (windowWidth - this.containerWidth) / 2
-      offsetY = (windowHeight - this.containerHeight) / 2
-
       backgroundContainer.style.width = `${this.containerWidth}px`
       backgroundContainer.style.height = `${this.containerHeight}px`
       backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
@@ -212,13 +182,12 @@ export default {
       }
     },
     initResponse() {
-      this.responseBool = true // Ensure responseDiv will be rendered
+      this.responseBool = true // ensure responseDiv will be rendered
       this.$nextTick(() => {
-        // Wait until the DOM updates
         if (this.$refs.responseDiv) {
           gsap.fromTo(
             this.$refs.responseDiv,
-            { x: this.destX, y: window.innerHeight, opacity: 0 },
+            { x: 0, y: window.innerHeight, opacity: 0 },
             { y: this.destY, duration: 2, delay: 0, opacity: 1 }
           )
         } else {
@@ -229,10 +198,12 @@ export default {
     responseToResult(answerDirection, resultString) {
       this.bottomBool = false
 
+      this.scoreTally(answerDirection)
+
       switch (answerDirection) {
         case 'Left':
           this.entranceX = -window.innerWidth
-          this.entranceY = window.innerHeight * 0.4
+          this.entranceY = window.innerHeight * 0.25
 
           this.exitX = window.innerWidth
           this.exitY = this.entranceY
@@ -240,14 +211,14 @@ export default {
           break
         case 'Right':
           this.entranceX = window.innerWidth
-          this.entranceY = window.innerHeight * 0.4
+          this.entranceY = window.innerHeight * 0.25
 
           this.exitX = -window.innerWidth
           this.exitY = this.entranceY
 
           break
         case 'Bottom':
-          this.entranceX = this.destX
+          this.entranceX = 0
           this.entranceY = window.innerHeight
 
           this.exitX = this.entranceX
@@ -265,26 +236,68 @@ export default {
 
       this.animateResponseExit()
     },
+    scoreTally(answerDirection) {
+      switch (answerDirection) {
+        case 'Left':
+          this.careScore =
+            this.careScore + this.responsePrompt[this.currentIndex].leftAnswer['Care']
+          this.respectScore =
+            this.respectScore + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
+          this.understandingScore =
+            this.understandingScore +
+            this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+          break
+        case 'Right':
+          this.careScore =
+            this.careScore + this.responsePrompt[this.currentIndex].rightAnswer['Care']
+          this.respectScore =
+            this.respectScore + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
+          this.understandingScore =
+            this.understandingScore +
+            this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+          break
+        case 'Bottom':
+          this.careScore =
+            this.careScore + this.responsePrompt[this.currentIndex].middleAnswer['Care']
+          this.respectScore =
+            this.respectScore + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
+          this.understandingScore =
+            this.understandingScore +
+            this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+          break
+      }
+      this.totalScore = this.careScore + this.respectScore + this.understandingScore
+    },
     animateResponseExit() {
       gsap.to(this.$refs.responseDiv, {
         x: this.exitX,
         y: this.exitY,
         opacity: 0,
         duration: 4,
-        delay: 0
+        delay: 0,
+        onComplete: () => {
+          if (this.currentIndex >= this.responsePrompt.length - 1) {
+            this.currentIndex++
+            this.animateScoreDivEnter()
+          } else {
+            this.currentIndex++
+          }
+        }
       })
+
+      this.resultVisible = true
 
       if (this.bottomBool == true) {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { y: this.destY, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: this.destY, duration: 2, delay: 2, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: this.destX, y: this.destY, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: this.destY, duration: 2, delay: 2, opacity: 1 }
         )
       }
     },
@@ -294,10 +307,10 @@ export default {
           this.currentIndex += 1
 
           if (this.currentIndex >= this.responsePrompt.length) {
-            this.currentIndex = 0
+            this.animateScoreDivEnter()
+          } else {
+            this.animateResponseEnter()
           }
-
-          this.animateResponseEnter()
         }
       })
 
@@ -305,7 +318,10 @@ export default {
         x: this.exitX,
         y: this.exitY,
         opacity: 0,
-        duration: 4
+        duration: 4,
+        onStart: () => {
+          this.resultVisible = false // Disable click during exit animation
+        }
       })
     },
     animateResponseEnter() {
@@ -313,24 +329,47 @@ export default {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { y: this.destY, duration: 2, opacity: 1 }
+          { x: 0, y: this.destY, duration: 2, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: this.destX, y: this.destY, duration: 2, opacity: 1 }
+          { x: 0, y: this.destY, duration: 2, opacity: 1 }
         )
+      }
+    },
+    animateScoreDivEnter() {
+      gsap.fromTo(
+        this.$refs.scoreDiv,
+        { x: 0, y: window.innerHeight, opacity: 0 },
+        { y: this.destY, duration: 2, delay: 0, opacity: 1 }
+      )
+    },
+    async saveScoreToFirestore() {
+      try {
+        const scoreCollection = collection(db, 'Score')
+
+        const snapshot = await getDocs(scoreCollection)
+        const nextID = snapshot.size
+
+        const scoreDocRef = doc(scoreCollection, String(nextID))
+
+        await setDoc(scoreDocRef, {
+          Name: this.userName,
+          CareScore: this.careScore,
+          RespectScore: this.respectScore,
+          UnderstandingScore: this.understandingScore,
+          EmpathyScore: this.totalScore
+        })
+
+        console.log('Score saved to Firestore!')
+      } catch (error) {
+        console.error('Error saving score to Firestore:', error)
       }
     },
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
-    },
-    getFirebaseVariables() {
-      const databasePrompt = ref(database, 'responsePrompt')
-      onValue(databasePrompt, (snapshot) => {
-        this.responsePrompt = Object.values(snapshot.val() || [])
-      })
     },
     async getFirestoreVariables() {
       const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
@@ -395,13 +434,15 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   width: 75vw;
-  height: 35vh;
+  height: 50vh;
 
   background-color: #f1a159;
 
+  /*
   display: flex;
   justify-content: center;
   align-items: center;
+  */
 
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
@@ -412,10 +453,10 @@ export default {
   position: absolute;
 
   top: 0vh;
-  left: 25vw;
+  left: 12.5vw;
 
   width: 75vw;
-  height: 35vh;
+  height: 50vh;
 
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -443,7 +484,6 @@ button {
   cursor: pointer;
 }
 
-/* Hide the scrollbar */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
@@ -478,10 +518,11 @@ button {
 }
 
 .content-container {
-  display: flex;
+  /*display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  */
 }
 
 .dashboard-button {
@@ -496,5 +537,28 @@ button {
 
   right: 5vw;
   top: 5vh;
+}
+
+/* Styles for the new score div */
+.score-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-container input[type='text'] {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.score-container .save-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

@@ -64,7 +64,7 @@ export default {
           showDescriptions: false,
           ...doc.data()
         }))
-        this.originalQuestions = JSON.parse(JSON.stringify(this.questions)) // Deep copy for reset
+        this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
       } catch (error) {
         console.error('Error fetching questions: ', error)
       } finally {
@@ -105,19 +105,18 @@ export default {
             await deleteDoc(docRef)
           }
 
-          // Add documents with new IDs, excluding deleted questions
           const questionsToSave = this.questions
           for (let i = 0; i < questionsToSave.length; i++) {
             const newId = String(i)
             const docRef = doc(collection(db, 'Question_Bank'), newId)
             await setDoc(docRef, {
               ...questionsToSave[i],
-              id: newId // Update the id field in the data
+              id: newId
             })
-            questionsToSave[i].id = newId // Update the id in the local array
+            questionsToSave[i].id = newId
           }
 
-          this.originalQuestions = JSON.parse(JSON.stringify(this.questions)) // Update originalQuestions
+          this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
           alert('Order saved successfully!')
         } catch (error) {
           console.error('Error saving order: ', error)
@@ -199,7 +198,7 @@ export default {
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  margin-left: 5px; /* Added some spacing between buttons */
+  margin-left: 5px;
 }
 
 .edit-button {

@@ -105,7 +105,6 @@ export default {
           const data = docSnap.data()
           this.questionText = data.Question
 
-          // Load Left Answer Data
           if (data.LeftAnswer) {
             this.leftDesc = data.LeftAnswer.Desc
             this.leftResult = data.LeftAnswer.Result
@@ -114,7 +113,6 @@ export default {
             this.leftUnderstanding = data.LeftAnswer.Understanding || 0
           }
 
-          // Load Middle Answer Data
           if (data.MiddleAnswer) {
             this.middleDesc = data.MiddleAnswer.Desc
             this.middleResult = data.MiddleAnswer.Result
@@ -123,7 +121,6 @@ export default {
             this.middleUnderstanding = data.MiddleAnswer.Understanding || 0
           }
 
-          // Load Right Answer Data
           if (data.RightAnswer) {
             this.rightDesc = data.RightAnswer.Desc
             this.rightResult = data.RightAnswer.Result
@@ -192,7 +189,6 @@ export default {
 </script>
 
 <style scoped>
-/* AddQuestion.vue styles - keep the same */
 .form-content {
   position: absolute;
   top: 50%;
@@ -262,7 +258,6 @@ h3 {
   margin-bottom: 10px;
 }
 
-/* Style for number inputs */
 input[type='number'] {
   width: 100%;
   padding: 8px;

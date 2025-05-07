@@ -14,6 +14,9 @@
       <button class="form-list-button" @click="animateFormExit('listQuestion')">
         <h3>Question List</h3>
       </button>
+      <button class="form-list-button" @click="animateFormExit('scoreList')">
+        <h3>Score List</h3>
+      </button>
       <button class="form-list-button" @click="animateFormExit('test')">
         <h3>Things to do</h3>
       </button>
@@ -22,6 +25,7 @@
     <div ref="formDiv" class="form-div">
       <AddQuestions v-if="addQuestionBool" />
       <QuestionList v-if="listQuestionBool" @edit-question="editQuestion" />
+      <ScoreList v-if="scoreListBool" />
       <div class="planned-forms" v-if="testBool">
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
@@ -47,6 +51,7 @@ import { gsap } from 'gsap'
 import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
 import EditQuestion from '@/components/EditQuestion.vue'
+import ScoreList from '@/components/ScoreList.vue'
 
 import '@/assets/teaColor.css'
 
@@ -55,7 +60,8 @@ export default {
   components: {
     AddQuestions,
     QuestionList,
-    EditQuestion
+    EditQuestion,
+    ScoreList
   },
   data() {
     return {
@@ -66,6 +72,7 @@ export default {
 
       addQuestionBool: false,
       listQuestionBool: false,
+      scoreListBool: false,
       testBool: true,
       editQuestionBool: false,
       selectedQuestionId: null
@@ -194,6 +201,7 @@ export default {
         case 'addQuestion':
           this.addQuestionBool = true
           this.listQuestionBool = false
+          this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
           break
@@ -201,6 +209,15 @@ export default {
         case 'listQuestion':
           this.addQuestionBool = false
           this.listQuestionBool = true
+          this.scoreListBool = false
+          this.testBool = false
+          this.editQuestionBool = false
+          break
+
+        case 'scoreList':
+          this.addQuestionBool = false
+          this.listQuestionBool = false
+          this.scoreListBool = true
           this.testBool = false
           this.editQuestionBool = false
           break
@@ -208,6 +225,7 @@ export default {
         case 'test':
           this.addQuestionBool = false
           this.listQuestionBool = false
+          this.scoreListBool = false
           this.testBool = true
           this.editQuestionBool = false
           break
@@ -216,16 +234,25 @@ export default {
       if (formName == 'addQuestion') {
         this.addQuestionBool = true
         this.listQuestionBool = false
+        this.scoreListBool = false
         this.testBool = false
         this.editQuestionBool = false
       } else if (formName == 'listQuestion') {
         this.addQuestionBool = false
         this.listQuestionBool = true
+        this.scoreListBool = false
+        this.testBool = false
+        this.editQuestionBool = false
+      } else if (formName == 'scoreList') {
+        this.addQuestionBool = false
+        this.listQuestionBool = false
+        this.scoreListBool = true
         this.testBool = false
         this.editQuestionBool = false
       } else {
         this.addQuestionBool = false
         this.listQuestionBool = false
+        this.scoreListBool = false
         this.testBool = true
         this.editQuestionBool = false
       }
@@ -239,6 +266,7 @@ export default {
       this.listQuestionBool = false
       this.editQuestionBool = true
       this.addQuestionBool = false
+      this.scoreListBool = false
       this.testBool = false
     },
     cancelEdit() {

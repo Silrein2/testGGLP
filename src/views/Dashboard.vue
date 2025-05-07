@@ -14,12 +14,14 @@
       <button class="form-list-button" @click="animateFormExit('listQuestion')">
         <h3>Question List</h3>
       </button>
-      <button class="form-list-button" @click="animateFormExit('test')"><h3>Test Form</h3></button>
+      <button class="form-list-button" @click="animateFormExit('test')">
+        <h3>Things to do</h3>
+      </button>
     </div>
 
     <div ref="formDiv" class="form-div">
       <AddQuestions v-if="addQuestionBool" />
-      <QuestionList v-if="listQuestionBool" />
+      <QuestionList v-if="listQuestionBool" @edit-question="editQuestion" />
       <div class="planned-forms" v-if="testBool">
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
@@ -30,6 +32,11 @@
         <h5 style="margin-left: 15%; text-decoration: line-through">+ Delete Questions</h5>
         <h3 style="margin-left: 5%">Edit and Delete will be within View Questions</h3>
       </div>
+      <EditQuestion
+        v-if="editQuestionBool"
+        :questionId="selectedQuestionId"
+        @cancel-edit="cancelEdit"
+      />
     </div>
   </div>
 </template>
@@ -39,6 +46,7 @@ import { gsap } from 'gsap'
 
 import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
+import EditQuestion from '@/components/EditQuestion.vue'
 
 import '@/assets/teaColor.css'
 
@@ -46,7 +54,8 @@ export default {
   name: 'App',
   components: {
     AddQuestions,
-    QuestionList
+    QuestionList,
+    EditQuestion
   },
   data() {
     return {
@@ -57,7 +66,9 @@ export default {
 
       addQuestionBool: false,
       listQuestionBool: false,
-      testBool: false
+      testBool: true,
+      editQuestionBool: false,
+      selectedQuestionId: null
     }
   },
   mounted() {
@@ -184,35 +195,56 @@ export default {
           this.addQuestionBool = true
           this.listQuestionBool = false
           this.testBool = false
+          this.editQuestionBool = false
           break
 
         case 'listQuestion':
           this.addQuestionBool = false
           this.listQuestionBool = true
           this.testBool = false
+          this.editQuestionBool = false
           break
 
         case 'test':
           this.addQuestionBool = false
           this.listQuestionBool = false
           this.testBool = true
+          this.editQuestionBool = false
           break
       }
 
       if (formName == 'addQuestion') {
         this.addQuestionBool = true
+        this.listQuestionBool = false
         this.testBool = false
+        this.editQuestionBool = false
       } else if (formName == 'listQuestion') {
         this.addQuestionBool = false
+        this.listQuestionBool = true
         this.testBool = false
+        this.editQuestionBool = false
       } else {
         this.addQuestionBool = false
+        this.listQuestionBool = false
         this.testBool = true
+        this.editQuestionBool = false
       }
     },
     handleResize() {
       // Call updateBackgroundSize when the window is resized
       this.updateBackgroundSize()
+    },
+    editQuestion(questionId) {
+      this.selectedQuestionId = questionId
+      this.listQuestionBool = false
+      this.editQuestionBool = true
+      this.addQuestionBool = false
+      this.testBool = false
+    },
+    cancelEdit() {
+      this.editQuestionBool = false
+      this.listQuestionBool = true
+      this.selectedQuestionId = null
     }
   }
 }

@@ -51,18 +51,24 @@
     </div>
 
     <div class="button-row">
-      <button class="action-button" @click="checkForm()">Submit</button>
-      <button class="action-button" @click="resetForm()">Reset</button>
+      <button class="action-button" @click="updateFirebaseVariables()">Update</button>
+      <button class="action-button" @click="cancelEdit()">Cancel</button>
     </div>
   </div>
 </template>
 
 <script>
 import { db } from '@/firebase'
-import { collection, doc, setDoc, getDocs, query, orderBy, limit } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 export default {
-  name: 'AddQuestions',
+  name: 'EditQuestion',
+  props: {
+    questionId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       questionText: '',
@@ -86,25 +92,58 @@ export default {
       rightUnderstanding: 0
     }
   },
+  mounted() {
+    this.loadQuestionData()
+  },
   methods: {
-    checkForm() {
-      if (this.questionText === '') {
-        alert('The question part must be filled')
-      } else if (this.leftDesc === '' && this.middleDesc === '' && this.rightDesc === '') {
-        alert('At least 1 result must be filled in')
-      } else {
-        this.saveFirebaseVariables()
+    async loadQuestionData() {
+      try {
+        const docRef = doc(db, 'Question_Bank', this.questionId)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          const data = docSnap.data()
+          this.questionText = data.Question
+
+          // Load Left Answer Data
+          if (data.LeftAnswer) {
+            this.leftDesc = data.LeftAnswer.Desc
+            this.leftResult = data.LeftAnswer.Result
+            this.leftCare = data.LeftAnswer.Care || 0
+            this.leftRespect = data.LeftAnswer.Respect || 0
+            this.leftUnderstanding = data.LeftAnswer.Understanding || 0
+          }
+
+          // Load Middle Answer Data
+          if (data.MiddleAnswer) {
+            this.middleDesc = data.MiddleAnswer.Desc
+            this.middleResult = data.MiddleAnswer.Result
+            this.middleCare = data.MiddleAnswer.Care || 0
+            this.middleRespect = data.MiddleAnswer.Respect || 0
+            this.middleUnderstanding = data.MiddleAnswer.Understanding || 0
+          }
+
+          // Load Right Answer Data
+          if (data.RightAnswer) {
+            this.rightDesc = data.RightAnswer.Desc
+            this.rightResult = data.RightAnswer.Result
+            this.rightCare = data.RightAnswer.Care || 0
+            this.rightRespect = data.RightAnswer.Respect || 0
+            this.rightUnderstanding = data.RightAnswer.Understanding || 0
+          }
+        } else {
+          alert('No such document!')
+        }
+      } catch (error) {
+        console.error('Error getting document:', error)
+        alert('Error loading question data')
       }
     },
-    async saveFirebaseVariables() {
+    async updateFirebaseVariables() {
       try {
-        const nextId = await this.getNextQuestionId()
+        const docRef = doc(db, 'Question_Bank', this.questionId)
 
-        const docRef = doc(collection(db, 'Question_Bank'), String(nextId))
-
-        await setDoc(docRef, {
-          id: String(nextId),
-          showDescriptions: false, // Include showDescriptions, default to false
+        await updateDoc(docRef, {
           Question: this.questionText,
           LeftAnswer:
             this.leftDesc || this.leftResult
@@ -138,54 +177,22 @@ export default {
               : null
         })
 
-        alert('Responses submitted with ID: ' + nextId)
-        this.resetForm()
+        alert('Question updated successfully!')
+        this.$emit('cancel-edit')
       } catch (error) {
-        console.error('Error adding document: ', error)
-        alert('Error submitting responses')
+        console.error('Error updating document: ', error)
+        alert('Error updating question')
       }
     },
-    resetForm() {
-      this.questionText = ''
-
-      this.leftDesc = ''
-      this.leftResult = ''
-      this.leftCare = 0
-      this.leftRespect = 0
-      this.leftUnderstanding = 0
-
-      this.middleDesc = ''
-      this.middleResult = ''
-      this.middleCare = 0
-      this.middleRespect = 0
-      this.middleUnderstanding = 0
-
-      this.rightDesc = ''
-      this.rightResult = ''
-      this.rightCare = 0
-      this.rightRespect = 0
-      this.rightUnderstanding = 0
-
-      alert('Form resetted')
-    },
-    async getNextQuestionId() {
-      const questionBankCollection = collection(db, 'Question_Bank')
-      const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
-      const querySnapshot = await getDocs(q)
-
-      if (querySnapshot.empty) {
-        return 0
-      } else {
-        const lastDoc = querySnapshot.docs[0]
-        const lastId = parseInt(lastDoc.id, 10)
-        return isNaN(lastId) ? 0 : lastId + 1
-      }
+    cancelEdit() {
+      this.$emit('cancel-edit')
     }
   }
 }
 </script>
 
 <style scoped>
+/* AddQuestion.vue styles - keep the same */
 .form-content {
   position: absolute;
   top: 50%;

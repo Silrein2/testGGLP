@@ -21,7 +21,10 @@
           <AnswerDetail title="Middle Answer" :answer="question.MiddleAnswer" />
           <AnswerDetail title="Right Answer" :answer="question.RightAnswer" />
         </div>
-        <button class="delete-button" @click="deleteQuestion(question.id)">Delete</button>
+        <div class="action-buttons">
+          <button class="edit-button" @click="emitEditQuestion(question.id)">Edit</button>
+          <button class="delete-button" @click="deleteQuestion(question.id)">Delete</button>
+        </div>
       </div>
     </div>
 
@@ -127,6 +130,9 @@ export default {
         this.questions = JSON.parse(JSON.stringify(this.originalQuestions))
         alert('Order reset to original!')
       }
+    },
+    emitEditQuestion(id) {
+      this.$emit('edit-question', id)
     }
   }
 }
@@ -183,12 +189,26 @@ export default {
   cursor: pointer;
 }
 
+.action-buttons {
+  display: flex;
+}
+
+.edit-button,
 .delete-button {
   padding: 5px 10px;
   cursor: pointer;
-  background-color: #dc3545;
-  color: white;
   border: none;
   border-radius: 4px;
+  margin-left: 5px; /* Added some spacing between buttons */
+}
+
+.edit-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
 }
 </style>

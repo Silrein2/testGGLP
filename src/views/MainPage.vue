@@ -1,6 +1,11 @@
 <template>
   <div id="background-container">
-    <div ref="titleDiv" class="response-div" @click="animateTitleExit">
+    <div
+      ref="titleDiv"
+      class="response-div"
+      @click="animateTitleExit"
+      :style="{ visibility: titleDivVisible ? 'visible' : 'hidden' }"
+    >
       <h1>Title</h1>
     </div>
 
@@ -105,7 +110,8 @@ export default {
       addedRespectString: '',
       addedUnderstandingString: '',
 
-      userName: '' // Add userName data property
+      userName: '',
+      titleDivVisible: false
     }
   },
   mounted() {
@@ -159,6 +165,29 @@ export default {
       backgroundContainer.style.width = `${this.containerWidth}px`
       backgroundContainer.style.height = `${this.containerHeight}px`
       backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
+    },
+    async getFirestoreVariables() {
+      const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
+        const dbLength = snapshot.size
+
+        this.responsePrompt = snapshot.docs.map((doc) => {
+          const data = doc.data()
+          return {
+            questionNum: doc.id,
+            question: data.Question,
+            leftAnswer: data.LeftAnswer !== undefined ? data.LeftAnswer : null,
+            rightAnswer: data.RightAnswer !== undefined ? data.RightAnswer : null,
+            middleAnswer: data.MiddleAnswer !== undefined ? data.MiddleAnswer : null
+          }
+        })
+
+        console.log(this.responsePrompt)
+
+        if (this.responsePrompt.length === dbLength) {
+          this.initTitle()
+          this.titleDivVisible = true
+        }
+      })
     },
     initTitle() {
       gsap.fromTo(
@@ -404,28 +433,6 @@ export default {
     },
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
-    },
-    async getFirestoreVariables() {
-      const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
-        const dbLength = snapshot.size
-
-        this.responsePrompt = snapshot.docs.map((doc) => {
-          const data = doc.data()
-          return {
-            questionNum: doc.id,
-            question: data.Question,
-            leftAnswer: data.LeftAnswer !== undefined ? data.LeftAnswer : null,
-            rightAnswer: data.RightAnswer !== undefined ? data.RightAnswer : null,
-            middleAnswer: data.MiddleAnswer !== undefined ? data.MiddleAnswer : null
-          }
-        })
-
-        console.log(this.responsePrompt)
-
-        if (this.responsePrompt.length === dbLength) {
-          this.initTitle()
-        }
-      })
     }
   }
 }

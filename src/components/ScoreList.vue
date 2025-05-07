@@ -36,18 +36,17 @@ export default {
     return {
       scores: [],
       loading: true,
-      sortBy: 'id' // Default sorting
+      sortBy: 'id' //default sorting
     }
   },
   computed: {
     sortedScores() {
-      let sorted = [...this.scores] // Create a copy to avoid mutating the original array
+      let sorted = [...this.scores]
 
       sorted.sort((a, b) => {
         if (this.sortBy === 'id') {
           return parseInt(a.id) - parseInt(b.id)
         } else {
-          // Sort by the selected score
           const scoreA = a[this.sortBy]
           const scoreB = b[this.sortBy]
 
@@ -55,7 +54,7 @@ export default {
             return parseInt(a.id) - parseInt(b.id)
           }
 
-          return scoreB - scoreA // Sort descending for scores
+          return scoreB - scoreA
         }
       })
 
@@ -78,9 +77,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    sortScores() {
-      // This method is intentionally left blank. The sorting logic is handled by the computed property sortedScores
     }
   }
 }
@@ -96,7 +92,7 @@ export default {
 
 .score-list-container {
   overflow-y: auto;
-  height: calc(100% - 50px); /* Adjust height to fit content */
+  height: calc(100% - 50px);
 }
 
 .score-item {

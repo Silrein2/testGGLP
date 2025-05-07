@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      showDetails: false // Initially hide details
+      showDetails: false // Initially hide details. Click on the question/id to reveal details
     }
   },
   methods: {

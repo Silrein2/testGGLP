@@ -40,7 +40,7 @@ export default {
 
       if (docSnap.exists()) {
         localStorage.setItem('userEmail', this.email) //local storage
-        this.$router.push({ name: 'MainPage' })
+        this.$router.push({ name: 'UserDashboardPage' })
       } else {
         this.showUsernameInput = true //first time user
       }
@@ -57,11 +57,12 @@ export default {
         CareScore: 0,
         RespectScore: 0,
         UnderstandingScore: 0,
-        EmpathyScore: 0
+        EmpathyScore: 0,
+        TimesPlayed: 0
       })
 
       alert('Registration successful! Redirecting to main page...')
-      this.$router.push({ name: 'MainPage', params: { email: this.email } })
+      this.$router.push({ name: 'UserDashboardPage' })
     }
   }
 }

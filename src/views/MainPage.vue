@@ -80,7 +80,7 @@
 <script>
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
-import { collection, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore'
+import { collection, onSnapshot, doc, setDoc, getDocs, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'MainPage',

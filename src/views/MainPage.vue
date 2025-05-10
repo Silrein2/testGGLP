@@ -111,7 +111,22 @@ export default {
       addedUnderstandingString: '',
 
       userName: '',
-      titleDivVisible: false
+      titleDivVisible: false,
+      userEmail: ''
+    }
+  },
+  async beforeCreate() {
+    //for checking if user entered URL with vailid email or not
+    this.userEmail = localStorage.getItem('userEmail') //local storage
+
+    if (this.userEmail) {
+      const docRef = doc(db, 'Score', this.userEmail)
+      const docSnap = await getDoc(docRef)
+      if (!docSnap.exists()) {
+        this.$router.push('/login')
+      }
+    } else {
+      this.$router.push('/login')
     }
   },
   mounted() {
@@ -378,7 +393,7 @@ export default {
         opacity: 0,
         duration: 4,
         onStart: () => {
-          this.resultVisible = false // Disable click during exit animation
+          this.resultVisible = false // disable click during exit animation
         }
       })
     },

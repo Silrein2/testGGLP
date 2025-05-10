@@ -83,7 +83,7 @@ import { db } from '@/firebase'
 import { collection, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore'
 
 export default {
-  name: 'App',
+  name: 'MainPage',
   data() {
     return {
       responsePrompt: [],

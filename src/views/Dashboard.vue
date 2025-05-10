@@ -26,14 +26,14 @@
       <AddQuestions v-if="addQuestionBool" />
       <QuestionList v-if="listQuestionBool" @edit-question="editQuestion" />
       <ScoreList v-if="scoreListBool" />
-      <div class="planned-forms" v-if="testBool">
+      <div class="planned-forms" style="text-decoration: line-through" v-if="testBool">
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
         </h3>
-        <h4 style="margin-left: 10%; text-decoration: line-through">- Add Questions</h4>
+        <h4 style="margin-left: 10%">- Add Questions</h4>
         <h4 style="margin-left: 10%">- View Questions</h4>
         <h5 style="margin-left: 15%">+ Edit Questions</h5>
-        <h5 style="margin-left: 15%; text-decoration: line-through">+ Delete Questions</h5>
+        <h5 style="margin-left: 15%">+ Delete Questions</h5>
         <h3 style="margin-left: 5%">Edit and Delete will be within View Questions</h3>
       </div>
       <EditQuestion
@@ -56,7 +56,7 @@ import ScoreList from '@/components/ScoreList.vue'
 import '@/assets/teaColor.css'
 
 export default {
-  name: 'App',
+  name: 'DashboardPage',
   components: {
     AddQuestions,
     QuestionList,
@@ -85,11 +85,9 @@ export default {
     this.animateTexts()
     this.animateDashboardList()
 
-    // Add event listener for window resize
     window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
-    // Remove event listener when component is unmounted
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {

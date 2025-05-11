@@ -80,7 +80,7 @@
 <script>
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
-import { collection, onSnapshot, doc, setDoc, getDocs, getDoc, updateDoc } from 'firebase/firestore'
+import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore'
 
 export default {
   name: 'MainPage',
@@ -197,7 +197,7 @@ export default {
       backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
     },
     async getFirestoreVariables() {
-      const querySnapshot = await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
+      await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
         const dbLength = snapshot.size
 
         this.responsePrompt = snapshot.docs.map((doc) => {

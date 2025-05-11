@@ -5,7 +5,7 @@
       <label for="email" style="color: white">Email:</label>
       <input type="email" v-model="email" placeholder="Enter your email" />
 
-      <button @click="checkEmail" class="login-button">Login</button>
+      <button @click="checkEmail" class="login-button" v-if="!showUsernameInput">Login</button>
     </div>
     <div v-if="showUsernameInput" class="form-content">
       <label for="username" style="color: white">Username:</label>
@@ -18,6 +18,7 @@
 <script>
 import { db } from '@/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
+// import './teaColor.css'
 
 export default {
   name: 'LoginPage',
@@ -35,15 +36,23 @@ export default {
         return
       }
 
+      // Regex for basic email validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+      if (!emailPattern.test(this.email)) {
+        alert('Please enter a valid email address.')
+        return
+      }
+
       const docRef = doc(db, 'Score', this.email)
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
-        localStorage.setItem('userEmail', this.email.trim()) //local storage
-        console.log(this.email.trim())
+        localStorage.setItem('userEmail', this.email.trim()) // local storage
         this.$router.push({ name: 'UserDashboardPage' })
       } else {
-        this.showUsernameInput = true //first time user
+        alert('Since it is your first time logging in, what should we call you?')
+        this.showUsernameInput = true // First-time user
       }
     },
     async registerUser() {

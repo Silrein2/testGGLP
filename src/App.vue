@@ -7,8 +7,8 @@ import { RouterView } from 'vue-router'
 </template>
 
 <script>
-import { db } from '@/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+// import { db } from '@/firebase'
+// import { doc, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'App'

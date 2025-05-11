@@ -118,7 +118,7 @@ export default {
     }
   },
   async beforeCreate() {
-    //for checking if user entered URL with vailid email or not
+    //for checking if user entered URL with valid email or not
     this.userEmail = localStorage.getItem('userEmail') //local storage
 
     // console.log('Local Storage Email:', localStorage.getItem('userEmail'))
@@ -137,7 +137,6 @@ export default {
     }
 
     this.userEmail = localStorage.getItem('userEmail') //called this back because after delcaring docSnap, the userEmail suddenly becomes empty. This is a workaround
-    // console.log(':', this.userEmail)
   },
   mounted() {
     this.getFirestoreVariables()
@@ -450,7 +449,7 @@ export default {
           throw new Error('User email is not defined.')
         }
 
-        const scoreDocRef = doc(scoreCollection, this.userEmail) // Correctly reference the document
+        const scoreDocRef = doc(scoreCollection, this.userEmail)
 
         let tempHighScore = Math.max(this.totalScore, this.currentHighScore)
 

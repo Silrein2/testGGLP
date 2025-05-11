@@ -39,7 +39,8 @@ export default {
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
-        localStorage.setItem('userEmail', this.email) //local storage
+        localStorage.setItem('userEmail', this.email.trim()) //local storage
+        console.log(this.email.trim())
         this.$router.push({ name: 'UserDashboardPage' })
       } else {
         this.showUsernameInput = true //first time user
@@ -58,6 +59,7 @@ export default {
         RespectScore: 0,
         UnderstandingScore: 0,
         EmpathyScore: 0,
+        HighScore: 0,
         TimesPlayed: 0
       })
 

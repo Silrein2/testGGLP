@@ -63,13 +63,13 @@
       v-if="responseBool && currentIndex >= responsePrompt.length"
     >
       <div class="score-container">
-        <h2>Enter Your Name:</h2>
-        <input type="text" v-model="userName" placeholder="Your Name" />
+        <h2>{{ userName }}, you have played the game {{ timesPlayed }} times</h2>
 
         <p>Care Score: {{ careScore }}</p>
         <p>Respect Score: {{ respectScore }}</p>
         <p>Understanding Score: {{ understandingScore }}</p>
         <p>Total Empathy Score: {{ totalScore }}</p>
+        <p>Previous High Score: {{ currentHighScore }}</p>
 
         <button @click="saveScoreToFirestore()" class="save-button">Save Score</button>
       </div>
@@ -80,7 +80,7 @@
 <script>
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
-import { collection, onSnapshot, doc, setDoc, getDocs, getDoc } from 'firebase/firestore'
+import { collection, onSnapshot, doc, setDoc, getDocs, getDoc, updateDoc } from 'firebase/firestore'
 
 export default {
   name: 'MainPage',
@@ -112,22 +112,32 @@ export default {
 
       userName: '',
       titleDivVisible: false,
-      userEmail: ''
+      userEmail: '',
+      currentHighScore: 0,
+      timesPlayed: 0
     }
   },
   async beforeCreate() {
     //for checking if user entered URL with vailid email or not
     this.userEmail = localStorage.getItem('userEmail') //local storage
 
+    // console.log('Local Storage Email:', localStorage.getItem('userEmail'))
+    // console.log('User Email from localStorage:', this.userEmail)
+
     if (this.userEmail) {
       const docRef = doc(db, 'Score', this.userEmail)
       const docSnap = await getDoc(docRef)
       if (!docSnap.exists()) {
         this.$router.push('/login')
+      } else {
+        this.getUserDetails(docSnap.data())
       }
     } else {
       this.$router.push('/login')
     }
+
+    this.userEmail = localStorage.getItem('userEmail') //called this back because after delcaring docSnap, the userEmail suddenly becomes empty. This is a workaround
+    // console.log(':', this.userEmail)
   },
   mounted() {
     this.getFirestoreVariables()
@@ -135,6 +145,11 @@ export default {
     this.updateBackgroundSize()
   },
   methods: {
+    getUserDetails(dbData) {
+      this.userName = dbData.Name
+      this.currentHighScore = dbData.HighScore
+      this.timesPlayed = dbData.TimesPlayed
+    },
     setBackgroundImage() {
       const backgroundElement = document.getElementById('background-container')
       backgroundElement.style.position = 'absolute'
@@ -196,7 +211,7 @@ export default {
           }
         })
 
-        console.log(this.responsePrompt)
+        // console.log(this.responsePrompt)
 
         if (this.responsePrompt.length === dbLength) {
           this.initTitle()
@@ -413,6 +428,8 @@ export default {
       }
     },
     animateScoreDivEnter() {
+      this.timesPlayed++
+
       if (this.$refs.scoreDiv) {
         gsap.fromTo(
           this.$refs.scoreDiv,
@@ -424,20 +441,26 @@ export default {
       }
     },
     async saveScoreToFirestore() {
+      console.log(this.userEmail)
+
       try {
         const scoreCollection = collection(db, 'Score')
 
-        const snapshot = await getDocs(scoreCollection)
-        const nextID = snapshot.size
+        if (!this.userEmail) {
+          throw new Error('User email is not defined.')
+        }
 
-        const scoreDocRef = doc(scoreCollection, String(nextID))
+        const scoreDocRef = doc(scoreCollection, this.userEmail) // Correctly reference the document
 
-        await setDoc(scoreDocRef, {
-          Name: this.userName,
+        let tempHighScore = Math.max(this.totalScore, this.currentHighScore)
+
+        await updateDoc(scoreDocRef, {
           CareScore: this.careScore,
           RespectScore: this.respectScore,
           UnderstandingScore: this.understandingScore,
-          EmpathyScore: this.totalScore
+          EmpathyScore: this.totalScore,
+          HighScore: tempHighScore,
+          TimesPlayed: this.timesPlayed
         })
 
         alert('Score is saved to FireStore')
@@ -454,6 +477,8 @@ export default {
 </script>
 
 <style>
+@import '@/assets/teaColor.css';
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -1,5 +1,3 @@
-// src/utils/background.js
-
 export function setBackgroundImage() {
   const backgroundElement = document.getElementById('background-container')
   backgroundElement.style.position = 'absolute'

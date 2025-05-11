@@ -136,7 +136,7 @@ export default {
       this.$router.push('/login')
     }
 
-    this.userEmail = localStorage.getItem('userEmail') //called this back because after delcaring docSnap, the userEmail suddenly becomes empty. This is a workaround
+    this.userEmail = localStorage.getItem('userEmail') //called this back because after declaring docSnap, the userEmail suddenly becomes empty. This is a workaround
   },
   mounted() {
     this.getFirestoreVariables()

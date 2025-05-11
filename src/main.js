@@ -1,5 +1,8 @@
 import './assets/main.css'
-import './assets/teaColor.css'
+// import './assets/teaColor.css'
+import './assets/standardUI.css'
+
+import { setBackgroundImage, updateBackgroundSize } from './utils/background'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -15,5 +18,8 @@ app.use(createPinia())
 app.use(router)
 app.use(firebaseInitApp)
 app.use(database)
+
+app.config.globalProperties.$setBackgroundImage = setBackgroundImage
+app.config.globalProperties.$updateBackgroundSize = updateBackgroundSize
 
 app.mount('#app')

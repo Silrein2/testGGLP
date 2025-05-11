@@ -155,7 +155,7 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Added to align items */
+  justify-content: space-between;
 }
 
 .answer-details {

@@ -1,3 +1,19 @@
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.box-shadow {
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.border-radius {
+  border-radius: 20px;
+}
+
+.no-border {
+  border: none;
+}
+
 .bg-tea-choco {
   background-color: #4e2e1d;
 }

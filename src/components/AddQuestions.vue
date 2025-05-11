@@ -255,7 +255,6 @@ h3 {
   margin-bottom: 10px;
 }
 
-/* Style for number inputs */
 input[type='number'] {
   width: 100%;
   padding: 8px;

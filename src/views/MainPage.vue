@@ -21,7 +21,7 @@
           <button
             v-if="responsePrompt[currentIndex].leftAnswer"
             @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
-            class="button-decision"
+            class="button-decision left-button-decision"
             ref="responseBtn"
           >
             {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
@@ -29,7 +29,7 @@
           <button
             v-if="responsePrompt[currentIndex].middleAnswer"
             @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])"
-            class="button-decision"
+            class="button-decision middle-button-decision"
             ref="responseBtn"
           >
             {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
@@ -37,7 +37,7 @@
           <button
             v-if="responsePrompt[currentIndex].rightAnswer"
             @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])"
-            class="button-decision"
+            class="button-decision right-button-decision"
             ref="responseBtn"
           >
             {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
@@ -509,6 +509,10 @@ export default {
 .response-div {
   position: absolute;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   top: 0vh;
   left: 12.5vw;
 
@@ -519,12 +523,6 @@ export default {
   height: 50vh;
 
   background-color: #f1a159;
-
-  /*
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  */
 
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
@@ -571,8 +569,6 @@ button {
 }
 
 .button-container {
-  display: flex;
-  justify-content: center;
   margin-top: 20px;
 }
 
@@ -581,21 +577,46 @@ button {
   border: none;
   color: black;
 
+  font-weight: 600;
+
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
 
-  font-size: 16px;
+  font-size: 1.25vw;
   margin: 0 10px;
   cursor: pointer;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
-  width: 10vw;
-  height: 7.5vh;
+  width: 17.5vw;
+  height: 17.5vh;
 
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.left-button-decision {
+  position: absolute;
+
+  left: -5%;
+  top: 35%;
+}
+
+.middle-button-decision {
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  bottom: -5%;
+}
+
+.right-button-decision {
+  position: absolute;
+
+  right: -5%;
+  top: 35%;
 }
 
 .content-container {
@@ -604,6 +625,9 @@ button {
   align-items: center;
   text-align: center;
   */
+
+  width: 90%;
+  height: 90%;
 }
 
 .dashboard-button {

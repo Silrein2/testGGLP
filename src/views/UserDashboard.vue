@@ -10,6 +10,10 @@
           Logout
         </button>
       </div>
+      <div class="stats-content">
+        <h3 class="text-shadow text-tea-cream">You have played the game {{ timesPlayed }} times</h3>
+        <h3 class="text-shadow text-tea-cream">Your high score is: {{ highScore }}</h3>
+      </div>
       <div class="center-content">
         <!-- <p>Your email: {{ email }}</p> -->
         <!-- <router-link :to="{ name: 'MainPage' }" class="main-page-link text-tea-cream text-shadow"
@@ -35,7 +39,9 @@ export default {
   data() {
     return {
       email: '',
-      username: ''
+      username: '',
+      timesPlayed: 0,
+      highScore: 0
     }
   },
   created() {
@@ -65,6 +71,8 @@ export default {
         if (docSnap.exists()) {
           const data = docSnap.data()
           tempName = data.Name
+          this.timesPlayed = data.TimesPlayed
+          this.highScore = data.HighScore
         } else {
           tempName = email.split('@')[0]
         }
@@ -74,8 +82,11 @@ export default {
       }
     },
     logout() {
-      localStorage.removeItem('userEmail')
-      this.$router.push('/login')
+      const confirmLogout = confirm('Are you sure you want to logout?')
+      if (confirmLogout) {
+        localStorage.removeItem('userEmail')
+        this.$router.push('/login')
+      }
     },
     goToMainPage() {
       this.$router.push({ name: 'MainPage' }) // Navigate to Main Page
@@ -86,8 +97,8 @@ export default {
 
 <style scoped>
 #background-container {
-  position: relative; /* Ensure relative positioning for inner elements */
-  height: 100vh; /* Full viewport height */
+  position: relative;
+  height: 100vh;
 }
 
 .dashboard-container {
@@ -97,15 +108,15 @@ export default {
 }
 
 .header {
-  position: absolute; /* Positioning the header */
-  top: 20px; /* Space from the top */
-  right: 20px; /* Space from the right */
-  display: flex; /* Flexbox for alignment */
-  align-items: center; /* Center items vertically */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .welcome-message {
-  margin-right: 25px; /* Space between welcome message and logout button */
+  margin-right: 25px;
 }
 
 .logout-button {
@@ -113,13 +124,17 @@ export default {
   cursor: pointer;
 }
 
+.stats-content {
+  margin-top: 10%;
+}
+
 .center-content {
-  margin-top: 100px; /* Space below the header */
+  margin-top: 5%;
 }
 
 .main-page-link {
-  display: inline-block; /* Ensure the link behaves like a block */
-  margin-top: 20px; /* Space above the link */
+  display: inline-block;
+  margin-top: 20px;
 }
 
 .margin-element {

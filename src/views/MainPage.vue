@@ -153,7 +153,9 @@ export default {
       this.timesPlayed = dbData.TimesPlayed
     },
     async getFirestoreVariables() {
-      await onSnapshot(collection(db, 'Question_Bank'), (snapshot) => {
+      const selectedStory = this.$route.query.selectedStory
+
+      await onSnapshot(collection(db, `${selectedStory}_Question_Bank`), (snapshot) => {
         const dbLength = snapshot.size
 
         this.responsePrompt = snapshot.docs.map((doc) => {

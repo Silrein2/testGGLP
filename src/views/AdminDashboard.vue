@@ -3,9 +3,7 @@
     <button class="mainpage-button decision-button" @click="toMainPage()">Main Page</button>
 
     <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
-    <h3 ref="secondaryText" class="secondary-text">
-      {{ noticeText }}
-    </h3>
+    <h3 ref="secondaryText" class="secondary-text">{{ noticeText }}: {{ selectedStory }}</h3>
 
     <div ref="dashboardList" class="dashboard-list-buttons">
       <select v-model="selectedStory" @change="onStoryChange">
@@ -32,8 +30,12 @@
 
     <div ref="formDiv" class="form-div">
       <AddStory v-if="addStoryBool" />
-      <AddQuestions v-if="addQuestionBool" />
-      <QuestionList v-if="listQuestionBool" @edit-question="editQuestion" />
+      <AddQuestions v-if="addQuestionBool" :selectedStory="selectedStory" />
+      <QuestionList
+        v-if="listQuestionBool"
+        :selectedStory="selectedStory"
+        @edit-question="editQuestion"
+      />
       <ScoreList v-if="scoreListBool" />
       <div class="planned-forms" v-if="testBool">
         <h3 style="margin-left: 5%">
@@ -80,7 +82,7 @@ export default {
   data() {
     return {
       welcomeText: 'Dashboard',
-      noticeText: '',
+      noticeText: 'Currently selecting ',
 
       arrayLength: null,
 
@@ -122,7 +124,7 @@ export default {
       gsap.fromTo(
         this.$refs.secondaryText,
         { x: '10%', y: '-100%', opacity: 0 },
-        { x: '10%', y: '20%', opacity: 1, duration: 2, delay: 0 }
+        { x: '10%', y: '10%', opacity: 1, duration: 2, delay: 0 }
       )
     },
     toMainPage() {
@@ -240,7 +242,7 @@ export default {
     },
     handleResize() {
       // Call updateBackgroundSize when the window is resized
-      this.updateBackgroundSize()
+      // this.updateBackgroundSize()
     },
     editQuestion(questionId) {
       this.selectedQuestionId = questionId
@@ -279,7 +281,7 @@ export default {
 .welcome-text {
   position: absolute;
 
-  top: 10vh;
+  top: 2.5vh;
   left: 10vw;
 
   color: white;
@@ -287,7 +289,7 @@ export default {
 }
 
 .secondary-text {
-  top: 15vh;
+  top: 5vh;
   left: 10vw;
 
   color: white;

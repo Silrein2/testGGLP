@@ -63,6 +63,12 @@ import { collection, doc, setDoc, getDocs, query, orderBy, limit } from 'firebas
 
 export default {
   name: 'AddQuestions',
+  props: {
+    selectedStory: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       questionText: '',
@@ -100,7 +106,7 @@ export default {
       try {
         const nextId = await this.getNextQuestionId()
 
-        const docRef = doc(collection(db, 'Question_Bank'), String(nextId))
+        const docRef = doc(collection(db, `${this.selectedStory}_Question_Bank`), String(nextId))
 
         await setDoc(docRef, {
           id: String(nextId),
@@ -169,7 +175,7 @@ export default {
       alert('Form resetted')
     },
     async getNextQuestionId() {
-      const questionBankCollection = collection(db, 'Question_Bank')
+      const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
       const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
       const querySnapshot = await getDocs(q)
 

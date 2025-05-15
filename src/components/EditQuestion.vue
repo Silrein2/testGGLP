@@ -67,6 +67,10 @@ export default {
     questionId: {
       type: String,
       required: true
+    },
+    selectedStory: {
+      type: String,
+      required: true
     }
   },
   data() {

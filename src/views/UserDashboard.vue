@@ -20,7 +20,7 @@
           >Go to Main Page</router-link
         > -->
         <button
-          @click="goToMainPage"
+          @click="goToMainPage('Prototype')"
           class="main-page-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
         >
           Prototype
@@ -41,7 +41,8 @@ export default {
       email: '',
       username: '',
       timesPlayed: 0,
-      highScore: 0
+      highScore: 0,
+      selectedStory: ''
     }
   },
   created() {
@@ -88,8 +89,9 @@ export default {
         this.$router.push('/login')
       }
     },
-    goToMainPage() {
-      this.$router.push({ name: 'MainPage' }) // Navigate to Main Page
+    goToMainPage(storyButton) {
+      this.selectedStory = storyButton
+      this.$router.push({ name: 'MainPage', query: { selectedStory: this.selectedStory } }) // Navigate to Main Page
     }
   }
 }

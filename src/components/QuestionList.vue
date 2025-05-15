@@ -45,6 +45,12 @@ export default {
   components: {
     AnswerDetail
   },
+  props: {
+    selectedStory: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       questions: [],
@@ -58,7 +64,7 @@ export default {
   methods: {
     async fetchQuestions() {
       try {
-        const querySnapshot = await getDocs(collection(db, 'Question_Bank'))
+        const querySnapshot = await getDocs(collection(db, `${this.selectedStory}_Question_Bank`))
         this.questions = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           showDescriptions: false,
@@ -101,14 +107,14 @@ export default {
         try {
           // Delete existing documents
           for (const question of this.originalQuestions) {
-            const docRef = doc(collection(db, 'Question_Bank'), question.id)
+            const docRef = doc(db, `${this.selectedStory}_Question_Bank`, question.id)
             await deleteDoc(docRef)
           }
 
           const questionsToSave = this.questions
           for (let i = 0; i < questionsToSave.length; i++) {
             const newId = String(i)
-            const docRef = doc(collection(db, 'Question_Bank'), newId)
+            const docRef = doc(db, `${this.selectedStory}_Question_Bank`, newId)
             await setDoc(docRef, {
               ...questionsToSave[i],
               id: newId

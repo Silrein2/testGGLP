@@ -3,14 +3,22 @@
     <h2>Add Story Collection</h2>
     <input v-model="collectionName" placeholder="Enter a story title" />
     <button @click="addCollection">Create Story Collection</button>
+    <!-- <button @click="copyQuestions">Copy Questions to Prototype</button> -->
+    <!-- meant to copy from one collection in FireStore to another -->
   </div>
 </template>
 
 <script>
 import { db } from '@/firebase'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore'
 
 export default {
+  props: {
+    selectedStory: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       collectionName: '',
@@ -54,6 +62,26 @@ export default {
       } catch (error) {
         console.error('Error creating/updating collection:', error)
         alert('Error creating/updating collection. Please try again.')
+      }
+    },
+    async copyQuestions() {
+      //not meant to be incorporated in final product to clients
+      try {
+        const questionsRef = collection(db, 'Question_Bank')
+        const querySnapshot = await getDocs(questionsRef)
+
+        const prototypeRef = collection(db, 'Prototype_Question_Bank')
+
+        for (const dbdoc of querySnapshot.docs) {
+          await setDoc(doc(prototypeRef, dbdoc.id), {
+            ...dbdoc.data()
+          })
+        }
+
+        alert('Questions copied to Prototype_Question_Bank successfully!')
+      } catch (error) {
+        console.error('Error copying questions:', error)
+        alert('Error copying questions. Please try again.')
       }
     }
   }

@@ -137,26 +137,6 @@ export default {
   margin-top: 2.5%;
 }
 
-.font-weight {
-  font-weight: 600;
-}
-
-.font-size-form {
-  font-size: 1vw;
-}
-
-.font-size-label {
-  font-size: 1.5vw;
-}
-
-.font-size-button {
-  font-size: 1.25vw;
-}
-
-.font-size-title {
-  font-size: 1.75vw;
-}
-
 .input-field {
   height: 1.5%;
   padding: 5%;

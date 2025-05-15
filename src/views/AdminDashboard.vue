@@ -8,6 +8,14 @@
     </h3>
 
     <div ref="dashboardList" class="dashboard-list-buttons">
+      <select v-model="selectedStory" @change="onStoryChange">
+        <option v-for="story in stories" :key="story.id" :value="story.Name">
+          {{ story.Name }}
+        </option>
+      </select>
+      <button class="form-list-button" @click="animateFormExit('addStory')">
+        <h3>Add Story</h3>
+      </button>
       <button class="form-list-button" @click="animateFormExit('addQuestion')">
         <h3>Add Questions</h3>
       </button>
@@ -23,18 +31,21 @@
     </div>
 
     <div ref="formDiv" class="form-div">
+      <AddStory v-if="addStoryBool" />
       <AddQuestions v-if="addQuestionBool" />
       <QuestionList v-if="listQuestionBool" @edit-question="editQuestion" />
       <ScoreList v-if="scoreListBool" />
-      <div class="planned-forms" style="text-decoration: line-through" v-if="testBool">
+      <div class="planned-forms" v-if="testBool">
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
         </h3>
-        <h4 style="margin-left: 10%">- Add Questions</h4>
-        <h4 style="margin-left: 10%">- View Questions</h4>
-        <h5 style="margin-left: 15%">+ Edit Questions</h5>
-        <h5 style="margin-left: 15%">+ Delete Questions</h5>
-        <h3 style="margin-left: 5%">Edit and Delete will be within View Questions</h3>
+        <h4 class="text-strikethrough" style="margin-left: 10%">- Add Questions</h4>
+        <h4 class="text-strikethrough" style="margin-left: 10%">- View Questions</h4>
+        <h5 class="text-strikethrough" style="margin-left: 15%">+ Edit Questions</h5>
+        <h5 class="text-strikethrough" style="margin-left: 15%">+ Delete Questions</h5>
+        <h3 class="text-strikethrough" style="margin-left: 5%">
+          Edit and Delete will be within View Questions
+        </h3>
       </div>
       <EditQuestion
         v-if="editQuestionBool"
@@ -47,13 +58,15 @@
 
 <script>
 import { gsap } from 'gsap'
+import { db } from '@/firebase'
+import { collection, getDocs } from 'firebase/firestore'
 
 import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
 import EditQuestion from '@/components/EditQuestion.vue'
 import ScoreList from '@/components/ScoreList.vue'
 
-import '@/assets/teaColor.css'
+import AddStory from '@/components/AddStory.vue'
 
 export default {
   name: 'DashboardPage',
@@ -61,7 +74,8 @@ export default {
     AddQuestions,
     QuestionList,
     EditQuestion,
-    ScoreList
+    ScoreList,
+    AddStory
   },
   data() {
     return {
@@ -75,12 +89,19 @@ export default {
       scoreListBool: false,
       testBool: true,
       editQuestionBool: false,
-      selectedQuestionId: null
+      selectedQuestionId: null,
+
+      addStoryBool: false,
+
+      stories: [],
+      selectedStory: ''
     }
   },
-  mounted() {
-    this.setBackgroundImage()
-    this.updateBackgroundSize()
+  async mounted() {
+    this.$setBackgroundImage()
+    this.$updateBackgroundSize()
+
+    await this.fetchStories()
 
     this.animateTexts()
     this.animateDashboardList()
@@ -106,55 +127,6 @@ export default {
     },
     toMainPage() {
       this.$router.push('/')
-    },
-    setBackgroundImage() {
-      const backgroundElement = document.getElementById('background-container')
-      backgroundElement.style.position = 'absolute'
-      backgroundElement.style.top = '0'
-      backgroundElement.style.left = '0'
-      backgroundElement.style.width = '100%'
-      backgroundElement.style.display = 'flex'
-      backgroundElement.style.transition = 'transform 0.3s'
-      backgroundElement.style.overflow = 'hidden'
-      backgroundElement.style.cursor = 'pointer'
-      backgroundElement.style.backgroundColor = 'blue'
-
-      const beforeElement = document.createElement('div')
-      beforeElement.style.content = ''
-      beforeElement.style.position = 'absolute'
-      beforeElement.style.top = '0'
-      beforeElement.style.left = '0'
-      beforeElement.style.width = '100%'
-      beforeElement.style.paddingTop = '56.25%'
-      beforeElement.style.backgroundSize = 'cover'
-      beforeElement.style.backgroundPosition = 'center'
-      beforeElement.style.backgroundRepeat = 'no-repeat'
-      beforeElement.style.zIndex = '-1'
-      beforeElement.style.transition = 'transform 2s ease'
-      beforeElement.style.transform = 'scale(1)'
-      beforeElement.style.transformOrigin = 'bottom center'
-
-      backgroundElement.appendChild(beforeElement)
-    },
-    updateBackgroundSize() {
-      const backgroundContainer = document.getElementById('background-container')
-      const windowWidth = window.innerWidth
-      const windowHeight = window.innerHeight
-
-      const targetAspectRatio = 16 / 9
-
-      let offsetX = 0
-      let offsetY = 0
-
-      this.containerHeight = Math.max(windowHeight, windowWidth / targetAspectRatio)
-      this.containerWidth = Math.max(windowWidth, this.containerHeight * targetAspectRatio)
-
-      offsetX = (windowWidth - this.containerWidth) / 2
-      offsetY = (windowHeight - this.containerHeight) / 2
-
-      backgroundContainer.style.width = `${this.containerWidth}px`
-      backgroundContainer.style.height = `${this.containerHeight}px`
-      backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
     },
     animateDashboardList() {
       const tl = gsap.timeline({
@@ -230,24 +202,35 @@ export default {
       }
 
       if (formName == 'addQuestion') {
+        this.addStoryBool = false
         this.addQuestionBool = true
         this.listQuestionBool = false
         this.scoreListBool = false
         this.testBool = false
         this.editQuestionBool = false
+      } else if (formName == 'addStory') {
+        this.addStoryBool = true
+        this.addQuestionBool = false
+        this.listQuestionBool = false
+        this.scoreListBool = false
+        this.testBool = false
+        this.editQuestionBool = false
       } else if (formName == 'listQuestion') {
+        this.addStoryBool = false
         this.addQuestionBool = false
         this.listQuestionBool = true
         this.scoreListBool = false
         this.testBool = false
         this.editQuestionBool = false
       } else if (formName == 'scoreList') {
+        this.addStoryBool = false
         this.addQuestionBool = false
         this.listQuestionBool = false
         this.scoreListBool = true
         this.testBool = false
         this.editQuestionBool = false
       } else {
+        this.addStoryBool = false
         this.addQuestionBool = false
         this.listQuestionBool = false
         this.scoreListBool = false
@@ -271,6 +254,22 @@ export default {
       this.editQuestionBool = false
       this.listQuestionBool = true
       this.selectedQuestionId = null
+    },
+    async fetchStories() {
+      const storiesRef = collection(db, 'Story_List')
+      const querySnapshot = await getDocs(storiesRef)
+      this.stories = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+
+      // Set the initial selected story to the first document name
+      if (this.stories.length > 0) {
+        this.selectedStory = this.stories[0].Name
+      }
+    },
+    onStoryChange() {
+      // Handle change in selected story if needed
     }
   }
 }
@@ -402,5 +401,9 @@ export default {
   color: white;
 
   text-align: left;
+}
+
+.text-strikethrough {
+  text-decoration: line-through;
 }
 </style>

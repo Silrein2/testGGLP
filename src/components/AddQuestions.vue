@@ -59,7 +59,7 @@
 
 <script>
 import { db } from '@/firebase'
-import { collection, doc, setDoc, getDocs, query, orderBy, limit } from 'firebase/firestore'
+import { collection, doc, setDoc, getDocs } from 'firebase/firestore'
 
 export default {
   name: 'AddQuestions',
@@ -175,17 +175,23 @@ export default {
       alert('Form resetted')
     },
     async getNextQuestionId() {
-      const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
-      const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
-      const querySnapshot = await getDocs(q)
+      // this will need manual setup of indexing in FireStore database
+      // const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
+      // const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
+      // const querySnapshot = await getDocs(q)
 
-      if (querySnapshot.empty) {
-        return 0
-      } else {
-        const lastDoc = querySnapshot.docs[0]
-        const lastId = parseInt(lastDoc.id, 10)
-        return isNaN(lastId) ? 0 : lastId + 1
-      }
+      // if (querySnapshot.empty) {
+      //   return 0
+      // } else {
+      //   const lastDoc = querySnapshot.docs[0]
+      //   const lastId = parseInt(lastDoc.id, 10)
+      //   return isNaN(lastId) ? 0 : lastId + 1
+      // }
+
+      const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
+      const querySnapshot = await getDocs(questionBankCollection)
+
+      return querySnapshot.size
     }
   }
 }

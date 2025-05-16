@@ -1,5 +1,5 @@
-.text-shadow {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.no-border {
+  border: none;
 }
 
 .box-shadow {
@@ -8,10 +8,6 @@
 
 .border-radius {
   border-radius: 20px;
-}
-
-.no-border {
-  border: none;
 }
 
 .bg-tea-choco {
@@ -36,6 +32,10 @@
 
 .bg-tea-four {
   background-color: #f37600;
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .text-tea-choco {

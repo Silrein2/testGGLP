@@ -102,7 +102,11 @@ export default {
   methods: {
     async loadQuestionData() {
       try {
-        const docRef = doc(db, 'Question_Bank', this.questionId)
+        const collectionName = `${this.selectedStory}_Question_Bank`
+        console.log('Collection Name:', collectionName)
+        console.log('Question ID:', this.questionId)
+
+        const docRef = doc(db, collectionName, this.questionId)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -142,7 +146,7 @@ export default {
     },
     async updateFirebaseVariables() {
       try {
-        const docRef = doc(db, 'Question_Bank', this.questionId)
+        const docRef = doc(db, `${this.selectedStory}_Question_Bank`, this.questionId)
 
         await updateDoc(docRef, {
           Question: this.questionText,

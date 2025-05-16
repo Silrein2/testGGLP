@@ -137,7 +137,8 @@ export default {
       }
     },
     emitEditQuestion(id) {
-      this.$emit('edit-question', id)
+      console.log('Id question list:' + id)
+      this.$emit('edit-question', this.selectedStory, id)
     }
   }
 }

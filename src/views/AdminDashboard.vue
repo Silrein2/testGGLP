@@ -1,12 +1,24 @@
 <template>
   <div id="background-container">
-    <button class="mainpage-button decision-button" @click="toMainPage()">Main Page</button>
+    <button
+      class="mainpage-button bg-tea-four text-shadow text-tea-cream box-shadow border-radius no-border font-weight font-size-button"
+      @click="toMainPage()"
+    >
+      User Login Page
+    </button>
 
-    <h1 ref="mainText" class="welcome-text">{{ welcomeText }}</h1>
-    <h3 ref="secondaryText" class="secondary-text">{{ noticeText }}: {{ selectedStory }}</h3>
+    <h1 ref="mainText" class="welcome-text text-shadow text-tea-cream font-size-title">
+      {{ welcomeText }}
+    </h1>
+    <h3 ref="secondaryText" class="secondary-text text-shadow text-tea-cream font-size-label">
+      {{ noticeText }}: {{ selectedStory }}
+    </h3>
 
-    <div ref="dashboardList" class="dashboard-list-buttons">
-      <select v-model="selectedStory" @change="onStoryChange">
+    <div
+      ref="dashboardList"
+      class="dashboard-list-buttons bg-tea-three no-border border-radius box-shadow"
+    >
+      <select v-model="selectedStory" @change="onStoryChange" class="drop-down-story-selector">
         <option v-for="story in stories" :key="story.id" :value="story.Name">
           {{ story.Name }}
         </option>
@@ -51,6 +63,7 @@
       </div>
       <EditQuestion
         v-if="editQuestionBool"
+        :selectedStory="selectedStory"
         :questionId="selectedQuestionId"
         @cancel-edit="cancelEdit"
       />
@@ -81,7 +94,7 @@ export default {
   },
   data() {
     return {
-      welcomeText: 'Dashboard',
+      welcomeText: 'Admin Dashboard',
       noticeText: 'Currently selecting ',
 
       arrayLength: null,
@@ -108,10 +121,10 @@ export default {
     this.animateTexts()
     this.animateDashboardList()
 
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener('resize', this.$updateBackgroundSize)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.$updateBackgroundSize)
   },
   methods: {
     animateTexts() {
@@ -244,8 +257,11 @@ export default {
       // Call updateBackgroundSize when the window is resized
       // this.updateBackgroundSize()
     },
-    editQuestion(questionId) {
+    editQuestion(selectedStory, questionId) {
+      this.selectedStory = selectedStory
       this.selectedQuestionId = questionId
+      console.log('questionId: ' + this.selectedQuestionId)
+
       this.listQuestionBool = false
       this.editQuestionBool = true
       this.addQuestionBool = false
@@ -271,7 +287,7 @@ export default {
       }
     },
     onStoryChange() {
-      // Handle change in selected story if needed
+      this.animateFormExit('test')
     }
   }
 }
@@ -283,17 +299,11 @@ export default {
 
   top: 2.5vh;
   left: 10vw;
-
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .secondary-text {
   top: 5vh;
   left: 10vw;
-
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 ::-webkit-scrollbar {
@@ -321,9 +331,9 @@ export default {
 }
 
 .mainpage-button {
-  position: fixed;
+  position: absolute;
 
-  width: 7vw;
+  width: 15vw;
   height: 5vh;
 
   right: 5vw;
@@ -345,12 +355,12 @@ export default {
   margin: 10px 10px;
   cursor: pointer;
 
-  width: 80%;
-  height: 10%;
+  width: 10vw;
+  height: 7.5vh;
 }
 
 .dashboard-list-buttons {
-  position: fixed;
+  position: absolute;
 
   top: 50%;
   left: 3vw;
@@ -359,8 +369,6 @@ export default {
 
   width: 15vw;
   height: 70vh;
-
-  background-color: #4caf50;
 
   display: flex;
   flex-direction: column;
@@ -407,5 +415,12 @@ export default {
 
 .text-strikethrough {
   text-decoration: line-through;
+}
+
+.drop-down-story-selector {
+  margin-top: 2%;
+
+  width: 10vw;
+  height: 5vh;
 }
 </style>

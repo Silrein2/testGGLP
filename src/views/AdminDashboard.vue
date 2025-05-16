@@ -7,10 +7,10 @@
       User Login Page
     </button>
 
-    <h1 ref="mainText" class="welcome-text text-shadow text-tea-cream font-size-title">
+    <h1 ref="mainText" class="welcome-text text-shadow font-size-title">
       {{ welcomeText }}
     </h1>
-    <h3 ref="secondaryText" class="secondary-text text-shadow text-tea-cream font-size-label">
+    <h3 ref="secondaryText" class="secondary-text text-shadow font-size-label">
       {{ noticeText }}: {{ selectedStory }}
     </h3>
 
@@ -18,29 +18,48 @@
       ref="dashboardList"
       class="dashboard-list-buttons bg-tea-three no-border border-radius box-shadow"
     >
-      <select v-model="selectedStory" @change="onStoryChange" class="drop-down-story-selector">
+      <select
+        v-model="selectedStory"
+        @change="onStoryChange"
+        class="drop-down-story-selector font-weight font-size-form text-shadow box-shadow bg-tea-cream text-tea-choco no-border border-radius"
+      >
         <option v-for="story in stories" :key="story.id" :value="story.Name">
           {{ story.Name }}
         </option>
       </select>
-      <button class="form-list-button" @click="animateFormExit('addStory')">
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="animateFormExit('addStory')"
+      >
         <h3>Add Story</h3>
       </button>
-      <button class="form-list-button" @click="animateFormExit('addQuestion')">
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="animateFormExit('addQuestion')"
+      >
         <h3>Add Questions</h3>
       </button>
-      <button class="form-list-button" @click="animateFormExit('listQuestion')">
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="animateFormExit('listQuestion')"
+      >
         <h3>Question List</h3>
       </button>
-      <button class="form-list-button" @click="animateFormExit('scoreList')">
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="animateFormExit('scoreList')"
+      >
         <h3>Score List</h3>
       </button>
-      <button class="form-list-button" @click="animateFormExit('test')">
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="animateFormExit('test')"
+      >
         <h3>Things to do</h3>
       </button>
     </div>
 
-    <div ref="formDiv" class="form-div">
+    <div ref="formDiv" class="form-div bg-tea-four no-border border-radius box-shadow">
       <AddStory v-if="addStoryBool" />
       <AddQuestions v-if="addQuestionBool" :selectedStory="selectedStory" />
       <QuestionList
@@ -49,7 +68,11 @@
         @edit-question="editQuestion"
       />
       <ScoreList v-if="scoreListBool" />
-      <div class="planned-forms" v-if="testBool">
+      <div class="planned-forms text-shadow box-shadow no-border border-radius" v-if="testBool">
+        <h3 style="margin-left: 5%">
+          *When adding stories using Add Story button, it's best if the name of the collection is
+          set to a single word
+        </h3>
         <h3 style="margin-left: 5%">
           Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
         </h3>
@@ -341,21 +364,16 @@ export default {
 }
 
 .form-list-button {
-  background-color: blueviolet;
-
-  border: none;
-  color: white;
-
   padding: 0px 20px;
   text-align: center;
   text-decoration: none;
 
   display: inline-block;
-  font-size: 16px;
+
   margin: 10px 10px;
   cursor: pointer;
 
-  width: 10vw;
+  width: 12.5vw;
   height: 7.5vh;
 }
 
@@ -378,7 +396,7 @@ export default {
 }
 
 .form-div {
-  position: fixed;
+  position: absolute;
 
   top: 50%;
   right: 3vw;
@@ -387,8 +405,6 @@ export default {
 
   width: 70vw;
   height: 70vh;
-
-  background-color: aqua;
 
   opacity: 0;
 
@@ -418,7 +434,7 @@ export default {
 }
 
 .drop-down-story-selector {
-  margin-top: 2%;
+  margin-top: 5%;
 
   width: 10vw;
   height: 5vh;

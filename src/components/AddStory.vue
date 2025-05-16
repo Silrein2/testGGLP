@@ -1,10 +1,21 @@
 <template>
   <div class="add-collection">
-    <h2>Add Story Collection</h2>
-    <input v-model="collectionName" placeholder="Enter a story title" />
-    <button @click="addCollection">Create Story Collection</button>
-    <!-- <button @click="copyQuestions">Copy Questions to Prototype</button> -->
-    <!-- meant to copy from one collection in FireStore to another -->
+    <h2 class="text-tea-cream text-shadow font-size-label">Add Story Collection</h2>
+    <div class="div-form">
+      <input
+        v-model="collectionName"
+        placeholder="Enter a story title"
+        class="form-input no-border box-shadow text-shadow border-radius font-weight font-size-form"
+      />
+      <button
+        @click="addCollection"
+        class="form-input-button no-border box-shadow text-shadow border-radius font-weight font-size-form bg-tea-two text-tea-choco"
+      >
+        Create Story Collection
+      </button>
+      <!-- <button @click="copyQuestions">Copy Questions to Prototype</button> -->
+      <!-- meant to copy from one collection in FireStore to another -->
+    </div>
   </div>
 </template>
 
@@ -13,12 +24,6 @@ import { db } from '@/firebase'
 import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore'
 
 export default {
-  props: {
-    selectedStory: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
       collectionName: '',
@@ -95,5 +100,32 @@ export default {
 
 .add-collection input {
   margin-bottom: 10px;
+}
+
+.div-form {
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-input {
+  width: 12.5vw;
+  height: 7.5vh;
+
+  text-align: center;
+}
+
+.form-input-button {
+  width: 12.5vw;
+  height: 7.5vh;
+
+  text-align: center;
 }
 </style>

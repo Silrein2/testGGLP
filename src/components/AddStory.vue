@@ -7,6 +7,12 @@
         placeholder="Enter a story title"
         class="form-input no-border box-shadow text-shadow border-radius font-weight font-size-form"
       />
+      <textarea
+        v-model="initialStory"
+        placeholder="Enter the initial story"
+        class="form-input-initial-story no-border box-shadow text-shadow border-radius font-weight font-size-form"
+        rows="5"
+      ></textarea>
       <button
         @click="addCollection"
         class="form-input-button no-border box-shadow text-shadow border-radius font-weight font-size-form bg-tea-two text-tea-choco"
@@ -27,6 +33,7 @@ export default {
   data() {
     return {
       collectionName: '',
+      initialStory: '',
       message: ''
     }
   },
@@ -34,6 +41,10 @@ export default {
     async addCollection() {
       if (!this.collectionName) {
         alert('Please enter a story name')
+        return
+      }
+      if (!this.initialStory) {
+        alert('Please add the initial sentence of the story')
         return
       }
 
@@ -50,14 +61,16 @@ export default {
 
         if (!storyListSnapshot.exists()) {
           await setDoc(storyListDoc, {
-            Name: this.collectionName
+            Name: this.collectionName,
+            InitialStory: this.initialStory
           })
           alert(`Collection ${formattedCollectionName} created successfully!`)
         } else {
           await setDoc(
             storyListDoc,
             {
-              Name: this.collectionName
+              Name: this.collectionName,
+              InitialStory: this.initialStory
             },
             { merge: true }
           )
@@ -120,6 +133,12 @@ export default {
   height: 7.5vh;
 
   text-align: center;
+}
+.form-input-initial-story {
+  width: 35vw;
+  height: auto;
+  resize: vertical;
+  padding: 10px;
 }
 
 .form-input-button {

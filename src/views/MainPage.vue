@@ -6,7 +6,7 @@
       @click="animateTitleExit"
       :style="{ visibility: titleDivVisible ? 'visible' : 'hidden' }"
     >
-      <h1>Title</h1>
+      <h1 class="title-div">{{ initialStory }}</h1>
     </div>
 
     <div
@@ -15,7 +15,7 @@
       v-if="responseBool && currentIndex < responsePrompt.length"
     >
       <div class="content-container">
-        <h1>{{ responsePrompt[currentIndex].question }}</h1>
+        <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
 
         <div class="button-container">
           <button
@@ -51,10 +51,12 @@
       @click="resultToResponse()"
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
-      <h1>{{ currentResult }}</h1>
-      <h3>{{ addedCareString }}</h3>
-      <h3>{{ addedRespectString }}</h3>
-      <h3>{{ addedUnderstandingString }}</h3>
+      <h1 class="font-size-title response-result">{{ currentResult }}</h1>
+      <div class="response-result-score">
+        <h3 class="font-size-button">{{ addedCareString }}</h3>
+        <h3 class="font-size-button">{{ addedRespectString }}</h3>
+        <h3 class="font-size-button">{{ addedUnderstandingString }}</h3>
+      </div>
     </div>
 
     <div
@@ -114,7 +116,9 @@ export default {
       titleDivVisible: false,
       userEmail: '',
       currentHighScore: 0,
-      timesPlayed: 0
+      timesPlayed: 0,
+
+      initialStory: ''
     }
   },
   async beforeCreate() {
@@ -154,6 +158,16 @@ export default {
     },
     async getFirestoreVariables() {
       const selectedStory = this.$route.query.selectedStory
+
+      const initialStoryDocRef = doc(db, 'Story_List', `${selectedStory}_Question_Bank`)
+      const initialStoryDoc = await getDoc(initialStoryDocRef)
+
+      if (initialStoryDoc.exists()) {
+        this.initialStory = initialStoryDoc.data().InitialStory
+      } else {
+        console.error('Initial story document not found')
+        this.initialStory = selectedStory
+      }
 
       await onSnapshot(collection(db, `${selectedStory}_Question_Bank`), (snapshot) => {
         const dbLength = snapshot.size
@@ -485,6 +499,10 @@ export default {
   border-radius: 20px;
 }
 
+.title-div {
+  padding: 5%;
+}
+
 .result-div {
   position: absolute;
 
@@ -540,7 +558,7 @@ button {
   text-decoration: none;
   display: inline-block;
 
-  font-size: 1.25vw;
+  font-size: 100%;
   margin: 0 10px;
   cursor: pointer;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -628,5 +646,13 @@ button {
 
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.response-result {
+  padding: 1%;
+}
+
+.response-result-score {
+  margin-top: 5%;
 }
 </style>

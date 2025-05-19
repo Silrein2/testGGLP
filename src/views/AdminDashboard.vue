@@ -57,6 +57,12 @@
       >
         <h3>Things to do</h3>
       </button>
+      <!-- <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="toPlannerPage()"
+      >
+        <h3>Question Planner</h3>
+      </button> -->
     </div>
 
     <div ref="formDiv" class="form-div bg-tea-four no-border border-radius box-shadow">
@@ -165,6 +171,9 @@ export default {
     },
     toMainPage() {
       this.$router.push('/')
+    },
+    toPlannerPage() {
+      this.$router.push('/question-planner')
     },
     animateDashboardList() {
       const tl = gsap.timeline({

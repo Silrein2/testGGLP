@@ -3,6 +3,7 @@ import MainPage from '../views/MainPage.vue'
 import AdminDashBoard from '../views/AdminDashboard.vue'
 import UserDashboard from '@/views/UserDashboard.vue'
 import Login from '@/views/Login.vue'
+import QuestionPlanner from '@/views/QuestionPlanner.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,11 @@ const router = createRouter({
       path: '/user-dashboard',
       name: 'UserDashboardPage',
       component: UserDashboard
+    },
+    {
+      path: '/question-planner',
+      name: 'QuestionPlannerPage',
+      component: QuestionPlanner
     }
   ]
 })

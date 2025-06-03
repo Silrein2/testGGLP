@@ -9,6 +9,7 @@
         <option value="RespectScore">Respect Score</option>
         <option value="UnderstandingScore">Understanding Score</option>
         <option value="EmpathyScore">Empathy Score</option>
+        <option value="TimesPlayed">Times Played</option>
       </select>
     </div>
     <div v-if="loading">Loading scores...</div>
@@ -21,6 +22,7 @@
         <p style="color: white">Respect Score: {{ score.RespectScore }}</p>
         <p style="color: white">Understanding Score: {{ score.UnderstandingScore }}</p>
         <p style="color: white">Empathy Score: {{ score.EmpathyScore }}</p>
+        <p style="color: white">Times Played: {{ score.TimesPlayed }}</p>
       </div>
     </div>
   </div>

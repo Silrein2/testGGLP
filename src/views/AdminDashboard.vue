@@ -70,20 +70,49 @@
       />
       <ScoreList v-if="scoreListBool" />
       <div class="planned-forms text-shadow box-shadow no-border border-radius" v-if="testBool">
-        <h3 style="margin-left: 5%">
-          *When adding stories using Add Story button, it's best if the name of the collection is
+        <h1 v-if="isLinear" style="margin-left: 5%">
+          The current story {{ selectedStory }} is a LINEAR story
+        </h1>
+        <h1 v-if="!isLinear" style="margin-left: 5%">
+          The current story {{ selectedStory }} is a NON-LINEAR story
+        </h1>
+        <h3 class="first-statement-indent">
+          - Add Story button will add new group of story into database
+        </h3>
+        <h4 class="child-statement-indent">
+          + When adding stories using Add Story button, it's best if the name of the collection is
           set to a single word
+        </h4>
+        <h4 class="child-statement-indent">
+          + The initial story initial story in the form is what the user will see when they first
+          click on the story button (in User's Dashboard)
+        </h4>
+        <h4 class="child-statement-indent">
+          + The checkbox is to determine whether the story is linear or not
+        </h4>
+        <h3 class="statement-indent">
+          - Add Questions will add new questions, answers, results to the current story.
         </h3>
-        <h3 style="margin-left: 5%">
-          Planned Forms: Add Questions, View Questions, Edit Questions, Delete Questions
+        <h3 class="statement-indent">- Question List will show the list of existing questions.</h3>
+        <h4 class="child-statement-indent">+ Edit button will edit that particular question</h4>
+        <h4 class="child-statement-indent">+ Delete button will delete that particular question</h4>
+        <h4 class="child-statement-indent">
+          + Clicking on the question's ID will reveal the list of answers and results
+        </h4>
+        <h4 v-if="!isLinear" class="child-statement-indent">
+          + If the story is NON-LINEAR, the flow will not follow the order of the questions
+        </h4>
+        <h4 v-if="!isLinear" class="child-statement-indent">
+          + Instead, there will be a dropdown menu next to each answer. This is to determine which
+          next question the answers will lead to (currently they're only in ID)
+        </h4>
+        <h3 class="statement-indent">
+          - Score List is the list of registered users from User Login Page
         </h3>
-        <h4 class="text-strikethrough" style="margin-left: 10%">- Add Questions</h4>
-        <h4 class="text-strikethrough" style="margin-left: 10%">- View Questions</h4>
-        <h5 class="text-strikethrough" style="margin-left: 15%">+ Edit Questions</h5>
-        <h5 class="text-strikethrough" style="margin-left: 15%">+ Delete Questions</h5>
-        <h3 class="text-strikethrough" style="margin-left: 5%">
-          Edit and Delete will be within View Questions
-        </h3>
+        <h4 class="child-statement-indent">
+          + The sorting style from the dropdown menu (ID, Times Played etc) is descending (from the
+          highest to lowest)
+        </h4>
       </div>
       <EditQuestion
         v-if="editQuestionBool"
@@ -262,7 +291,7 @@ export default {
       // Set the initial selected story to the first document name
       if (this.stories.length > 0) {
         this.selectedStory = this.stories[0].Name
-        this.isLinear = this.stories[0].LinearStory // Set isLinear based on the first story
+        this.isLinear = this.stories[0].LinearStory
       }
     },
     onStoryChange() {
@@ -359,6 +388,7 @@ export default {
   background-color: brown;
   color: white;
   text-align: left;
+  overflow-y: scroll;
 }
 
 .text-strikethrough {
@@ -369,5 +399,19 @@ export default {
   margin-top: 5%;
   width: 10vw;
   height: 5vh;
+}
+
+.first-statement-indent {
+  margin-left: 5%;
+  margin-top: 5%;
+}
+
+.statement-indent {
+  margin-left: 5%;
+  margin-top: 2.5%;
+}
+
+.child-statement-indent {
+  margin-left: 10%;
 }
 </style>

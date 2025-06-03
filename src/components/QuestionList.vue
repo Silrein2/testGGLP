@@ -119,7 +119,7 @@ export default {
         this.questions = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           showDescriptions: false,
-          // LinearStory: doc.data().LinearStory, // Get LinearStory value
+          // LinearStory: doc.data().LinearStory, // Shouldn't be uncommented unless the variable is present in Firestore (currently it doesn't)
           ...doc.data()
         }))
         this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
@@ -174,7 +174,6 @@ export default {
             const docRef = doc(db, `${this.selectedStory}_Question_Bank`, question.id)
             const updates = {}
 
-            // Check and update LeftAnswer
             if (question.LeftAnswer && question.LeftAnswer.Desc) {
               updates.LeftAnswer = {
                 ...question.LeftAnswer,
@@ -182,7 +181,6 @@ export default {
               }
             }
 
-            // Check and update MiddleAnswer
             if (question.MiddleAnswer && question.MiddleAnswer.Desc) {
               updates.MiddleAnswer = {
                 ...question.MiddleAnswer,
@@ -190,7 +188,6 @@ export default {
               }
             }
 
-            // Check and update RightAnswer
             if (question.RightAnswer && question.RightAnswer.Desc) {
               updates.RightAnswer = {
                 ...question.RightAnswer,
@@ -198,11 +195,9 @@ export default {
               }
             }
 
-            // Update the document in Firestore
             await setDoc(docRef, updates, { merge: true })
           }
 
-          // Delete existing documents
           for (const question of this.originalQuestions) {
             const docRef = doc(db, `${this.selectedStory}_Question_Bank`, question.id)
             await deleteDoc(docRef)
@@ -258,12 +253,12 @@ export default {
   cursor: pointer;
   position: relative;
   display: flex;
-  flex-direction: column; /* Change to column for vertical layout */
-  overflow-x: auto; /* Enable horizontal scrolling */
+  flex-direction: column;
+  overflow-x: auto;
 }
 
 .answer-details {
-  display: flex; /* Change to flex for horizontal layout */
+  display: flex;
   margin-top: 10px;
 }
 

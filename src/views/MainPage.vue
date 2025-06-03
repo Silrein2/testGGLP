@@ -62,7 +62,7 @@
     <div
       ref="scoreDiv"
       class="response-div"
-      v-if="responseBool && currentIndex >= responsePrompt.length"
+      v-if="responseBool && (currentIndex >= responsePrompt.length || currentIndex == null)"
     >
       <div class="score-container">
         <h2>{{ userName }}, you have played the game {{ timesPlayed }} times</h2>
@@ -119,7 +119,8 @@ export default {
       timesPlayed: 0,
 
       initialStory: '',
-      isLinear: false
+      isLinear: false,
+      nextQuestionIndex: null
     }
   },
   async beforeCreate() {
@@ -296,6 +297,8 @@ export default {
             this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
           this.addedUnderstandingString =
             'Understanding: +' + this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+
+          this.nextQuestionIndex = this.responsePrompt[this.currentIndex].leftAnswer['NextQuestion']
           break
         case 'Right':
           this.careScore =
@@ -313,6 +316,9 @@ export default {
             this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
           this.addedUnderstandingString =
             'Understanding: +' + this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+
+          this.nextQuestionIndex =
+            this.responsePrompt[this.currentIndex].rightAnswer['NextQuestion']
           break
         case 'Bottom':
           this.careScore =
@@ -331,6 +337,9 @@ export default {
           this.addedUnderstandingString =
             'Understanding: +' +
             this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+
+          this.nextQuestionIndex =
+            this.responsePrompt[this.currentIndex].middleAnswer['NextQuestion']
           break
       }
 
@@ -365,12 +374,15 @@ export default {
       const tl = gsap.timeline({
         onComplete: () => {
           this.nextStory()
+          // console.log(this.currentIndex)
 
           if (this.currentIndex >= this.responsePrompt.length) {
             this.$nextTick(() => {
+              // console.log('score div')
               this.animateScoreDivEnter()
             })
           } else {
+            // console.log('response div')
             this.animateResponseEnter()
           }
         }
@@ -447,6 +459,13 @@ export default {
     nextStory() {
       if (this.isLinear == true) {
         this.currentIndex += 1
+      } else {
+        this.currentIndex = this.nextQuestionIndex
+        this.nextQuestionIndex = null
+
+        if (this.currentIndex == null) {
+          this.currentIndex = this.responsePrompt.length + 1
+        }
       }
     },
     getRandomIndex() {

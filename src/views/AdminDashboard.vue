@@ -134,7 +134,7 @@ export default {
 
       stories: [],
       selectedStory: '',
-      isLinear: false // Initialize isLinear
+      isLinear: false
     }
   },
   async mounted() {
@@ -208,7 +208,6 @@ export default {
       )
     },
     changeForm(formName) {
-      // Logic to change forms
       switch (formName) {
         case 'addQuestion':
           this.addStoryBool = false

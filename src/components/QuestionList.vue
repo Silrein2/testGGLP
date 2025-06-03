@@ -21,15 +21,13 @@
         <h4 style="color: white" @click="toggleDescriptions(question.id)">
           Question: {{ question.Question }}
         </h4>
-        <div class="hover-statement">
-          {{ hoveredQuestion }}
-        </div>
 
         <div v-if="question.showDescriptions" class="answer-details">
           <AnswerDetail title="Left Answer" :answer="question.LeftAnswer" />
-          <div v-if="!isLinear">
-            <select @mouseleave="clearHover">
-              <option value="">Next Question</option>
+          <div v-if="!isLinear && question.LeftAnswer && question.LeftAnswer.Desc">
+            Next question after this Left answer
+            <select v-model="question.LeftAnswer.NextQuestion" @mouseleave="clearHover">
+              <option :value="null">No Question</option>
               <option
                 v-for="q in filteredQuestions(question.id)"
                 :key="q.id"
@@ -42,9 +40,10 @@
           </div>
 
           <AnswerDetail title="Middle Answer" :answer="question.MiddleAnswer" />
-          <div v-if="!isLinear">
-            <select @mouseleave="clearHover">
-              <option value="">Next Question</option>
+          <div v-if="!isLinear && question.MiddleAnswer && question.MiddleAnswer.Desc">
+            Next question after this Middle answer
+            <select v-model="question.MiddleAnswer.NextQuestion" @mouseleave="clearHover">
+              <option :value="null">No Question</option>
               <option
                 v-for="q in filteredQuestions(question.id)"
                 :key="q.id"
@@ -57,9 +56,10 @@
           </div>
 
           <AnswerDetail title="Right Answer" :answer="question.RightAnswer" />
-          <div v-if="!isLinear">
-            <select @mouseleave="clearHover">
-              <option value="">Next Question</option>
+          <div v-if="!isLinear && question.RightAnswer && question.RightAnswer.Desc">
+            Next question after this Right answer
+            <select v-model="question.RightAnswer.NextQuestion" @mouseleave="clearHover">
+              <option :value="null">No Question</option>
               <option
                 v-for="q in filteredQuestions(question.id)"
                 :key="q.id"
@@ -106,7 +106,7 @@ export default {
       questions: [],
       loading: true,
       originalQuestions: [],
-      hoveredQuestion: '' // Variable to store the currently hovered question statement
+      hoveredQuestion: ''
     }
   },
   mounted() {
@@ -119,7 +119,7 @@ export default {
         this.questions = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           showDescriptions: false,
-          LinearStory: doc.data().LinearStory, // Get LinearStory value
+          // LinearStory: doc.data().LinearStory, // Get LinearStory value
           ...doc.data()
         }))
         this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
@@ -138,11 +138,11 @@ export default {
     showQuestionStatement(questionId) {
       const question = this.questions.find((q) => q.id === questionId)
       if (question) {
-        this.hoveredQuestion = question.Question // Show the question statement
+        this.hoveredQuestion = question.Question
       }
     },
     clearHover() {
-      this.hoveredQuestion = '' // Clear the hover statement
+      this.hoveredQuestion = ''
     },
     filteredQuestions(currentId) {
       return this.questions.filter((q) => q.id !== currentId) // Exclude the current question ID
@@ -169,6 +169,39 @@ export default {
     async saveOrder() {
       if (confirm('Are you sure you want to save the new order?')) {
         try {
+          // Save selected NextQuestion values to Firestore
+          for (const question of this.questions) {
+            const docRef = doc(db, `${this.selectedStory}_Question_Bank`, question.id)
+            const updates = {}
+
+            // Check and update LeftAnswer
+            if (question.LeftAnswer && question.LeftAnswer.Desc) {
+              updates.LeftAnswer = {
+                ...question.LeftAnswer,
+                NextQuestion: question.LeftAnswer.NextQuestion
+              }
+            }
+
+            // Check and update MiddleAnswer
+            if (question.MiddleAnswer && question.MiddleAnswer.Desc) {
+              updates.MiddleAnswer = {
+                ...question.MiddleAnswer,
+                NextQuestion: question.MiddleAnswer.NextQuestion
+              }
+            }
+
+            // Check and update RightAnswer
+            if (question.RightAnswer && question.RightAnswer.Desc) {
+              updates.RightAnswer = {
+                ...question.RightAnswer,
+                NextQuestion: question.RightAnswer.NextQuestion
+              }
+            }
+
+            // Update the document in Firestore
+            await setDoc(docRef, updates, { merge: true })
+          }
+
           // Delete existing documents
           for (const question of this.originalQuestions) {
             const docRef = doc(db, `${this.selectedStory}_Question_Bank`, question.id)

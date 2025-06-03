@@ -119,7 +119,8 @@ export default {
                   Result: this.leftResult,
                   Care: this.leftCare,
                   Respect: this.leftRespect,
-                  Understanding: this.leftUnderstanding
+                  Understanding: this.leftUnderstanding,
+                  NextQuestion: null // Default to null
                 }
               : null,
           MiddleAnswer:
@@ -129,7 +130,8 @@ export default {
                   Result: this.middleResult,
                   Care: this.middleCare,
                   Respect: this.middleRespect,
-                  Understanding: this.middleUnderstanding
+                  Understanding: this.middleUnderstanding,
+                  NextQuestion: null // Default to null
                 }
               : null,
           RightAnswer:
@@ -139,7 +141,8 @@ export default {
                   Result: this.rightResult,
                   Care: this.rightCare,
                   Respect: this.rightRespect,
-                  Understanding: this.rightUnderstanding
+                  Understanding: this.rightUnderstanding,
+                  NextQuestion: null // Default to null
                 }
               : null
         })
@@ -172,22 +175,9 @@ export default {
       this.rightRespect = 0
       this.rightUnderstanding = 0
 
-      alert('Form resetted')
+      alert('Form reset')
     },
     async getNextQuestionId() {
-      // this will need manual setup of indexing in FireStore database
-      // const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
-      // const q = query(questionBankCollection, orderBy('__name__', 'desc'), limit(1))
-      // const querySnapshot = await getDocs(q)
-
-      // if (querySnapshot.empty) {
-      //   return 0
-      // } else {
-      //   const lastDoc = querySnapshot.docs[0]
-      //   const lastId = parseInt(lastDoc.id, 10)
-      //   return isNaN(lastId) ? 0 : lastId + 1
-      // }
-
       const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
       const querySnapshot = await getDocs(questionBankCollection)
 

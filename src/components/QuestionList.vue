@@ -12,18 +12,64 @@
         <h3 style="color: white" @click="toggleDescriptions(question.id)">
           Question ID: {{ question.id }}
         </h3>
-        <h4 style="color: white" @click="toggleDescriptions(question.id)">
-          Question: {{ question.Question }}
-        </h4>
 
-        <div v-if="question.showDescriptions" class="answer-details">
-          <AnswerDetail title="Left Answer" :answer="question.LeftAnswer" />
-          <AnswerDetail title="Middle Answer" :answer="question.MiddleAnswer" />
-          <AnswerDetail title="Right Answer" :answer="question.RightAnswer" />
-        </div>
         <div class="action-buttons">
           <button class="edit-button" @click="emitEditQuestion(question.id)">Edit</button>
           <button class="delete-button" @click="deleteQuestion(question.id)">Delete</button>
+        </div>
+
+        <h4 style="color: white" @click="toggleDescriptions(question.id)">
+          Question: {{ question.Question }}
+        </h4>
+        <div class="hover-statement">
+          {{ hoveredQuestion }}
+        </div>
+
+        <div v-if="question.showDescriptions" class="answer-details">
+          <AnswerDetail title="Left Answer" :answer="question.LeftAnswer" />
+          <div v-if="!isLinear">
+            <select @mouseleave="clearHover">
+              <option value="">Next Question</option>
+              <option
+                v-for="q in filteredQuestions(question.id)"
+                :key="q.id"
+                :value="q.id"
+                @mouseover="showQuestionStatement(q.id)"
+              >
+                {{ q.id }}
+              </option>
+            </select>
+          </div>
+
+          <AnswerDetail title="Middle Answer" :answer="question.MiddleAnswer" />
+          <div v-if="!isLinear">
+            <select @mouseleave="clearHover">
+              <option value="">Next Question</option>
+              <option
+                v-for="q in filteredQuestions(question.id)"
+                :key="q.id"
+                :value="q.id"
+                @mouseover="showQuestionStatement(q.id)"
+              >
+                {{ q.id }}
+              </option>
+            </select>
+          </div>
+
+          <AnswerDetail title="Right Answer" :answer="question.RightAnswer" />
+          <div v-if="!isLinear">
+            <select @mouseleave="clearHover">
+              <option value="">Next Question</option>
+              <option
+                v-for="q in filteredQuestions(question.id)"
+                :key="q.id"
+                :value="q.id"
+                @mouseover="showQuestionStatement(q.id)"
+              >
+                {{ q.id }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -49,13 +95,18 @@ export default {
     selectedStory: {
       type: String,
       required: true
+    },
+    isLinear: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
     return {
       questions: [],
       loading: true,
-      originalQuestions: []
+      originalQuestions: [],
+      hoveredQuestion: '' // Variable to store the currently hovered question statement
     }
   },
   mounted() {
@@ -68,6 +119,7 @@ export default {
         this.questions = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           showDescriptions: false,
+          LinearStory: doc.data().LinearStory, // Get LinearStory value
           ...doc.data()
         }))
         this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
@@ -82,6 +134,18 @@ export default {
       if (question) {
         question.showDescriptions = !question.showDescriptions
       }
+    },
+    showQuestionStatement(questionId) {
+      const question = this.questions.find((q) => q.id === questionId)
+      if (question) {
+        this.hoveredQuestion = question.Question // Show the question statement
+      }
+    },
+    clearHover() {
+      this.hoveredQuestion = '' // Clear the hover statement
+    },
+    filteredQuestions(currentId) {
+      return this.questions.filter((q) => q.id !== currentId) // Exclude the current question ID
     },
     moveUp(index) {
       if (index > 0) {
@@ -161,13 +225,12 @@ export default {
   cursor: pointer;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column; /* Change to column for vertical layout */
+  overflow-x: auto; /* Enable horizontal scrolling */
 }
 
 .answer-details {
-  display: flex;
-  justify-content: space-around;
+  display: flex; /* Change to flex for horizontal layout */
   margin-top: 10px;
 }
 
@@ -197,6 +260,7 @@ export default {
 
 .action-buttons {
   display: flex;
+  margin-top: 10px;
 }
 
 .edit-button,
@@ -216,5 +280,14 @@ export default {
 .delete-button {
   background-color: #dc3545;
   color: white;
+}
+
+.hover-statement {
+  position: relative;
+  background-color: #222;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 10;
 }
 </style>

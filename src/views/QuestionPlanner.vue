@@ -2,52 +2,59 @@
   <div class="question-planner">
     <div class="upper-section">
       <h2>Question Planner</h2>
-      <div class="question-container">
-        <button @click="addQuestion" v-if="!showLeftAnswer" class="add-button">+</button>
-        <div class="left-answer-container" v-if="showLeftAnswer">
-          <button class="add-button left-result-button">+</button>
-          <input
-            v-model="QuestionBank[0].LeftAnswer.Desc"
-            placeholder="What is the Left Answer?"
-            class="left-answer-input"
-          />
-          <input
-            v-model="QuestionBank[0].LeftAnswer.Result"
-            placeholder="What is the Left Result?"
-            class="left-result-input"
-          />
-          <div class="number-inputs">
-            <div>
-              <label>Care</label>
-              <input
-                v-model.number="QuestionBank[0].LeftAnswer.Care"
-                type="number"
-                class="number-input"
-              />
-            </div>
-            <div>
-              <label>Respect</label>
-              <input
-                v-model.number="QuestionBank[0].LeftAnswer.Respect"
-                type="number"
-                class="number-input"
-              />
-            </div>
-            <div>
-              <label>Understanding</label>
-              <input
-                v-model.number="QuestionBank[0].LeftAnswer.Understanding"
-                type="number"
-                class="number-input"
-              />
+      <div class="scrollable-container">
+        <div class="question-container">
+          <div class="question-input-container">
+            <input
+              v-model="QuestionBank[0].Question"
+              placeholder="What is the question?"
+              class="question-input"
+            />
+            <button @click="addQuestion" v-if="!showLeftAnswer" class="add-button top-right">
+              +
+            </button>
+            <button class="add-button bottom-right" v-if="showLeftAnswer">+</button>
+          </div>
+          <div class="left-answer-container" v-if="showLeftAnswer">
+            <button class="add-button left-result-button">+</button>
+            <input
+              v-model="QuestionBank[0].LeftAnswer.Desc"
+              placeholder="What is the Left Answer?"
+              class="left-answer-input"
+            />
+            <input
+              v-model="QuestionBank[0].LeftAnswer.Result"
+              placeholder="What is the Left Result?"
+              class="left-result-input"
+            />
+            <div class="number-inputs">
+              <div>
+                <label>Care</label>
+                <input
+                  v-model.number="QuestionBank[0].LeftAnswer.Care"
+                  type="number"
+                  class="number-input"
+                />
+              </div>
+              <div>
+                <label>Respect</label>
+                <input
+                  v-model.number="QuestionBank[0].LeftAnswer.Respect"
+                  type="number"
+                  class="number-input"
+                />
+              </div>
+              <div>
+                <label>Understanding</label>
+                <input
+                  v-model.number="QuestionBank[0].LeftAnswer.Understanding"
+                  type="number"
+                  class="number-input"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <input
-          v-model="QuestionBank[0].Question"
-          placeholder="What is the question?"
-          class="question-input"
-        />
       </div>
     </div>
     <div class="lower-section">
@@ -124,9 +131,21 @@ export default {
   margin-bottom: 20px;
 }
 
+.scrollable-container {
+  max-height: 200px; /* Set a max height for scrolling */
+  overflow: auto; /* Enable scrolling */
+}
+
 .question-container {
   display: flex;
-  align-items: flex-start; /* Align items to the start */
+  flex-direction: column; /* Stack elements vertically */
+  position: relative; /* For positioning buttons */
+}
+
+.question-input-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  position: relative; /* Positioning for absolute elements */
 }
 
 .add-button {
@@ -137,13 +156,25 @@ export default {
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  margin-right: 10px; /* Space between button and input */
+  margin-left: 10px; /* Space between button and input */
+}
+
+.top-right {
+  position: absolute;
+  top: 5px; /* Adjust top position */
+  right: 5px; /* Align right */
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 5px; /* Adjust bottom position */
+  right: 5px; /* Align right */
 }
 
 .left-answer-container {
   display: flex;
   flex-direction: column;
-  margin-right: 10px; /* Space between LeftAnswer and Question input */
+  margin-top: 10px; /* Space above the left answer */
 }
 
 .left-answer-input {
@@ -169,6 +200,7 @@ export default {
 .question-input {
   width: 300px;
   padding: 8px;
+  margin-right: auto; /* Align to the left */
 }
 
 .lower-section {

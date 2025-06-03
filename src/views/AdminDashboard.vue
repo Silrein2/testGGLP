@@ -57,12 +57,6 @@
       >
         <h3>Things to do</h3>
       </button>
-      <!-- <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
-        @click="toPlannerPage()"
-      >
-        <h3>Question Planner</h3>
-      </button> -->
     </div>
 
     <div ref="formDiv" class="form-div bg-tea-four no-border border-radius box-shadow">
@@ -71,6 +65,7 @@
       <QuestionList
         v-if="listQuestionBool"
         :selectedStory="selectedStory"
+        :isLinear="isLinear"
         @edit-question="editQuestion"
       />
       <ScoreList v-if="scoreListBool" />
@@ -138,7 +133,8 @@ export default {
       addStoryBool: false,
 
       stories: [],
-      selectedStory: ''
+      selectedStory: '',
+      isLinear: false // Initialize isLinear
     }
   },
   async mounted() {
@@ -181,7 +177,7 @@ export default {
           gsap.fromTo(
             this.$refs.formDiv,
             { x: window.innerWidth, opacity: 0 },
-            { x: '0%', duration: 2, opacity: 1 }
+            { x: '50%', duration: 1.5, opacity: 1, transform: 'translate(-50%, -50%)' }
           )
         }
       })
@@ -189,7 +185,7 @@ export default {
       tl.fromTo(
         this.$refs.dashboardList,
         { x: -window.innerWidth, opacity: 0 },
-        { x: '5%', duration: 2, delay: 2, opacity: 1 }
+        { x: '5%', duration: 1.5, delay: 2, opacity: 1 }
       )
     },
     animateFormExit(formName) {
@@ -200,7 +196,7 @@ export default {
           gsap.fromTo(
             this.$refs.formDiv,
             { x: window.innerWidth, opacity: 0 },
-            { x: '0%', duration: 2, opacity: 1 }
+            { x: '50%', duration: 1.5, opacity: 1, transform: 'translate(-50%, -50%)' }
           )
         }
       })
@@ -208,38 +204,46 @@ export default {
       tl.fromTo(
         this.$refs.formDiv,
         { opacity: 1 },
-        { x: window.innerWidth, duration: 2, opacity: 0 }
+        { x: window.innerWidth, duration: 1.5, opacity: 0 }
       )
     },
     changeForm(formName) {
-      //meant to change forms
-
+      // Logic to change forms
       switch (formName) {
         case 'addQuestion':
+          this.addStoryBool = false
           this.addQuestionBool = true
           this.listQuestionBool = false
           this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
           break
-
+        case 'addStory':
+          this.addStoryBool = true
+          this.addQuestionBool = false
+          this.listQuestionBool = false
+          this.scoreListBool = false
+          this.testBool = false
+          this.editQuestionBool = false
+          break
         case 'listQuestion':
+          this.addStoryBool = false
           this.addQuestionBool = false
           this.listQuestionBool = true
           this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
           break
-
         case 'scoreList':
+          this.addStoryBool = false
           this.addQuestionBool = false
           this.listQuestionBool = false
           this.scoreListBool = true
           this.testBool = false
           this.editQuestionBool = false
           break
-
         case 'test':
+          this.addStoryBool = false
           this.addQuestionBool = false
           this.listQuestionBool = false
           this.scoreListBool = false
@@ -247,63 +251,6 @@ export default {
           this.editQuestionBool = false
           break
       }
-
-      if (formName == 'addQuestion') {
-        this.addStoryBool = false
-        this.addQuestionBool = true
-        this.listQuestionBool = false
-        this.scoreListBool = false
-        this.testBool = false
-        this.editQuestionBool = false
-      } else if (formName == 'addStory') {
-        this.addStoryBool = true
-        this.addQuestionBool = false
-        this.listQuestionBool = false
-        this.scoreListBool = false
-        this.testBool = false
-        this.editQuestionBool = false
-      } else if (formName == 'listQuestion') {
-        this.addStoryBool = false
-        this.addQuestionBool = false
-        this.listQuestionBool = true
-        this.scoreListBool = false
-        this.testBool = false
-        this.editQuestionBool = false
-      } else if (formName == 'scoreList') {
-        this.addStoryBool = false
-        this.addQuestionBool = false
-        this.listQuestionBool = false
-        this.scoreListBool = true
-        this.testBool = false
-        this.editQuestionBool = false
-      } else {
-        this.addStoryBool = false
-        this.addQuestionBool = false
-        this.listQuestionBool = false
-        this.scoreListBool = false
-        this.testBool = true
-        this.editQuestionBool = false
-      }
-    },
-    handleResize() {
-      // Call updateBackgroundSize when the window is resized
-      // this.updateBackgroundSize()
-    },
-    editQuestion(selectedStory, questionId) {
-      this.selectedStory = selectedStory
-      this.selectedQuestionId = questionId
-      console.log('questionId: ' + this.selectedQuestionId)
-
-      this.listQuestionBool = false
-      this.editQuestionBool = true
-      this.addQuestionBool = false
-      this.scoreListBool = false
-      this.testBool = false
-    },
-    cancelEdit() {
-      this.editQuestionBool = false
-      this.listQuestionBool = true
-      this.selectedQuestionId = null
     },
     async fetchStories() {
       const storiesRef = collection(db, 'Story_List')
@@ -316,10 +263,26 @@ export default {
       // Set the initial selected story to the first document name
       if (this.stories.length > 0) {
         this.selectedStory = this.stories[0].Name
+        this.isLinear = this.stories[0].LinearStory // Set isLinear based on the first story
       }
     },
     onStoryChange() {
+      const selected = this.stories.find((story) => story.Name === this.selectedStory)
+      if (selected) {
+        this.isLinear = selected.LinearStory
+      }
       this.animateFormExit('test')
+    },
+    editQuestion(selectedStory, questionId) {
+      this.selectedStory = selectedStory
+      this.selectedQuestionId = questionId
+      this.listQuestionBool = false
+      this.editQuestionBool = true
+    },
+    cancelEdit() {
+      this.editQuestionBool = false
+      this.listQuestionBool = true
+      this.selectedQuestionId = null
     }
   }
 }
@@ -328,7 +291,6 @@ export default {
 <style>
 .welcome-text {
   position: absolute;
-
   top: 2.5vh;
   left: 10vw;
 }
@@ -343,31 +305,10 @@ export default {
   background: transparent;
 }
 
-.decision-button {
-  background-color: #4caf50;
-
-  border: none;
-  color: white;
-
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-
-  display: inline-block;
-  font-size: 16px;
-  margin: 0 10px;
-  cursor: pointer;
-
-  width: 5vw;
-  height: 5vh;
-}
-
 .mainpage-button {
   position: absolute;
-
   width: 15vw;
   height: 5vh;
-
   right: 5vw;
   top: 5vh;
 }
@@ -376,65 +317,48 @@ export default {
   padding: 0px 20px;
   text-align: center;
   text-decoration: none;
-
   display: inline-block;
-
   margin: 10px 10px;
   cursor: pointer;
-
   width: 12.5vw;
   height: 7.5vh;
 }
 
 .dashboard-list-buttons {
   position: absolute;
-
   top: 50%;
   left: 3vw;
-
   transform: translateY(-50%);
-
   width: 15vw;
   height: 70vh;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
 .form-div {
   position: absolute;
-
-  top: 50%;
+  top: 60vh;
   right: 3vw;
-
   transform: translateY(-50%);
-
-  width: 70vw;
-  height: 70vh;
-
+  width: 75vw;
+  height: 80vh;
   opacity: 0;
-
-  overflow: hidden;
+  overflow: scroll;
+  overflow-y: auto;
+  padding-bottom: 50px;
 }
 
 .planned-forms {
   position: absolute;
-
   top: 50%;
   left: 50%;
-
   transform: translate(-50%, -50%);
-
   width: 90%;
   height: 90%;
-
   background-color: brown;
-
   color: white;
-
   text-align: left;
 }
 
@@ -444,7 +368,6 @@ export default {
 
 .drop-down-story-selector {
   margin-top: 5%;
-
   width: 10vw;
   height: 5vh;
 }

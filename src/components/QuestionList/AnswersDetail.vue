@@ -4,10 +4,10 @@
     <div v-if="answer">
       <p style="color: white" @click="toggleDetails">Description: {{ answer.Desc }}</p>
       <p style="color: white" @click="toggleDetails">Result: {{ answer.Result }}</p>
-      <div v-if="showDetails">
-        <p style="color: white">Care: {{ answer.Care }}</p>
-        <p style="color: white">Respect: {{ answer.Respect }}</p>
-        <p style="color: white">Understanding: {{ answer.Understanding }}</p>
+      <div class="details-container">
+        <span style="color: white">Care: {{ answer.Care }}</span>
+        <span style="color: white">Respect: {{ answer.Respect }}</span>
+        <span style="color: white">Understanding: {{ answer.Understanding }}</span>
       </div>
     </div>
     <div v-else>
@@ -48,6 +48,11 @@ export default {
   border: 1px solid #555;
   border-radius: 5px;
   background-color: #444;
-  width: 30%;
+  width: 120%;
+}
+
+.details-container {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

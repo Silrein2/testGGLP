@@ -118,7 +118,8 @@ export default {
       currentHighScore: 0,
       timesPlayed: 0,
 
-      initialStory: ''
+      initialStory: '',
+      isLinear: false
     }
   },
   async beforeCreate() {
@@ -163,10 +164,11 @@ export default {
       const initialStoryDoc = await getDoc(initialStoryDocRef)
 
       if (initialStoryDoc.exists()) {
-        this.initialStory = initialStoryDoc.data().InitialStory
+        ;(this.initialStory = initialStoryDoc.data().InitialStory),
+          (this.isLinear = initialStoryDoc.data().LinearStory)
       } else {
         console.error('Initial story document not found')
-        this.initialStory = selectedStory
+        ;(this.initialStory = selectedStory), (this.isLinear = true)
       }
 
       await onSnapshot(collection(db, `${selectedStory}_Question_Bank`), (snapshot) => {
@@ -234,7 +236,7 @@ export default {
       })
     },
     responseToResult(answerDirection, resultString) {
-      console.log('CurrentIndex: ' + this.currentIndex)
+      // console.log('CurrentIndex: ' + this.currentIndex)
 
       this.bottomBool = false
 
@@ -362,7 +364,7 @@ export default {
     resultToResponse() {
       const tl = gsap.timeline({
         onComplete: () => {
-          this.currentIndex += 1
+          this.nextStory()
 
           if (this.currentIndex >= this.responsePrompt.length) {
             this.$nextTick(() => {
@@ -440,6 +442,11 @@ export default {
         this.$router.push('/user-dashboard')
       } catch (error) {
         console.error('Error saving score to Firestore:', error)
+      }
+    },
+    nextStory() {
+      if (this.isLinear == true) {
+        this.currentIndex += 1
       }
     },
     getRandomIndex() {

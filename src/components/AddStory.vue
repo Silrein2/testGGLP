@@ -13,6 +13,12 @@
         class="form-input-initial-story no-border box-shadow text-shadow border-radius font-weight font-size-form"
         rows="5"
       ></textarea>
+      <div class="linear-check">
+        <label>
+          <input type="checkbox" v-model="isLinear" class="checkbox-input" />
+          Is the story linear?
+        </label>
+      </div>
       <button
         @click="addCollection"
         class="form-input-button no-border box-shadow text-shadow border-radius font-weight font-size-form bg-tea-two text-tea-choco"
@@ -34,7 +40,8 @@ export default {
     return {
       collectionName: '',
       initialStory: '',
-      message: ''
+      message: '',
+      isLinear: false
     }
   },
   methods: {
@@ -62,7 +69,8 @@ export default {
         if (!storyListSnapshot.exists()) {
           await setDoc(storyListDoc, {
             Name: this.collectionName,
-            InitialStory: this.initialStory
+            InitialStory: this.initialStory,
+            LinearStory: this.isLinear
           })
           alert(`Collection ${formattedCollectionName} created successfully!`)
         } else {
@@ -70,7 +78,8 @@ export default {
             storyListDoc,
             {
               Name: this.collectionName,
-              InitialStory: this.initialStory
+              InitialStory: this.initialStory,
+              LinearStory: this.isLinear
             },
             { merge: true }
           )

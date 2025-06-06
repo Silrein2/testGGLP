@@ -48,7 +48,6 @@
     <div
       ref="resultDiv"
       class="result-div"
-      @click="resultToResponse()"
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
       <h1 class="font-size-title response-result">{{ currentResult }}</h1>
@@ -57,6 +56,12 @@
         <h3 class="font-size-button">{{ addedRespectString }}</h3>
         <h3 class="font-size-button">{{ addedUnderstandingString }}</h3>
       </div>
+      <button
+        @click="resultToResponse()"
+        class="next-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
+      >
+        NEXT
+      </button>
     </div>
 
     <div
@@ -747,5 +752,11 @@ button {
 
 .response-result-score {
   margin-top: 5%;
+}
+
+.next-button {
+  margin-top: 2.5%;
+  width: 10vw;
+  height: 7.5vh;
 }
 </style>

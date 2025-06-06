@@ -282,75 +282,105 @@ export default {
     scoreTally(answerDirection) {
       switch (answerDirection) {
         case 'Left':
-          this.careScore =
-            this.careScore + this.responsePrompt[this.currentIndex].leftAnswer['Care']
           this.addedCareString =
             'Care: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].leftAnswer['Care'])
+            this.getScoreStatement(
+              this.careScore,
+              this.responsePrompt[this.currentIndex].leftAnswer['Care'],
+              'Care'
+            )
+          // this.careScore =
+          //   this.careScore + this.responsePrompt[this.currentIndex].leftAnswer['Care']
 
-          this.respectScore =
-            this.respectScore + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
           this.addedRespectString =
             'Respect: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].leftAnswer['Respect'])
+            this.getScoreStatement(
+              this.respectScore,
+              this.responsePrompt[this.currentIndex].leftAnswer['Respect'],
+              'Respect'
+            )
+          // this.respectScore =
+          //   this.respectScore + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
 
-          this.understandingScore =
-            this.understandingScore +
-            this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
           this.addedUnderstandingString =
             'Understanding: ' +
             this.getScoreStatement(
-              this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+              this.understandingScore,
+              this.responsePrompt[this.currentIndex].leftAnswer['Understanding'],
+              'Understanding'
             )
+          // this.understandingScore =
+          //   this.understandingScore +
+          //   this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
 
           this.nextQuestionIndex = this.responsePrompt[this.currentIndex].leftAnswer['NextQuestion']
           break
         case 'Right':
-          this.careScore =
-            this.careScore + this.responsePrompt[this.currentIndex].rightAnswer['Care']
           this.addedCareString =
             'Care: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].rightAnswer['Care'])
+            this.getScoreStatement(
+              this.careScore,
+              this.responsePrompt[this.currentIndex].rightAnswer['Care'],
+              'Care'
+            )
+          // this.careScore =
+          //   this.careScore + this.responsePrompt[this.currentIndex].rightAnswer['Care']
 
-          this.respectScore =
-            this.respectScore + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
           this.addedRespectString =
             'Respect: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].rightAnswer['Respect'])
+            this.getScoreStatement(
+              this.respectScore,
+              this.responsePrompt[this.currentIndex].rightAnswer['Respect'],
+              'Respect'
+            )
+          // this.respectScore =
+          //   this.respectScore + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
 
-          this.understandingScore =
-            this.understandingScore +
-            this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
           this.addedUnderstandingString =
             'Understanding: ' +
             this.getScoreStatement(
-              this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+              this.understandingScore,
+              this.responsePrompt[this.currentIndex].rightAnswer['Understanding'],
+              'Understanding'
             )
+          // this.understandingScore =
+          //   this.understandingScore +
+          //   this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
 
           this.nextQuestionIndex =
             this.responsePrompt[this.currentIndex].rightAnswer['NextQuestion']
           break
         case 'Bottom':
-          this.careScore =
-            this.careScore + this.responsePrompt[this.currentIndex].middleAnswer['Care']
           this.addedCareString =
             'Care: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].middleAnswer['Care'])
+            this.getScoreStatement(
+              this.careScore,
+              this.responsePrompt[this.currentIndex].middleAnswer['Care'],
+              'Care'
+            )
+          // this.careScore =
+          //   this.careScore + this.responsePrompt[this.currentIndex].middleAnswer['Care']
 
-          this.respectScore =
-            this.respectScore + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
           this.addedRespectString =
             'Respect: ' +
-            this.getScoreStatement(this.responsePrompt[this.currentIndex].middleAnswer['Respect'])
+            this.getScoreStatement(
+              this.respectScore,
+              this.responsePrompt[this.currentIndex].middleAnswer['Respect'],
+              'Respect'
+            )
+          // this.respectScore =
+          //   this.respectScore + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
 
-          this.understandingScore =
-            this.understandingScore +
-            this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
           this.addedUnderstandingString =
             'Understanding: ' +
             this.getScoreStatement(
-              this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+              this.understandingScore,
+              this.responsePrompt[this.currentIndex].middleAnswer['Understanding'],
+              'Understanding'
             )
+          // this.understandingScore =
+          //   this.understandingScore +
+          //   this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
 
           this.nextQuestionIndex =
             this.responsePrompt[this.currentIndex].middleAnswer['NextQuestion']
@@ -485,13 +515,25 @@ export default {
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
     },
-    getScoreStatement(score) {
+    getScoreStatement(categoryTotal, score, categoryName) {
       let statement = ''
 
       if (score < 0) {
-        statement = score
+        statement = ' -' + score * -1
       } else {
-        statement = '+' + score
+        statement = ' +' + score
+      }
+
+      switch (categoryName) {
+        case 'Care':
+          this.careScore = this.careScore + score
+          break
+        case 'Respect':
+          this.respectScore = this.respectScore + score
+          break
+        case 'Understanding':
+          this.understandingScore = this.understandingScore + score
+          break
       }
 
       return statement

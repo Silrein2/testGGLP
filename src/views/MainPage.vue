@@ -70,7 +70,8 @@
       v-if="responseBool && (currentIndex >= responsePrompt.length || currentIndex == null)"
     >
       <div class="score-container">
-        <h2>{{ userName }}, you have played the game {{ timesPlayed }} times</h2>
+        <!-- <h2>{{ userName }}, you have played the game {{ timesPlayed }} times</h2> -->
+        <h2>This time, your score is:</h2>
 
         <p>Care Score: {{ careScore }}</p>
         <p>Respect Score: {{ respectScore }}</p>

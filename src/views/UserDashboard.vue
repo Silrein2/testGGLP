@@ -12,7 +12,8 @@
       </div>
       <div class="stats-content">
         <h3 class="text-shadow text-tea-cream">You have played the game {{ timesPlayed }} times</h3>
-        <h3 class="text-shadow text-tea-cream">Your high score is: {{ highScore }}</h3>
+        <h3 class="text-shadow text-tea-cream">Your high score is: {{ highScoreDeterminant() }}</h3>
+        <h3 class="text-shadow text-tea-cream">Your last score is: {{ lastScore }}</h3>
       </div>
       <div class="center-content">
         <!-- <p>Your email: {{ email }}</p> -->
@@ -45,6 +46,7 @@ export default {
       username: '',
       timesPlayed: 0,
       highScore: 0,
+      lastScore: 0,
       selectedStory: '',
       stories: []
     }
@@ -79,6 +81,7 @@ export default {
           tempName = data.Name
           this.timesPlayed = data.TimesPlayed
           this.highScore = data.HighScore
+          this.lastScore = data.EmpathyScore
         } else {
           tempName = email.split('@')[0]
         }
@@ -105,6 +108,13 @@ export default {
     goToMainPage(storyButton) {
       this.selectedStory = storyButton
       this.$router.push({ name: 'MainPage', query: { selectedStory: this.selectedStory } }) // Navigate to Main Page
+    },
+    highScoreDeterminant() {
+      if (this.highScore < -9999) {
+        return 'None'
+      } else {
+        return String(this.highScore)
+      }
     }
   }
 }

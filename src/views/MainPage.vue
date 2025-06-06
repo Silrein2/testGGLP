@@ -77,7 +77,7 @@
         <p>Respect Score: {{ respectScore }}</p>
         <p>Understanding Score: {{ understandingScore }}</p>
         <p>Total Empathy Score: {{ totalScore }}</p>
-        <p>Previous High Score: {{ currentHighScore }}</p>
+        <p>Previous High Score: {{ highScoreDeterminant() }}</p>
 
         <button @click="saveScoreToFirestore()" class="save-button">Save Score</button>
       </div>
@@ -543,6 +543,13 @@ export default {
       }
 
       return statement
+    },
+    highScoreDeterminant() {
+      if (this.currentHighScore < -9999) {
+        return 'None'
+      } else {
+        return String(this.currentHighScore)
+      }
     }
   }
 }

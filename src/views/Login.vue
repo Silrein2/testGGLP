@@ -97,7 +97,7 @@ export default {
         RespectScore: 0,
         UnderstandingScore: 0,
         EmpathyScore: 0,
-        HighScore: 0,
+        HighScore: -10000,
         TimesPlayed: 0
       })
 

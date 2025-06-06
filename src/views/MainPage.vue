@@ -285,18 +285,23 @@ export default {
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].leftAnswer['Care']
           this.addedCareString =
-            'Care: +' + this.responsePrompt[this.currentIndex].leftAnswer['Care']
+            'Care: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].leftAnswer['Care'])
 
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
           this.addedRespectString =
-            'Respect: +' + this.responsePrompt[this.currentIndex].leftAnswer['Respect']
+            'Respect: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].leftAnswer['Respect'])
 
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
           this.addedUnderstandingString =
-            'Understanding: +' + this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+            'Understanding: ' +
+            this.getScoreStatement(
+              this.responsePrompt[this.currentIndex].leftAnswer['Understanding']
+            )
 
           this.nextQuestionIndex = this.responsePrompt[this.currentIndex].leftAnswer['NextQuestion']
           break
@@ -304,18 +309,23 @@ export default {
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].rightAnswer['Care']
           this.addedCareString =
-            'Care: +' + this.responsePrompt[this.currentIndex].rightAnswer['Care']
+            'Care: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].rightAnswer['Care'])
 
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
           this.addedRespectString =
-            'Respect: +' + this.responsePrompt[this.currentIndex].rightAnswer['Respect']
+            'Respect: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].rightAnswer['Respect'])
 
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
           this.addedUnderstandingString =
-            'Understanding: +' + this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+            'Understanding: ' +
+            this.getScoreStatement(
+              this.responsePrompt[this.currentIndex].rightAnswer['Understanding']
+            )
 
           this.nextQuestionIndex =
             this.responsePrompt[this.currentIndex].rightAnswer['NextQuestion']
@@ -324,19 +334,23 @@ export default {
           this.careScore =
             this.careScore + this.responsePrompt[this.currentIndex].middleAnswer['Care']
           this.addedCareString =
-            'Care: +' + this.responsePrompt[this.currentIndex].middleAnswer['Care']
+            'Care: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].middleAnswer['Care'])
 
           this.respectScore =
             this.respectScore + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
           this.addedRespectString =
-            'Respect: +' + this.responsePrompt[this.currentIndex].middleAnswer['Respect']
+            'Respect: ' +
+            this.getScoreStatement(this.responsePrompt[this.currentIndex].middleAnswer['Respect'])
 
           this.understandingScore =
             this.understandingScore +
             this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
           this.addedUnderstandingString =
-            'Understanding: +' +
-            this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+            'Understanding: ' +
+            this.getScoreStatement(
+              this.responsePrompt[this.currentIndex].middleAnswer['Understanding']
+            )
 
           this.nextQuestionIndex =
             this.responsePrompt[this.currentIndex].middleAnswer['NextQuestion']
@@ -470,6 +484,17 @@ export default {
     },
     getRandomIndex() {
       return Math.floor(Math.random() * 3)
+    },
+    getScoreStatement(score) {
+      let statement = ''
+
+      if (score < 0) {
+        statement = score
+      } else {
+        statement = '+' + score
+      }
+
+      return statement
     }
   }
 }

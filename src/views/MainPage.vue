@@ -1,6 +1,20 @@
 <template>
   <div id="background-container">
     <div
+      ref="scoreHoverDiv"
+      class="score-hover-div box-shadow border-radius bg-tea-three text-shadow text-tea-cream font-weight"
+      @mouseenter="showScores = true"
+      @mouseleave="showScores = false"
+    >
+      <div v-if="!showScores">CURRENT SCORE ▼</div>
+      <div v-else>
+        <p>Care: {{ careScore }}</p>
+        <p>Respect: {{ respectScore }}</p>
+        <p>Understanding: {{ understandingScore }}</p>
+      </div>
+    </div>
+
+    <div
       ref="titleDiv"
       class="response-div"
       @click="animateTitleExit"
@@ -16,7 +30,6 @@
     >
       <div class="content-container">
         <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
-
         <div class="button-container">
           <button
             v-if="responsePrompt[currentIndex].leftAnswer"
@@ -70,9 +83,7 @@
       v-if="responseBool && (currentIndex >= responsePrompt.length || currentIndex == null)"
     >
       <div class="score-container">
-        <!-- <h2>{{ userName }}, you have played the game {{ timesPlayed }} times</h2> -->
         <h2>This time, your score is:</h2>
-
         <p>Care Score: {{ careScore }}</p>
         <p>Respect Score: {{ respectScore }}</p>
         <p>Understanding Score: {{ understandingScore }}</p>
@@ -126,7 +137,8 @@ export default {
 
       initialStory: '',
       isLinear: false,
-      nextQuestionIndex: null
+      nextQuestionIndex: null,
+      showScores: false
     }
   },
   async beforeCreate() {
@@ -766,5 +778,21 @@ button {
   margin-top: 2.5%;
   width: 10vw;
   height: 7.5vh;
+}
+
+.score-hover-div {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 10px;
+
+  text-align: center;
+
+  width: 10vw;
+}
+
+.score-hover-div p {
+  margin: 5px 0;
+  text-align: left;
 }
 </style>

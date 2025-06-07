@@ -20,20 +20,50 @@
         <h3 style="color: white">Understanding</h3>
         <input type="number" v-model.number="leftUnderstanding" placeholder="Understanding" />
       </div>
+
       <div class="text-box">
         <h3 style="color: white">Middle Answer</h3>
-        <textarea v-model="middleDesc" placeholder="Enter middle description"></textarea>
-        <textarea v-model="middleResult" placeholder="Enter middle result"></textarea>
+        <textarea
+          v-model="middleDesc"
+          placeholder="Enter middle description"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        ></textarea>
+        <textarea
+          v-model="middleResult"
+          placeholder="Enter middle result"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        ></textarea>
 
         <h3 style="color: white">Care</h3>
-        <input type="number" v-model.number="middleCare" placeholder="Care" />
+        <input
+          type="number"
+          v-model.number="middleCare"
+          placeholder="Care"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
 
         <h3 style="color: white">Respect</h3>
-        <input type="number" v-model.number="middleRespect" placeholder="Respect" />
+        <input
+          type="number"
+          v-model.number="middleRespect"
+          placeholder="Respect"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
 
         <h3 style="color: white">Understanding</h3>
-        <input type="number" v-model.number="middleUnderstanding" placeholder="Understanding" />
+        <input
+          type="number"
+          v-model.number="middleUnderstanding"
+          placeholder="Understanding"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
       </div>
+
       <div class="text-box">
         <h3 style="color: white">Right Answer</h3>
         <textarea v-model="rightDesc" placeholder="Enter right description"></textarea>
@@ -99,6 +129,11 @@ export default {
   mounted() {
     this.loadQuestionData()
   },
+  computed: {
+    isMiddleAnswerEnabled() {
+      return this.leftDesc && this.leftResult && this.rightDesc && this.rightResult
+    }
+  },
   methods: {
     async loadQuestionData() {
       try {
@@ -148,19 +183,32 @@ export default {
       try {
         const docRef = doc(db, `${this.selectedStory}_Question_Bank`, this.questionId)
 
-        await updateDoc(docRef, {
-          Question: this.questionText,
-          LeftAnswer:
-            this.leftDesc || this.leftResult
-              ? {
-                  Desc: this.leftDesc,
-                  Result: this.leftResult,
-                  Care: this.leftCare,
-                  Respect: this.leftRespect,
-                  Understanding: this.leftUnderstanding
-                }
-              : null,
-          MiddleAnswer:
+        const leftAnswer =
+          this.leftDesc || this.leftResult
+            ? {
+                Desc: this.leftDesc,
+                Result: this.leftResult,
+                Care: this.leftCare,
+                Respect: this.leftRespect,
+                Understanding: this.leftUnderstanding
+              }
+            : null
+
+        const rightAnswer =
+          this.rightDesc || this.rightResult
+            ? {
+                Desc: this.rightDesc,
+                Result: this.rightResult,
+                Care: this.rightCare,
+                Respect: this.rightRespect,
+                Understanding: this.rightUnderstanding
+              }
+            : null
+
+        let middleAnswer = null
+
+        if (this.isMiddleAnswerEnabled) {
+          middleAnswer =
             this.middleDesc || this.middleResult
               ? {
                   Desc: this.middleDesc,
@@ -169,17 +217,14 @@ export default {
                   Respect: this.middleRespect,
                   Understanding: this.middleUnderstanding
                 }
-              : null,
-          RightAnswer:
-            this.rightDesc || this.rightResult
-              ? {
-                  Desc: this.rightDesc,
-                  Result: this.rightResult,
-                  Care: this.rightCare,
-                  Respect: this.rightRespect,
-                  Understanding: this.rightUnderstanding
-                }
               : null
+        }
+
+        await updateDoc(docRef, {
+          Question: this.questionText,
+          LeftAnswer: leftAnswer,
+          MiddleAnswer: middleAnswer,
+          RightAnswer: rightAnswer
         })
 
         alert('Question updated successfully!')
@@ -273,5 +318,11 @@ input[type='number'] {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.disabled-input {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
 }
 </style>

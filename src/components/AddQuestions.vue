@@ -22,17 +22,45 @@
       </div>
       <div class="text-box">
         <h3 style="color: white">Middle Answer</h3>
-        <textarea v-model="middleDesc" placeholder="Enter middle description"></textarea>
-        <textarea v-model="middleResult" placeholder="Enter middle result"></textarea>
+        <textarea
+          v-model="middleDesc"
+          placeholder="Enter middle description"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        ></textarea>
+        <textarea
+          v-model="middleResult"
+          placeholder="Enter middle result"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        ></textarea>
 
         <h3 style="color: white">Care</h3>
-        <input type="number" v-model.number="middleCare" placeholder="Care" />
+        <input
+          type="number"
+          v-model.number="middleCare"
+          placeholder="Care"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
 
         <h3 style="color: white">Respect</h3>
-        <input type="number" v-model.number="middleRespect" placeholder="Respect" />
+        <input
+          type="number"
+          v-model.number="middleRespect"
+          placeholder="Respect"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
 
         <h3 style="color: white">Understanding</h3>
-        <input type="number" v-model.number="middleUnderstanding" placeholder="Understanding" />
+        <input
+          type="number"
+          v-model.number="middleUnderstanding"
+          placeholder="Understanding"
+          :disabled="!isMiddleAnswerEnabled"
+          :class="{ 'disabled-input': !isMiddleAnswerEnabled }"
+        />
       </div>
       <div class="text-box">
         <h3 style="color: white">Right Answer</h3>
@@ -72,24 +100,26 @@ export default {
   data() {
     return {
       questionText: '',
-
       leftDesc: '',
       leftResult: '',
       leftCare: 0,
       leftRespect: 0,
       leftUnderstanding: 0,
-
       middleDesc: '',
       middleResult: '',
       middleCare: 0,
       middleRespect: 0,
       middleUnderstanding: 0,
-
       rightDesc: '',
       rightResult: '',
       rightCare: 0,
       rightRespect: 0,
       rightUnderstanding: 0
+    }
+  },
+  computed: {
+    isMiddleAnswerEnabled() {
+      return this.leftDesc && this.leftResult && this.rightDesc && this.rightResult
     }
   },
   methods: {
@@ -108,22 +138,35 @@ export default {
 
         const docRef = doc(collection(db, `${this.selectedStory}_Question_Bank`), String(nextId))
 
-        await setDoc(docRef, {
-          id: String(nextId),
-          showDescriptions: false, // Include showDescriptions, default to false
-          Question: this.questionText,
-          LeftAnswer:
-            this.leftDesc || this.leftResult
-              ? {
-                  Desc: this.leftDesc,
-                  Result: this.leftResult,
-                  Care: this.leftCare,
-                  Respect: this.leftRespect,
-                  Understanding: this.leftUnderstanding,
-                  NextQuestion: null // Default to null
-                }
-              : null,
-          MiddleAnswer:
+        const leftAnswer =
+          this.leftDesc || this.leftResult
+            ? {
+                Desc: this.leftDesc,
+                Result: this.leftResult,
+                Care: this.leftCare,
+                Respect: this.leftRespect,
+                Understanding: this.leftUnderstanding,
+                NextQuestion: null
+              }
+            : null
+
+        const rightAnswer =
+          this.rightDesc || this.rightResult
+            ? {
+                Desc: this.rightDesc,
+                Result: this.rightResult,
+                Care: this.rightCare,
+                Respect: this.rightRespect,
+                Understanding: this.rightUnderstanding,
+                NextQuestion: null
+              }
+            : null
+
+        let middleAnswer = null
+
+        // Middle Answer should only be enabled if both Left and Right Answers are filled in
+        if (this.isMiddleAnswerEnabled) {
+          middleAnswer =
             this.middleDesc || this.middleResult
               ? {
                   Desc: this.middleDesc,
@@ -131,20 +174,18 @@ export default {
                   Care: this.middleCare,
                   Respect: this.middleRespect,
                   Understanding: this.middleUnderstanding,
-                  NextQuestion: null // Default to null
-                }
-              : null,
-          RightAnswer:
-            this.rightDesc || this.rightResult
-              ? {
-                  Desc: this.rightDesc,
-                  Result: this.rightResult,
-                  Care: this.rightCare,
-                  Respect: this.rightRespect,
-                  Understanding: this.rightUnderstanding,
-                  NextQuestion: null // Default to null
+                  NextQuestion: null
                 }
               : null
+        }
+
+        await setDoc(docRef, {
+          id: String(nextId),
+          showDescriptions: false,
+          Question: this.questionText,
+          LeftAnswer: leftAnswer,
+          MiddleAnswer: middleAnswer,
+          RightAnswer: rightAnswer
         })
 
         alert('Responses submitted with ID: ' + nextId)
@@ -156,31 +197,26 @@ export default {
     },
     resetForm() {
       this.questionText = ''
-
       this.leftDesc = ''
       this.leftResult = ''
       this.leftCare = 0
       this.leftRespect = 0
       this.leftUnderstanding = 0
-
       this.middleDesc = ''
       this.middleResult = ''
       this.middleCare = 0
       this.middleRespect = 0
       this.middleUnderstanding = 0
-
       this.rightDesc = ''
       this.rightResult = ''
       this.rightCare = 0
       this.rightRespect = 0
       this.rightUnderstanding = 0
-
       alert('Form reset')
     },
     async getNextQuestionId() {
       const questionBankCollection = collection(db, `${this.selectedStory}_Question_Bank`)
       const querySnapshot = await getDocs(questionBankCollection)
-
       return querySnapshot.size
     }
   }
@@ -264,5 +300,11 @@ input[type='number'] {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.disabled-input {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
 }
 </style>

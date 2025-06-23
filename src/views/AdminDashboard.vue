@@ -27,6 +27,13 @@
           {{ story.Name }}
         </option>
       </select>
+
+      <button
+        class="delete-story-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        @click="confirmDeleteStory"
+      >
+        Delete Current Story
+      </button>
       <button
         class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
         @click="animateFormExit('addStory')"
@@ -127,7 +134,7 @@
 <script>
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, doc, deleteDoc, writeBatch } from 'firebase/firestore'
 
 import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
@@ -311,6 +318,59 @@ export default {
       this.editQuestionBool = false
       this.listQuestionBool = true
       this.selectedQuestionId = null
+    },
+    async confirmDeleteStory() {
+      // check if there's only one story left
+      if (this.stories.length === 1) {
+        alert('Cannot delete the last story.')
+        return
+      }
+
+      const confirmation = confirm('Are you sure you want to delete this story?')
+
+      if (confirmation) {
+        try {
+          const storyCollection = `${this.selectedStory}_Question_Bank`
+
+          await this.deleteCollection(storyCollection) //right now, the function just deletes the documents within the collection, not removing it entirely. Will revisit if can
+
+          const storyRef = doc(db, 'Story_List', storyCollection)
+          await deleteDoc(storyRef)
+
+          await this.fetchStories()
+
+          alert('Story deleted successfully!')
+        } catch (error) {
+          console.error('Error deleting story:', error)
+          alert('Error deleting the story.')
+        }
+      }
+    },
+
+    async deleteCollection(collectionPath) {
+      const collectionRef = collection(db, collectionPath)
+      const querySnapshot = await getDocs(collectionRef)
+
+      const batch = writeBatch(db)
+
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref)
+      })
+
+      await batch.commit()
+
+      await this.clearCollection(collectionRef)
+    },
+
+    async clearCollection(collectionRef) {
+      const querySnapshot = await getDocs(collectionRef)
+      const batch = writeBatch(db)
+
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref)
+      })
+
+      await batch.commit()
     }
   }
 }

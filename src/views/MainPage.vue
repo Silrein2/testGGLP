@@ -29,35 +29,47 @@
       v-if="responseBool && currentIndex < responsePrompt.length"
     >
       <div class="content-container">
-        <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
-        <div class="button-container">
-          <button
-            v-if="responsePrompt[currentIndex].leftAnswer"
-            @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
-            class="button-decision left-button-decision"
-            ref="responseBtn"
-          >
-            {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].middleAnswer"
-            @click="responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])"
-            class="button-decision middle-button-decision"
-            ref="responseBtn"
-          >
-            {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
-          </button>
-          <button
-            v-if="responsePrompt[currentIndex].rightAnswer"
-            @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])"
-            class="button-decision right-button-decision"
-            ref="responseBtn"
-          >
-            {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
-          </button>
+        <div
+          v-if="responsePrompt[currentIndex].question === 'This is a Mini-Game'"
+          class="mini-game-wrapper"
+        >
+          <MiniGame @finishMiniGame="responseToResult" />
+        </div>
+
+        <div v-else>
+          <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
+          <div class="button-container">
+            <button
+              v-if="responsePrompt[currentIndex].leftAnswer"
+              @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
+              class="button-decision left-button-decision"
+              ref="responseBtn"
+            >
+              {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
+            </button>
+            <button
+              v-if="responsePrompt[currentIndex].middleAnswer"
+              @click="
+                responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])
+              "
+              class="button-decision middle-button-decision"
+              ref="responseBtn"
+            >
+              {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
+            </button>
+            <button
+              v-if="responsePrompt[currentIndex].rightAnswer"
+              @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])"
+              class="button-decision right-button-decision"
+              ref="responseBtn"
+            >
+              {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
     <div
       ref="resultDiv"
       class="result-div"
@@ -100,9 +112,13 @@
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
 import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore'
+import MiniGame from '@/components/MiniGame.vue'
 
 export default {
   name: 'MainPage',
+  components: {
+    MiniGame
+  },
   data() {
     return {
       responsePrompt: [],
@@ -259,7 +275,9 @@ export default {
 
       this.bottomBool = false
 
-      this.scoreTally(answerDirection)
+      if (this.responsePrompt[this.currentIndex].question !== 'This is a Mini-Game') {
+        this.scoreTally(answerDirection)
+      }
 
       switch (answerDirection) {
         case 'Left':
@@ -294,6 +312,10 @@ export default {
       }
 
       this.currentResult = resultString
+
+      if (answerDirection === 'Bottom' && resultString === 'You have finished the mini-game') {
+        console.log('Mini-game finished:', resultString)
+      }
 
       this.animateResponseExit()
     },
@@ -615,6 +637,16 @@ export default {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   border-radius: 20px;
+}
+
+.mini-game-wrapper {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
 }
 
 .title-div {

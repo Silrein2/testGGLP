@@ -16,18 +16,16 @@
         <h3 class="text-shadow text-tea-cream">Your last score is: {{ lastScore }}</h3>
       </div>
       <div class="center-content">
-        <!-- <p>Your email: {{ email }}</p> -->
-        <!-- <router-link :to="{ name: 'MainPage' }" class="main-page-link text-tea-cream text-shadow"
-          >Go to Main Page</router-link
-        > -->
         <h2 class="text-shadow text-tea-cream">Select a Story</h2>
-        <div v-for="(story, index) in stories" :key="index">
-          <button
-            @click="goToMainPage(story)"
-            class="story-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
-          >
-            {{ story }}
-          </button>
+        <div class="story-button-container">
+          <div v-for="(story, index) in stories" :key="index">
+            <button
+              @click="goToMainPage(story)"
+              class="story-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
+            >
+              {{ story }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -171,8 +169,15 @@ export default {
   padding: 5%;
 }
 
+.story-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .story-button {
   width: 15vw;
   height: 7.5vh;
+  margin: 1%;
 }
 </style>

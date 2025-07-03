@@ -4,7 +4,12 @@
     <div v-if="loading">Loading questions...</div>
     <div v-else-if="questions.length === 0">No questions found.</div>
     <div v-else>
-      <div v-for="(question, index) in questions" :key="question.id" class="question-item">
+      <div
+        v-for="(question, index) in questions"
+        :key="question.id"
+        class="question-item"
+        :class="{ 'mini-game': question.Question === 'This is a Mini-Game' }"
+      >
         <div class="reorder-buttons">
           <button @click="moveUp(index)" :disabled="index === 0">↑</button>
           <button @click="moveDown(index)" :disabled="index === questions.length - 1">↓</button>
@@ -14,15 +19,24 @@
         </h3>
 
         <div class="action-buttons">
-          <button class="edit-button" @click="emitEditQuestion(question.id)">Edit</button>
           <button class="delete-button" @click="deleteQuestion(question.id)">Delete</button>
+          <button
+            v-if="question.Question !== 'This is a Mini-Game'"
+            class="edit-button"
+            @click="emitEditQuestion(question.id)"
+          >
+            Edit
+          </button>
         </div>
 
         <h4 style="color: white" @click="toggleDescriptions(question.id)">
           Question: {{ question.Question }}
         </h4>
 
-        <div v-if="question.showDescriptions" class="answer-details">
+        <div
+          v-if="question.showDescriptions && question.Question !== 'This is a Mini-Game'"
+          class="answer-details"
+        >
           <AnswerDetail title="Left Answer" :answer="question.LeftAnswer" />
           <div v-if="!isLinear && question.LeftAnswer && question.LeftAnswer.Desc">
             Next question after this Left answer
@@ -71,28 +85,13 @@
             </select>
           </div>
         </div>
-
-        <!-- <div class="color-picker">
-          <label for="colorPicker">Choose a color:</label>
-          <input
-            type="color"
-            v-model="question.color"
-            @input="updateColor(question.id, question.color)"
-            id="colorPicker"
-          />
-          <input
-            type="text"
-            v-model="question.color"
-            @input="updateColorFromHex(question.id, question.color)"
-            placeholder="Hex code"
-          />
-        </div> -->
       </div>
     </div>
 
     <div class="button-container">
       <button @click="saveOrder">Save Order</button>
       <button @click="resetOrder">Reset Order</button>
+      <button @click="addMiniGame">Add Mini-Game</button>
     </div>
   </div>
 </template>
@@ -247,6 +246,14 @@ export default {
     emitEditQuestion(id) {
       console.log('Id question list:' + id)
       this.$emit('edit-question', this.selectedStory, id)
+    },
+    addMiniGame() {
+      const newMiniGame = {
+        id: String(this.questions.length),
+        Question: 'This is a Mini-Game',
+        showDescriptions: false
+      }
+      this.questions.push(newMiniGame)
     }
   }
 }
@@ -271,6 +278,12 @@ export default {
   display: flex;
   flex-direction: column;
   overflow-x: auto;
+}
+
+.mini-game {
+  background-color: #04810b;
+  border: 1px solid #ffcc00;
+  color: #fff;
 }
 
 .answer-details {

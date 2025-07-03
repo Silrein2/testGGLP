@@ -71,6 +71,22 @@
             </select>
           </div>
         </div>
+
+        <!-- <div class="color-picker">
+          <label for="colorPicker">Choose a color:</label>
+          <input
+            type="color"
+            v-model="question.color"
+            @input="updateColor(question.id, question.color)"
+            id="colorPicker"
+          />
+          <input
+            type="text"
+            v-model="question.color"
+            @input="updateColorFromHex(question.id, question.color)"
+            placeholder="Hex code"
+          />
+        </div> -->
       </div>
     </div>
 
@@ -317,5 +333,22 @@ export default {
   padding: 10px;
   border-radius: 5px;
   z-index: 10;
+}
+
+.color-picker {
+  margin-top: 10px;
+}
+
+.color-picker input[type='color'] {
+  width: 50px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+}
+
+.color-picker input[type='text'] {
+  width: 100px;
+  padding: 5px;
+  margin-left: 10px;
 }
 </style>

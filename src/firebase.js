@@ -7,9 +7,9 @@ import { getFirestore } from 'firebase/firestore'
 const firebaseConfig = {
   apiKey: 'AIzaSyCp4Pj6-b4Wf5Po_bUs4MNV_bH6jaO99f4',
   authDomain: 'payback-copycat.firebaseapp.com',
-  databaseURL: 'https://payback-copycat-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  databaseURL: 'https://payback-copycat-default-rtdb.asia-southeast1.firebasedatabase.app',
   projectId: 'payback-copycat',
-  storageBucket: 'payback-copycat.appspot.com',
+  storageBucket: 'payback-copycat.firebasestorage.app',
   messagingSenderId: '426806339248',
   appId: '1:426806339248:web:b6b7ce630ec00d87297d75'
 }

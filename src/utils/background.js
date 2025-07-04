@@ -25,9 +25,22 @@ export function setBackgroundImage() {
   swirlElement.style.right = '0'
   swirlElement.style.transform = 'translateY(-50%)'
   swirlElement.style.width = '20%'
-  swirlElement.style.zIndex = '1'
+  swirlElement.style.zIndex = '0'
 
   backgroundElement.appendChild(swirlElement)
+}
+
+export function setBackgroundImageAdmin() {
+  const backgroundElement = document.getElementById('background-container')
+  backgroundElement.style.position = 'absolute'
+  backgroundElement.style.top = '0'
+  backgroundElement.style.left = '0'
+  backgroundElement.style.width = '100%'
+  backgroundElement.style.display = 'flex'
+  backgroundElement.style.transition = 'transform 0.3s'
+  backgroundElement.style.overflow = 'hidden'
+  backgroundElement.style.cursor = 'pointer'
+  backgroundElement.style.backgroundColor = '#4E2E1D'
 }
 
 export function updateBackgroundSize() {

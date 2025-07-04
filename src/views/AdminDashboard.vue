@@ -174,7 +174,7 @@ export default {
     }
   },
   async mounted() {
-    this.$setBackgroundImage()
+    this.$setBackgroundImageAdmin()
     this.$updateBackgroundSize()
 
     await this.fetchStories()

@@ -2,7 +2,11 @@ import './assets/main.css'
 // import './assets/teaColor.css'
 import './assets/standardUI.css'
 
-import { setBackgroundImage, updateBackgroundSize } from './utils/background'
+import {
+  setBackgroundImage,
+  updateBackgroundSize,
+  setBackgroundImageAdmin
+} from './utils/background'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -21,5 +25,6 @@ app.use(database)
 
 app.config.globalProperties.$setBackgroundImage = setBackgroundImage
 app.config.globalProperties.$updateBackgroundSize = updateBackgroundSize
+app.config.globalProperties.$setBackgroundImageAdmin = setBackgroundImageAdmin
 
 app.mount('#app')

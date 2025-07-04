@@ -1,3 +1,5 @@
+import { backgroundImage, swirlImage } from '@/assets/GUI/backgroundGui'
+
 export function setBackgroundImage() {
   const backgroundElement = document.getElementById('background-container')
   backgroundElement.style.position = 'absolute'
@@ -10,22 +12,22 @@ export function setBackgroundImage() {
   backgroundElement.style.cursor = 'pointer'
   backgroundElement.style.backgroundColor = '#4E2E1D'
 
-  const beforeElement = document.createElement('div')
-  beforeElement.style.content = ''
-  beforeElement.style.position = 'absolute'
-  beforeElement.style.top = '0'
-  beforeElement.style.left = '0'
-  beforeElement.style.width = '100%'
-  beforeElement.style.paddingTop = '56.25%'
-  beforeElement.style.backgroundSize = 'cover'
-  beforeElement.style.backgroundPosition = 'center'
-  beforeElement.style.backgroundRepeat = 'no-repeat'
-  beforeElement.style.zIndex = '-1'
-  beforeElement.style.transition = 'transform 2s ease'
-  beforeElement.style.transform = 'scale(1)'
-  beforeElement.style.transformOrigin = 'bottom center'
+  // Set the background image
+  backgroundElement.style.backgroundImage = `url(${backgroundImage})`
+  backgroundElement.style.backgroundSize = 'cover'
+  backgroundElement.style.backgroundPosition = 'center'
+  backgroundElement.style.backgroundRepeat = 'no-repeat'
 
-  backgroundElement.appendChild(beforeElement)
+  const swirlElement = document.createElement('img')
+  swirlElement.src = swirlImage
+  swirlElement.style.position = 'absolute'
+  swirlElement.style.top = '50%'
+  swirlElement.style.right = '0'
+  swirlElement.style.transform = 'translateY(-50%)'
+  swirlElement.style.width = '20%'
+  swirlElement.style.zIndex = '1'
+
+  backgroundElement.appendChild(swirlElement)
 }
 
 export function updateBackgroundSize() {

@@ -1,37 +1,65 @@
 <template>
-  <div id="background-container" class="login-wrapper">
-    <div class="login-container font-weight bg-tea-one">
-      <h2 class="text-tea-cream text-shadow font-size-title">User Login</h2>
+  <div id="background-container" class="login-wrapper" @click="showLogin">
+    <img v-if="!loginVisible" :src="mastheadImage" alt="Masthead" class="masthead-image" />
+    <div
+      v-if="loginVisible && !showUsernameInput"
+      class="login-container font-weight bg-white box-shadow"
+    >
+      <img :src="mastheadImage" alt="Masthead" class="masthead-image-login" />
+      <h2 class="login-text-color text-shadow font-size-label">Welcome to AKPK Ceria</h2>
       <div class="form-content">
-        <label for="email" class="text-tea-cream text-shadow font-size-label">Email</label>
+        <label for="email" class="login-text-color text-shadow font-size-form"
+          >Sign in to your account</label
+        >
         <input
           type="email"
           v-model="email"
-          placeholder="Enter your email"
-          class="border-radius bg-tea-cream no-border box-shadow font-weight font-size-form input-field"
+          placeholder="Email address"
+          class="bg-white no-border box-shadow font-weight font-size-form input-field"
         />
-
         <button
           @click="checkEmail"
-          class="login-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
+          class="login-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
           v-if="!showUsernameInput"
         >
           Login
         </button>
       </div>
-      <div v-if="showUsernameInput" class="form-content">
-        <label for="username" class="text-tea-cream text-shadow font-size-label">Username</label>
-        <input
-          type="text"
-          v-model="username"
-          placeholder="Enter your username"
-          class="border-radius bg-tea-cream no-border box-shadow font-weight font-size-form input-field"
-        />
+    </div>
+    <div
+      v-if="loginVisible && showUsernameInput"
+      class="login-container font-weight bg-white box-shadow"
+    >
+      <div class="form-content-register">
+        <div class="text-group">
+          <h2 for="username" class="login-text-color text-shadow font-size-label">
+            Let's get acquainted
+          </h2>
+          <h4 for="username" class="login-text-color text-shadow font-size-form">
+            As this is your first login, what name should we use to address you?
+          </h4>
+        </div>
+        <div class="register-container register-box-color border-radius-light">
+          <h1 class="text-white text-shadow">Hello</h1>
+          <h3 class="text-white text-shadow">My name is</h3>
+          <input
+            type="text"
+            v-model="username"
+            placeholder="Username"
+            class="border-radius-light bg-white no-border box-shadow font-weight font-size-form input-field"
+          />
+        </div>
         <button
           @click="registerUser"
-          class="register-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
+          class="register-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
         >
           Register
+        </button>
+        <button
+          @click="showUsernameInput = false"
+          class="go-back-button text-shadow border-radius-light bg-white login-text-color font-weight box-shadow margin-element font-size-form"
+        >
+          Go Back
         </button>
       </div>
     </div>
@@ -41,6 +69,7 @@
 <script>
 import { db } from '@/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { mastheadImage } from '@/assets/GUI/backgroundGui'
 
 export default {
   name: 'LoginPage',
@@ -48,7 +77,9 @@ export default {
     return {
       email: '',
       username: '',
-      showUsernameInput: false
+      showUsernameInput: false,
+      loginVisible: false,
+      mastheadImage: mastheadImage
     }
   },
   mounted() {
@@ -59,6 +90,9 @@ export default {
     window.removeEventListener('resize', this.$updateBackgroundSize)
   },
   methods: {
+    showLogin() {
+      this.loginVisible = true
+    },
     async checkEmail() {
       if (this.email === '') {
         alert('Please enter your email.')
@@ -114,23 +148,52 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  position: relative;
+}
+
+.masthead-image {
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  z-index: 1;
+}
+
+.masthead-image-login {
+  max-width: 100%;
+  max-height: 50%;
+  margin-bottom: 1.5%;
+  display: block;
 }
 
 .login-container {
   padding: 20px;
   border-radius: 8px;
-
-  width: 50vw;
+  width: 25vw;
   height: 45vh;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-content {
-  margin: 2.5% 0;
-  padding-left: 25%;
-  padding-right: 25%;
-
+  margin: 1.5% 0;
+  padding-left: 10%;
+  padding-right: 10%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.form-content-register {
+  padding-left: 10%;
+  padding-right: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-group {
+  margin-bottom: 0.1rem;
 }
 
 .margin-element {
@@ -140,5 +203,21 @@ export default {
 .input-field {
   height: 1.5%;
   padding: 5%;
+  text-align: center;
+  color: #163760;
+}
+
+.login-button {
+  width: 40%;
+}
+
+.register-container {
+  width: 75%;
+  height: 50%;
+  margin: 0 auto;
+}
+
+.go-back-button {
+  width: 40%;
 }
 </style>

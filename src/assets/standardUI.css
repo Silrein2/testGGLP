@@ -10,6 +10,10 @@
   border-radius: 20px;
 }
 
+.border-radius-light {
+  border-radius: 10px;
+}
+
 .bg-tea-choco {
   background-color: #4e2e1d;
 }
@@ -62,6 +66,10 @@
   color: #f37600;
 }
 
+.text-white {
+  color: white;
+}
+
 .font-weight {
   font-weight: 600;
 }
@@ -80,4 +88,20 @@
 
 .font-size-title {
   font-size: 1.75vw;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.login-button-blue {
+  background-color: #4492f6;
+}
+
+.login-text-color {
+  color: #163760;
+}
+
+.register-box-color {
+  background-color: #00afef;
 }

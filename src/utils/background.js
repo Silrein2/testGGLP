@@ -27,6 +27,8 @@ export function setBackgroundImage() {
   swirlElement.style.width = '20%'
   swirlElement.style.zIndex = '0'
 
+  swirlElement.style.pointerEvents = 'none'
+
   backgroundElement.appendChild(swirlElement)
 }
 

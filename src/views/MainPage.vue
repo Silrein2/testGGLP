@@ -1,6 +1,6 @@
 <template>
   <div id="background-container">
-    <div
+    <!-- <div
       ref="scoreHoverDiv"
       class="score-hover-div box-shadow border-radius bg-tea-three text-shadow text-tea-cream font-weight"
       @mouseenter="showScores = true"
@@ -12,15 +12,53 @@
         <p>Respect: {{ respectScore }}</p>
         <p>Understanding: {{ understandingScore }}</p>
       </div>
+    </div> -->
+
+    <div class="score-box">
+      <div class="score-group group-one">
+        <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
+        Empathy progress
+      </div>
+      <div class="score-group group-two">
+        <div class="score-item">
+          <img :src="careIcon" alt="care" />
+          <p>Care</p>
+          <p class="score-text">{{ careScore }}</p>
+        </div>
+        <div class="score-item">
+          <img :src="respectIcon" alt="respect" />
+          <p>Respect</p>
+          <p class="score-text">{{ respectScore }}</p>
+        </div>
+        <div class="score-item">
+          <img :src="understandingIcon" alt="understanding" />
+          <p>Understanding</p>
+          <p class="score-text">{{ understandingScore }}</p>
+        </div>
+        <div class="score-item">
+          <img :src="scoreIcon" alt="total" />
+          <p>Score</p>
+          <p class="score-text">{{ totalScore }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="back-button-container">
+      <div class="back-button" @click="goBack">
+        <div class="back-arrow-square">
+          <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" />
+        </div>
+        <!-- <span class="back-button-text">Go back to dashboard</span> -->
+      </div>
     </div>
 
     <div
       ref="titleDiv"
-      class="response-div"
-      @click="animateTitleExit"
+      class="response-div title-div"
       :style="{ visibility: titleDivVisible ? 'visible' : 'hidden' }"
     >
-      <h1 class="title-div">{{ initialStory }}</h1>
+      <h1 class="title-text">{{ initialStory }}</h1>
+      <button class="continue-button" @click="animateTitleExit">Continue</button>
     </div>
 
     <div
@@ -114,6 +152,16 @@ import { db } from '@/firebase'
 import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore'
 import MiniGame from '@/components/MiniGame.vue'
 
+import { backArrowIcon } from '@/assets/GUI/icons/icons'
+import {
+  empathyIcon,
+  careIcon,
+  respectIcon,
+  understandingIcon,
+  scoreIcon
+} from '@/assets/GUI/icons/icons'
+import { unionGreenIcon, unionRedIcon } from '@/assets/GUI/icons/icons'
+
 export default {
   name: 'MainPage',
   components: {
@@ -154,7 +202,18 @@ export default {
       initialStory: '',
       isLinear: false,
       nextQuestionIndex: null,
-      showScores: false
+      showScores: false,
+
+      backArrowIcon: backArrowIcon,
+
+      empathyIcon: empathyIcon,
+      careIcon: careIcon,
+      respectIcon: respectIcon,
+      understandingIcon: understandingIcon,
+      scoreIcon: scoreIcon,
+
+      unionGreenIcon: unionGreenIcon,
+      unionRedIcon: unionRedIcon
     }
   },
   async beforeCreate() {
@@ -233,7 +292,7 @@ export default {
         this.$refs.titleDiv,
         { x: 0, y: window.innerHeight, opacity: 0 },
         {
-          y: this.destY,
+          y: 100,
           duration: 2,
           delay: 2,
           opacity: 1,
@@ -584,6 +643,9 @@ export default {
       } else {
         return String(this.currentHighScore)
       }
+    },
+    goBack() {
+      this.$router.push('/user-dashboard')
     }
   }
 }
@@ -650,9 +712,45 @@ export default {
 }
 
 .title-div {
+  background-color: white;
+  color: black;
   padding: 5%;
+  position: relative;
+
+  width: 65vw;
+  height: 50vh;
+
+  top: 0vh;
+  left: 12vw;
 }
 
+.continue-button {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 10px 20px;
+  background-color: #4492f6;
+  color: white;
+
+  width: 10vw;
+  height: auto;
+
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  font-size: 1vw;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.title-text {
+  margin: 0;
+}
 .result-div {
   position: absolute;
 
@@ -814,17 +912,104 @@ button {
 
 .score-hover-div {
   position: absolute;
-  top: 10px;
-  left: 10px;
   padding: 10px;
 
   text-align: center;
 
   width: 10vw;
+
+  bottom: 10vh;
+
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .score-hover-div p {
   margin: 5px 0;
   text-align: left;
+}
+
+.back-button-container {
+  position: absolute;
+  top: 2.5vh;
+  left: 10vw;
+  display: flex;
+  align-items: center;
+}
+
+.back-arrow-square {
+  width: 50px;
+  height: 50px;
+  border: 2px solid black;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.back-arrow-icon {
+  width: 70%;
+  height: auto;
+}
+
+.back-button-text {
+  font-size: 1rem;
+  line-height: 50px;
+}
+
+.score-box {
+  background-color: white;
+  width: 65vw;
+  height: 12.5vh;
+  position: absolute;
+  bottom: 10vh;
+
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.score-group {
+  height: 100%;
+}
+
+.group-one {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  padding-left: 2.5%;
+}
+
+.group-one img {
+  width: 1.8vw;
+}
+
+.group-two {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.score-item img {
+  width: 1.8vw;
+  height: auto;
+}
+
+.score-text {
+  font-weight: 900;
 }
 </style>

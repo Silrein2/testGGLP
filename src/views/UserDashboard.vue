@@ -73,7 +73,7 @@
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
         <div class="story-button-container">
           <div v-for="(story, index) in stories" :key="index" class="story-button-wrapper">
-            <div class="story-box">
+            <div class="story-box" @click="goToMainPage(story.Name)">
               <div class="difficulty-box" :style="getDifficultyStyles(story.Difficulty)">
                 {{ story.Difficulty }}
               </div>

@@ -77,32 +77,40 @@
         <div v-else>
           <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
           <div class="button-container">
-            <button
-              v-if="responsePrompt[currentIndex].leftAnswer"
-              @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
-              class="button-decision left-button-decision"
-              ref="responseBtn"
-            >
-              {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
-            </button>
-            <button
-              v-if="responsePrompt[currentIndex].middleAnswer"
-              @click="
-                responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])
-              "
-              class="button-decision middle-button-decision"
-              ref="responseBtn"
-            >
-              {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
-            </button>
-            <button
-              v-if="responsePrompt[currentIndex].rightAnswer"
-              @click="responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])"
-              class="button-decision right-button-decision"
-              ref="responseBtn"
-            >
-              {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
-            </button>
+            <div class="button-wrapper">
+              <button
+                v-if="responsePrompt[currentIndex].leftAnswer"
+                @click="responseToResult('Left', responsePrompt[currentIndex].leftAnswer['Result'])"
+                class="button-decision left-button-decision"
+                ref="responseBtn"
+              >
+                {{ responsePrompt[currentIndex].leftAnswer['Desc'] }}
+              </button>
+            </div>
+            <div class="button-wrapper">
+              <button
+                v-if="responsePrompt[currentIndex].middleAnswer"
+                @click="
+                  responseToResult('Bottom', responsePrompt[currentIndex].middleAnswer['Result'])
+                "
+                class="button-decision middle-button-decision"
+                ref="responseBtn"
+              >
+                {{ responsePrompt[currentIndex].middleAnswer['Desc'] }}
+              </button>
+            </div>
+            <div class="button-wrapper">
+              <button
+                v-if="responsePrompt[currentIndex].rightAnswer"
+                @click="
+                  responseToResult('Right', responsePrompt[currentIndex].rightAnswer['Result'])
+                "
+                class="button-decision right-button-decision"
+                ref="responseBtn"
+              >
+                {{ responsePrompt[currentIndex].rightAnswer['Desc'] }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -322,7 +330,7 @@ export default {
           gsap.fromTo(
             this.$refs.responseDiv,
             { x: 0, y: window.innerHeight, opacity: 0 },
-            { y: this.destY, duration: 2, delay: 0, opacity: 1 }
+            { y: 100, duration: 2, delay: 0, opacity: 1 }
           )
         } else {
           console.warn('responseDiv not found for animation.')
@@ -688,15 +696,11 @@ export default {
   top: 0vh;
   left: 12.5vw;
 
-  color: white;
+  color: black;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   width: 75vw;
-  height: 50vh;
-
-  background-color: #f1a159;
-
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  height: 70vh;
 
   border-radius: 20px;
 }
@@ -791,54 +795,51 @@ button {
 }
 
 .button-container {
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.button-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  width: 12.5vw;
+  height: 20vh;
+
+  top: 70%;
+  transform: translateY(70%);
+}
+
+.middle-button {
+  flex: 2;
 }
 
 .button-decision {
-  background-color: #fcdfc2;
+  background-color: white;
   border: none;
   color: black;
-
   font-weight: 600;
-
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
 
   font-size: 100%;
-  margin: 0 10px;
   cursor: pointer;
+
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
-  width: 17.5vw;
-  height: 17.5vh;
-
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.left-button-decision {
-  position: absolute;
-
-  left: -5%;
-  top: 35%;
-}
-
+.left-button-decision,
+.right-button-decision,
 .middle-button-decision {
-  position: absolute;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  bottom: -5%;
-}
-
-.right-button-decision {
-  position: absolute;
-
-  right: -5%;
-  top: 35%;
+  width: 90%;
+  height: 100%;
 }
 
 .content-container {
@@ -985,6 +986,7 @@ button {
 
 .group-one img {
   width: 1.8vw;
+  height: auto;
 }
 
 .group-two {

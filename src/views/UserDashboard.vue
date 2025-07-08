@@ -78,8 +78,9 @@
                 {{ story.Difficulty }}
               </div>
               <div class="character-selection">
+                <pre>{{ console.log('Image Head for', story.Name, ':', story.ImageHead) }}</pre>
                 <img
-                  :src="story.imageHead && story.imageHead !== '' ? story.imageHead : defaultAvatar"
+                  :src="story.ImageHead || defaultAvatar"
                   alt="Character Head"
                   class="character-image"
                 />
@@ -174,6 +175,7 @@ export default {
       try {
         const querySnapshot = await getDocs(collection(db, 'Story_List'))
         this.stories = querySnapshot.docs.map((doc) => doc.data())
+        console.log('Fetched stories:', this.stories)
       } catch (error) {
         console.error('Error fetching stories', error)
       }

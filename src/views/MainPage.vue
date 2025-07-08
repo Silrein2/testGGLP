@@ -13,7 +13,6 @@
         <p>Understanding: {{ understandingScore }}</p>
       </div>
     </div> -->
-
     <div class="score-box">
       <div class="score-group group-one">
         <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
@@ -21,16 +20,31 @@
       </div>
       <div class="score-group group-two">
         <div class="score-item">
+          <div class="union-icon" v-if="unionCare">
+            <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
+            <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
+            <div class="union-text">{{ unionCare }}</div>
+          </div>
           <img :src="careIcon" alt="care" />
           <p>Care</p>
           <p class="score-text">{{ careScore }}</p>
         </div>
         <div class="score-item">
+          <div class="union-icon" v-if="unionRespect">
+            <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
+            <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
+            <div class="union-text">{{ unionRespect }}</div>
+          </div>
           <img :src="respectIcon" alt="respect" />
           <p>Respect</p>
           <p class="score-text">{{ respectScore }}</p>
         </div>
         <div class="score-item">
+          <div class="union-icon" v-if="unionUnderstanding">
+            <img :src="unionGreenIcon" alt="union understanding" v-if="understandingGreenBool" />
+            <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
+            <div class="union-text">{{ unionUnderstanding }}</div>
+          </div>
           <img :src="understandingIcon" alt="understanding" />
           <p>Understanding</p>
           <p class="score-text">{{ understandingScore }}</p>
@@ -122,17 +136,7 @@
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
       <h1 class="font-size-title response-result">{{ currentResult }}</h1>
-      <div class="response-result-score">
-        <h3 class="font-size-button">{{ addedCareString }}</h3>
-        <h3 class="font-size-button">{{ addedRespectString }}</h3>
-        <h3 class="font-size-button">{{ addedUnderstandingString }}</h3>
-      </div>
-      <button
-        @click="resultToResponse()"
-        class="next-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
-      >
-        NEXT
-      </button>
+      <button @click="resultToResponse()" class="continue-button">Continue</button>
     </div>
 
     <div
@@ -221,7 +225,15 @@ export default {
       scoreIcon: scoreIcon,
 
       unionGreenIcon: unionGreenIcon,
-      unionRedIcon: unionRedIcon
+      unionRedIcon: unionRedIcon,
+
+      unionCare: '',
+      unionRespect: '',
+      unionUnderstanding: '',
+
+      careGreenBool: false,
+      respectGreenBool: false,
+      understandingGreenBool: false
     }
   },
   async beforeCreate() {
@@ -511,17 +523,18 @@ export default {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: this.destY, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 2, delay: 2, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: this.destY, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 2, delay: 2, opacity: 1 }
         )
       }
     },
     resultToResponse() {
+      this.hideUnionIcons()
       const tl = gsap.timeline({
         onComplete: () => {
           this.nextStory()
@@ -626,24 +639,47 @@ export default {
       let statement = ''
 
       if (score < 0) {
-        statement = ' -' + score * -1
+        statement = score
       } else {
-        statement = ' +' + score
+        statement = '+' + score
       }
 
       switch (categoryName) {
         case 'Care':
           this.careScore = this.careScore + score
+          this.unionCare = statement
+          if (score > -1) {
+            this.careGreenBool = true
+          } else {
+            this.careGreenBool = false
+          }
           break
         case 'Respect':
           this.respectScore = this.respectScore + score
+          this.unionRespect = statement
+          if (score > -1) {
+            this.respectGreenBool = true
+          } else {
+            this.respectGreenBool = false
+          }
           break
         case 'Understanding':
           this.understandingScore = this.understandingScore + score
+          this.unionUnderstanding = statement
+          if (score > -1) {
+            this.understandingGreenBool = true
+          } else {
+            this.understandingGreenBool = false
+          }
           break
       }
 
       return statement
+    },
+    hideUnionIcons() {
+      this.unionCare = ''
+      this.unionRespect = ''
+      this.unionUnderstanding = ''
     },
     highScoreDeterminant() {
       if (this.currentHighScore < -9999) {
@@ -718,7 +754,7 @@ export default {
 .title-div {
   background-color: white;
   color: black;
-  padding: 5%;
+  padding: 2.5%;
   position: relative;
 
   width: 65vw;
@@ -726,6 +762,8 @@ export default {
 
   top: 0vh;
   left: 12vw;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .continue-button {
@@ -758,18 +796,20 @@ export default {
 .result-div {
   position: absolute;
 
+  padding: 2.5%;
+
   top: 0vh;
   left: 12.5vw;
 
-  width: 75vw;
+  width: 65vw;
   height: 50vh;
 
-  color: white;
+  color: black;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   opacity: 0;
 
-  background-color: #f5962c;
+  background-color: white;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   border-radius: 20px;
@@ -965,12 +1005,11 @@ button {
   height: 12.5vh;
   position: absolute;
   bottom: 10vh;
-
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  overflow: visible; /* Allow overflow */
 }
 
 .score-group {
@@ -991,19 +1030,16 @@ button {
 
 .group-two {
   width: 70%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding-left: 5%;
-  padding-right: 5%;
+  display: flex; /* Keep horizontal layout */
+  justify-content: space-between; /* Space items evenly */
+  align-items: flex-end; /* Align items to the bottom */
 }
 
 .score-item {
+  position: relative; /* Create a positioning context for absolute children */
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
 }
 
 .score-item img {
@@ -1013,5 +1049,42 @@ button {
 
 .score-text {
   font-weight: 900;
+}
+
+.union-container {
+  position: absolute; /* Position it within the group-two */
+  top: -40px; /* Adjust this value to move the union icons above the score items */
+  left: 0; /* Align to the left */
+  right: 0; /* Align to the right */
+  display: flex;
+  justify-content: space-around; /* Space icons evenly */
+  align-items: center; /* Center items vertically */
+}
+
+.union-icon {
+  position: absolute; /* Position it above the score item */
+
+  top: -40%; /* Adjust this value to control vertical positioning */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Align to center */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.union-icon img {
+  width: 2vw; /* Adjust size of the union icons */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.union-text {
+  position: absolute; /* Position text over the icon */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Align to center */
+  color: white; /* Change text color for visibility */
+  font-weight: bold; /* Make the text bold */
+  text-align: center; /* Center the text */
+  text-shadow: 1px 1px 2px black; /* Optional: add shadow for better visibility */
 }
 </style>

@@ -13,7 +13,7 @@
         <p>Understanding: {{ understandingScore }}</p>
       </div>
     </div> -->
-    <div class="score-box">
+    <div class="score-box" v-if="currentIndex < responsePrompt.length">
       <div class="score-group group-one">
         <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
         Empathy progress
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <div class="back-button-container">
+    <div class="back-button-container" v-if="currentIndex < responsePrompt.length">
       <div class="back-button" @click="goBack">
         <div class="back-arrow-square">
           <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" />
@@ -141,21 +141,42 @@
 
     <div
       ref="scoreDiv"
-      class="response-div"
+      class="response-div score-div"
       v-if="responseBool && (currentIndex >= responsePrompt.length || currentIndex == null)"
     >
-      <div class="score-container">
-        <h2>This time, your score is:</h2>
-        <p>Care Score: {{ careScore }}</p>
-        <p>Respect Score: {{ respectScore }}</p>
-        <p>Understanding Score: {{ understandingScore }}</p>
-        <p>Total Empathy Score: {{ totalScore }}</p>
-        <p>Previous High Score: {{ highScoreDeterminant() }}</p>
-        <p>Max Care Score: {{ maxCareScore }}</p>
-        <p>Max Respect Score: {{ maxRespectScore }}</p>
-        <p>Max Understanding Score: {{ maxUnderstandingScore }}</p>
+      <div class="score-intro">
+        <img :src="congratsIcon" />
+        <p>Congratulations!</p>
+        <p>You've completed the assessment</p>
+        <p>Here's your detailed score breakdown</p>
+      </div>
 
-        <button @click="saveScoreToFirestore()" class="save-button">Save Score</button>
+      <div class="score-breakdown">
+        <div class="care-score-card">
+          <p>Care Score: {{ careScore }}</p>
+        </div>
+        <div class="respect-score-card">
+          <p>Respect Score: {{ respectScore }}</p>
+        </div>
+        <div class="understanding-score-card">
+          <p>Understanding Score: {{ understandingScore }}</p>
+        </div>
+      </div>
+
+      <div class="total-score-box">
+        <img :src="starIcon" />
+        <div>Total empathy score: {{ totalScore }}</div>
+      </div>
+
+      <div>
+        <div class="comparison-score-box">Comparison section</div>
+      </div>
+
+      <div class="score-button-container">
+        <button class="play-again-button">Play again</button>
+        <button class="back-to-dashboard-button" @click="saveScoreToFirestore()">
+          Back to dashboard
+        </button>
       </div>
     </div>
   </div>
@@ -176,6 +197,16 @@ import {
   scoreIcon
 } from '@/assets/GUI/icons/icons'
 import { unionGreenIcon, unionRedIcon } from '@/assets/GUI/icons/icons'
+
+import {
+  congratsIcon,
+  careNoBGIcon,
+  respectNoBGIcon,
+  understandingNoBGIcon,
+  starIcon,
+  graphUpIcon,
+  graphDownIcon
+} from '@/assets/GUI/icons/icons'
 
 export default {
   name: 'MainPage',
@@ -240,7 +271,16 @@ export default {
 
       maxCareScore: 0,
       maxRespectScore: 0,
-      maxUnderstandingScore: 0
+      maxUnderstandingScore: 0,
+      totalMaxScore: 0,
+
+      congratsIcon: congratsIcon,
+      careNoBGIcon: careNoBGIcon,
+      respectNoBGIcon: respectNoBGIcon,
+      understandingNoBGIcon: understandingNoBGIcon,
+      starIcon: starIcon,
+      graphUpIcon: graphUpIcon,
+      graphDownIcon: graphDownIcon
     }
   },
   async beforeCreate() {
@@ -754,6 +794,8 @@ export default {
       console.log('care: ' + this.maxCareScore)
       console.log('respect: ' + this.maxRespectScore)
       console.log('understanding: ' + this.maxUnderstandingScore)
+
+      this.totalMaxScore = this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
     }
   }
 }
@@ -1116,39 +1158,126 @@ button {
 }
 
 .union-container {
-  position: absolute; /* Position it within the group-two */
-  top: -40px; /* Adjust this value to move the union icons above the score items */
-  left: 0; /* Align to the left */
-  right: 0; /* Align to the right */
+  position: absolute;
+  top: -40px;
+  left: 0;
+  right: 0;
   display: flex;
-  justify-content: space-around; /* Space icons evenly */
-  align-items: center; /* Center items vertically */
+  justify-content: space-around;
+  align-items: center;
 }
 
 .union-icon {
-  position: absolute; /* Position it above the score item */
+  position: absolute;
 
-  top: -40%; /* Adjust this value to control vertical positioning */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Align to center */
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .union-icon img {
-  width: 2vw; /* Adjust size of the union icons */
-  height: auto; /* Maintain aspect ratio */
+  width: 2vw;
+  height: auto;
 }
 
 .union-text {
-  position: absolute; /* Position text over the icon */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Align to center */
-  color: white; /* Change text color for visibility */
-  font-weight: bold; /* Make the text bold */
-  text-align: center; /* Center the text */
-  text-shadow: 1px 1px 2px black; /* Optional: add shadow for better visibility */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 1px 1px 2px black;
+}
+
+.score-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-intro {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.score-breakdown {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.care-score-card,
+.respect-score-card,
+.understanding-score-card {
+  width: 30%;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.total-score-box {
+  width: 100%;
+  background-color: #9747ff;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.comparison-score-box {
+  width: 100%;
+  background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.score-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.play-again-button {
+  padding: 10px 20px;
+  background-color: #4492f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1vw;
+
+  width: 15vw;
+  height: 5vh;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.back-to-dashboard-button {
+  padding: 10px 20px;
+  background-color: white;
+  color: grey;
+  border: #2c3e50;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1vw;
+
+  width: 15vw;
+  height: 5vh;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>

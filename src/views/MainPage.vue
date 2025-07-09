@@ -21,9 +21,11 @@
         </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionCare">
-            <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
-            <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
-            <div class="union-text">{{ unionCare }}</div>
+            <div class="union-content">
+              <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
+              <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
+              <div class="union-text">{{ unionCare }}</div>
+            </div>
           </div>
           <img :src="careIcon" alt="care" />
           <p>Care</p>
@@ -31,9 +33,11 @@
         </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionRespect">
-            <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
-            <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
-            <div class="union-text">{{ unionRespect }}</div>
+            <div class="union-content">
+              <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
+              <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
+              <div class="union-text">{{ unionRespect }}</div>
+            </div>
           </div>
           <img :src="respectIcon" alt="respect" />
           <p>Respect</p>
@@ -41,9 +45,11 @@
         </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionUnderstanding">
-            <img :src="unionGreenIcon" alt="union understanding" v-if="understandingGreenBool" />
-            <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
-            <div class="union-text">{{ unionUnderstanding }}</div>
+            <div class="union-content">
+              <img :src="unionGreenIcon" alt="union understanding" v-if="understandingGreenBool" />
+              <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
+              <div class="union-text">{{ unionUnderstanding }}</div>
+            </div>
           </div>
           <img :src="understandingIcon" alt="understanding" />
           <p>Understanding</p>
@@ -1177,25 +1183,20 @@ button {
   font-weight: 900;
 }
 
-.union-container {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
 .union-icon {
   position: absolute;
-
-  top: -40%;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  top: -51%;
+}
+
+.union-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .union-icon img {
@@ -1205,13 +1206,9 @@ button {
 
 .union-text {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   color: white;
   font-weight: bold;
   text-align: center;
-  text-shadow: 1px 1px 2px black;
 }
 
 .score-div {

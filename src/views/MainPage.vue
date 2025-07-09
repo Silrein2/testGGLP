@@ -168,9 +168,9 @@
         <div>Total empathy score: {{ totalScore }}</div>
       </div>
 
-      <div>
+      <!-- <div>
         <div class="comparison-score-box">Comparison section</div>
-      </div>
+      </div> -->
 
       <div class="score-button-container">
         <button class="play-again-button" @click="playAgain()">Play again</button>

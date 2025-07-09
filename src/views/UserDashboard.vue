@@ -12,7 +12,7 @@
             <span
               >Hello, <span class="username">{{ username }}</span></span
             >
-            Ready for your next challenge?
+            <span style="font-size: 0.8vw; color: dimgray">Ready for your next challenge?</span>
           </div>
         </div>
         <div class="group-two">
@@ -20,7 +20,7 @@
             <div class="stat-games">
               <img :src="gamesIcon" alt="Games Icon" class="stat-icon" />
               <span>Played games</span>
-              <div class="stat-box">
+              <div class="stat-box" style="font-weight: 700">
                 {{ timesPlayed }}
               </div>
             </div>
@@ -29,7 +29,7 @@
             <div class="stat-games">
               <img :src="highscoreIcon" alt="Highscore Icon" class="stat-icon" />
               <span>Highscore</span>
-              <div class="stat-box">
+              <div class="stat-box" style="font-weight: 700">
                 {{ highScoreDeterminant() }}
               </div>
             </div>
@@ -38,15 +38,15 @@
             <div class="stat-games">
               <img :src="lastscoreIcon" alt="Lastscore Icon" class="stat-icon" />
               <span>Last score</span>
-              <div class="stat-box">
+              <div class="stat-box" style="font-weight: 700">
                 {{ lastScore }}
               </div>
             </div>
           </div>
-        </div>
-        <div class="info-item">
-          <div class="logout-icon-container">
-            <img :src="logoutIcon" alt="Logout Icon" class="logout-icon" @click="logout" />
+          <div class="info-item">
+            <div class="logout-icon-container">
+              <img :src="logoutIcon" alt="Logout Icon" class="logout-icon" @click="logout" />
+            </div>
           </div>
         </div>
       </div>
@@ -297,18 +297,18 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   background-color: white;
-
   border-radius: 8px;
   padding: 20px;
   margin: 2.5% auto;
-
-  width: 60%;
-  height: 5%;
+  width: 70%;
+  height: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .group-one {
-  width: 30%;
+  width: 15%;
+
   display: inline-flex;
   align-items: center;
 }
@@ -328,6 +328,7 @@ export default {
   width: 70%;
   display: flex;
   align-items: center;
+  margin-left: 5%;
 }
 
 .info-item {
@@ -372,13 +373,18 @@ export default {
 }
 
 .logout-icon-container {
-  width: 40px;
-  height: 40px;
+  width: 2vw;
+  height: 2vw;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  right: 7.5%;
+
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .logout-icon {
@@ -387,9 +393,17 @@ export default {
 }
 
 .stat-games {
+  position: absolute;
+
   display: flex;
   align-items: center;
-  margin-left: 2.5%;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 15vw;
+
+  font-size: 1vw;
 }
 
 .stat-icon {

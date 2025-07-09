@@ -1121,6 +1121,8 @@ button {
   display: flex;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   overflow: visible; /* Allow overflow */
+
+  z-index: 20;
 }
 
 .score-group {

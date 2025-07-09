@@ -361,7 +361,7 @@ export default {
       switch (answerDirection) {
         case 'Left':
           this.entranceX = -window.innerWidth
-          this.entranceY = window.innerHeight * 0.25
+          this.entranceY = 100
 
           this.exitX = window.innerWidth
           this.exitY = this.entranceY
@@ -369,7 +369,7 @@ export default {
           break
         case 'Right':
           this.entranceX = window.innerWidth
-          this.entranceY = window.innerHeight * 0.25
+          this.entranceY = 100
 
           this.exitX = -window.innerWidth
           this.exitY = this.entranceY
@@ -567,13 +567,13 @@ export default {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: this.destY, duration: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 2, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: this.destY, duration: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 2, opacity: 1 }
         )
       }
     },
@@ -584,7 +584,7 @@ export default {
         gsap.fromTo(
           this.$refs.scoreDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: this.destY, duration: 2, delay: 0, opacity: 1 }
+          { x: 0, y: 100, duration: 2, delay: 0, opacity: 1 }
         )
       } else {
         console.warn('scoreDiv ref not found.  Animation skipped.')
@@ -758,7 +758,7 @@ export default {
   position: relative;
 
   width: 65vw;
-  height: 50vh;
+  height: 45vh;
 
   top: 0vh;
   left: 12vw;
@@ -802,7 +802,7 @@ export default {
   left: 12.5vw;
 
   width: 65vw;
-  height: 50vh;
+  height: 45vh;
 
   color: black;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

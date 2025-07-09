@@ -1112,15 +1112,23 @@ button {
 
 .score-box {
   background-color: white;
-  width: 65vw;
   height: 12.5vh;
   position: absolute;
   bottom: 10vh;
+
+  width: 65vw;
+
+  left: 15vw;
+
+  /*
   left: 50%;
   transform: translateX(-50%);
+  */
   display: flex;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   overflow: visible; /* Allow overflow */
+
+  border-radius: 15px;
 
   z-index: 20;
 }

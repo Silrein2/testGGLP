@@ -27,8 +27,10 @@ export default {
       empathyScore: 0
     }
   },
-  mounted() {
+  beforeCreate() {
     this.preloadImages()
+  },
+  mounted() {
     this.startMiniGame()
   },
   methods: {

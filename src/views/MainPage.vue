@@ -152,26 +152,80 @@
     >
       <div class="score-intro">
         <img :src="congratsIcon" />
-        <p>Congratulations!</p>
-        <p>You've completed the assessment</p>
-        <p>Here's your detailed score breakdown</p>
+        <p style="font-size: 1.75vw; font-weight: 700">Congratulations!</p>
+        <p style="font-size: 1.25vw; font-weight: 500">You've completed the assessment</p>
+        <p style="font-size: 0.8vw; color: dimgray">Here's your detailed score breakdown</p>
       </div>
 
       <div class="score-breakdown">
         <div class="care-score-card">
-          <p>Care Score: {{ careScore }}</p>
+          <div class="score-card-point-wrapper">
+            <div class="score-image-group">
+              <img :src="careNoBGIcon" />
+            </div>
+            <div class="score-text-group">
+              <span style="font-size: 1vw; font-weight: 700">{{ careScore }} </span>
+              <span style="font-size: 0.8vw; color: dimgray">/ {{ maxCareScore }} points</span>
+            </div>
+          </div>
+
+          <p style="text-align: left; padding: 5%">
+            Your ability to show compassion and concern for others
+          </p>
         </div>
+
         <div class="respect-score-card">
-          <p>Respect Score: {{ respectScore }}</p>
+          <div class="score-card-point-wrapper">
+            <div class="score-image-group">
+              <img :src="respectNoBGIcon" />
+            </div>
+
+            <div class="score-text-group">
+              <span style="font-size: 1vw; font-weight: 700">{{ respectScore }} </span
+              ><span style="font-size: 0.8vw; color: dimgray">/ {{ maxRespectScore }} points</span>
+            </div>
+          </div>
+
+          <p style="text-align: left; padding: 5%">
+            How well you value and honour other’s perspectives
+          </p>
         </div>
+
         <div class="understanding-score-card">
-          <p>Understanding Score: {{ understandingScore }}</p>
+          <div class="score-card-point-wrapper">
+            <div class="score-image-group">
+              <img :src="understandingNoBGIcon" />
+            </div>
+
+            <div class="score-text-group">
+              <span style="font-size: 1vw; font-weight: 700">{{ understandingScore }}</span>
+              <span style="font-size: 0.8vw; color: dimgray"
+                >/ {{ maxUnderstandingScore }} points</span
+              >
+            </div>
+          </div>
+
+          <p style="text-align: left; padding: 5%">
+            Your capacity to comprehend other’s feelings and situations
+          </p>
         </div>
       </div>
 
       <div class="total-score-box">
-        <img :src="starIcon" />
-        <div>Total empathy score: {{ totalScore }}</div>
+        <div class="total-score-group">
+          <div class="score-image-group" style="margin-left: 5%">
+            <img :src="starIcon" />
+          </div>
+          <div class="score-text-group" style="margin-left: 7.5%">
+            <span style="font-size: 1.25vw; font-weight: 500">Total empathy score</span>
+            <span style="font-size: 0.8vw">Your overall empathy assessment result</span>
+          </div>
+        </div>
+
+        <div class="score-value-group">
+          <span style="font-size: 1.5vw; font-weight: 700">{{ totalScore }} </span>
+          <span style="font-size: 1vw">/ {{ totalMaxScore }} points</span>
+        </div>
       </div>
 
       <!-- <div>
@@ -758,6 +812,7 @@ export default {
         const prompt = this.responsePrompt[i]
 
         if (prompt.question == 'This is a Mini-Game') {
+          this.totalMaxScore += 25
           continue
         }
 
@@ -1143,17 +1198,17 @@ button {
 }
 
 .score-group {
-  display: flex; /* Arrange items in a row */
-  justify-content: space-around; /* Distribute space evenly */
-  align-items: center; /* Center items vertically */
-  width: 100%; /* Full width of the score-box */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
 }
 
 .score-item {
   display: flex;
-  flex-direction: column; /* Stack the icon and text vertically */
-  align-items: center; /* Center align the content */
-  flex: 1; /* Allow items to grow and fill space equally */
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
 }
 
 .group-one {
@@ -1169,9 +1224,9 @@ button {
 
 .group-two {
   width: 70%;
-  display: flex; /* Keep horizontal layout */
-  justify-content: space-between; /* Space items evenly */
-  align-items: flex-end; /* Align items to the bottom */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .score-item img {
@@ -1232,21 +1287,81 @@ button {
 .care-score-card,
 .respect-score-card,
 .understanding-score-card {
-  width: 30%;
-  padding: 10px;
-  background-color: #f0f0f0;
+  width: 30vw;
+  height: 20vh;
   border-radius: 5px;
   text-align: center;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  margin: 1.5%;
+}
+
+.care-score-card {
+  background-color: #ffeeee;
+}
+
+.respect-score-card {
+  background-color: #d7f3ff;
+}
+
+.understanding-score-card {
+  background-color: #ebf6e7;
+}
+
+.score-card-point-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  padding: 0 5%;
+  box-sizing: border-box;
+}
+
+.score-image-group {
+  display: flex;
+  align-items: center;
+}
+
+.score-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .total-score-box {
-  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
   background-color: #9747ff;
   color: white;
-  padding: 15px;
   border-radius: 5px;
-  text-align: center;
   margin: 10px 0;
+  width: 100%;
+}
+
+.total-score-group {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.score-value-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  max-width: 20%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .comparison-score-box {

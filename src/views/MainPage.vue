@@ -812,7 +812,7 @@ export default {
         const prompt = this.responsePrompt[i]
 
         if (prompt.question == 'This is a Mini-Game') {
-          this.totalMaxScore += 25
+          this.totalMaxScore = this.totalMaxScore + 25
           continue
         }
 
@@ -858,7 +858,8 @@ export default {
       console.log('respect: ' + this.maxRespectScore)
       console.log('understanding: ' + this.maxUnderstandingScore)
 
-      this.totalMaxScore = this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
+      this.totalMaxScore =
+        this.totalMaxScore + this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
     },
     playAgain() {
       this.$router.go(0)

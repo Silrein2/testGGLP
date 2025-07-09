@@ -28,9 +28,24 @@ export default {
     }
   },
   mounted() {
+    this.preloadImages()
     this.startMiniGame()
   },
   methods: {
+    preloadImages() {
+      const imagesToPreload = [this.defaultImage, ...this.randomImages]
+
+      imagesToPreload.forEach((imageUrl) => {
+        if (!document.head.querySelector(`link[href="${imageUrl}"]`)) {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'image'
+          link.href = imageUrl
+          document.head.appendChild(link)
+          console.log(`Preloading: ${imageUrl}`)
+        }
+      })
+    },
     startMiniGame() {
       this.currentImage = this.defaultImage
       this.processCount = 0 // Reset the process count

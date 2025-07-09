@@ -151,6 +151,9 @@
         <p>Understanding Score: {{ understandingScore }}</p>
         <p>Total Empathy Score: {{ totalScore }}</p>
         <p>Previous High Score: {{ highScoreDeterminant() }}</p>
+        <p>Max Care Score: {{ maxCareScore }}</p>
+        <p>Max Respect Score: {{ maxRespectScore }}</p>
+        <p>Max Understanding Score: {{ maxUnderstandingScore }}</p>
 
         <button @click="saveScoreToFirestore()" class="save-button">Save Score</button>
       </div>
@@ -233,7 +236,11 @@ export default {
 
       careGreenBool: false,
       respectGreenBool: false,
-      understandingGreenBool: false
+      understandingGreenBool: false,
+
+      maxCareScore: 0,
+      maxRespectScore: 0,
+      maxUnderstandingScore: 0
     }
   },
   async beforeCreate() {
@@ -305,6 +312,7 @@ export default {
           this.initTitle()
           this.titleDivVisible = true
         }
+        this.calculateMaximumScore()
       })
     },
     initTitle() {
@@ -690,6 +698,62 @@ export default {
     },
     goBack() {
       this.$router.push('/user-dashboard')
+    },
+    calculateMaximumScore() {
+      this.maxCareScore = 0
+      this.maxRespectScore = 0
+      this.maxUnderstandingScore = 0
+
+      console.log(this.responsePrompt)
+
+      for (let i = 0; i < this.responsePrompt.length; i++) {
+        const prompt = this.responsePrompt[i]
+
+        if (prompt.question == 'This is a Mini-Game') {
+          continue
+        }
+
+        if (prompt.middleAnswer != null) {
+          // Care category
+          this.maxCareScore += Math.max(
+            prompt.leftAnswer['Care'] || 0,
+            prompt.middleAnswer['Care'] || 0,
+            prompt.rightAnswer['Care'] || 0
+          )
+          // Respect category
+          this.maxRespectScore += Math.max(
+            prompt.leftAnswer['Respect'] || 0,
+            prompt.middleAnswer['Respect'] || 0,
+            prompt.rightAnswer['Respect'] || 0
+          )
+          // Understanding category
+          this.maxUnderstandingScore += Math.max(
+            prompt.leftAnswer['Understanding'] || 0,
+            prompt.middleAnswer['Understanding'] || 0,
+            prompt.rightAnswer['Understanding'] || 0
+          )
+        } else {
+          // Care category
+          this.maxCareScore += Math.max(
+            prompt.leftAnswer['Care'] || 0,
+            prompt.rightAnswer['Care'] || 0
+          )
+          // Respect category
+          this.maxRespectScore += Math.max(
+            prompt.leftAnswer['Respect'] || 0,
+            prompt.rightAnswer['Respect'] || 0
+          )
+          // Understanding category
+          this.maxUnderstandingScore += Math.max(
+            prompt.leftAnswer['Understanding'] || 0,
+            prompt.rightAnswer['Understanding'] || 0
+          )
+        }
+      }
+
+      console.log('care: ' + this.maxCareScore)
+      console.log('respect: ' + this.maxRespectScore)
+      console.log('understanding: ' + this.maxUnderstandingScore)
     }
   }
 }

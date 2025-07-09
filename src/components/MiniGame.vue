@@ -1,12 +1,13 @@
 <template>
   <div class="mini-game-container">
     <img :src="currentImage" alt="Mini Game Image" class="mini-game-image" />
+    <p class="question-text" v-if="showButtons">What emotion did he show?</p>
     <div v-if="showButtons" class="button-container">
-      <button @click="handleEmotion('Happy')">Happy</button>
-      <button @click="handleEmotion('Angry')">Angry</button>
-      <button @click="handleEmotion('Sad')">Sad</button>
-      <button @click="handleEmotion('Afraid')">Afraid</button>
-      <button @click="handleEmotion('Disgust')">Disgust</button>
+      <button @click="handleEmotion(0)" class="button-emotion">Happy</button>
+      <button @click="handleEmotion(1)" class="button-emotion">Angry</button>
+      <button @click="handleEmotion(2)" class="button-emotion">Sad</button>
+      <button @click="handleEmotion(3)" class="button-emotion">Afraid</button>
+      <button @click="handleEmotion(4)" class="button-emotion">Disgust</button>
     </div>
   </div>
 </template>
@@ -21,8 +22,9 @@ export default {
       randomImages: [happy, angry, sad, afraid, disgust],
       currentImage: '',
       showButtons: false,
-      processCount: 0, // Track the number of times the process has run
-      maxProcesses: 5 // Total number of processes to run
+      processCount: 0,
+      maxProcesses: 5,
+      empathyScore: 0
     }
   },
   mounted() {
@@ -45,22 +47,31 @@ export default {
     showRandomImage() {
       const randomIndex = Math.floor(Math.random() * this.randomImages.length)
       this.currentImage = this.randomImages[randomIndex]
+      this.currentEmotionIndex = randomIndex // Store the index of current image
 
       setTimeout(() => {
         this.currentImage = this.defaultImage
         this.showButtons = true // Show buttons after displaying the random image
-      }, 500) // Show random image for 0.5 seconds
+      }, 1000) // Show random image for 1 second
     },
-    handleEmotion(emotion) {
-      console.log(`Selected Emotion: ${emotion}`)
-
+    handleEmotion(selectedIndex) {
+      console.log(`Selected Emotion Index: ${selectedIndex}`)
       this.showButtons = false // Hide buttons immediately after a click
 
+      // Check if the selected index matches the current image index
+      if (selectedIndex === this.currentEmotionIndex) {
+        this.empathyScore = 5
+      } else {
+        this.empathyScore = 0
+      }
+
+      // Emit the score immediately to MainPage
+      this.$emit('updateScore', this.empathyScore)
+
       if (this.processCount < this.maxProcesses) {
-        this.processCount++ // Increment the process count
+        this.processCount++
 
         if (this.processCount === this.maxProcesses) {
-          // If this is the last click, call responseToResult in MainPage
           this.$emit('finishMiniGame', 'Bottom', 'You have finished the mini-game')
         } else {
           this.runNextProcess()
@@ -99,5 +110,27 @@ export default {
 .button-container {
   display: flex;
   gap: 10px;
+}
+
+.button-emotion {
+  width: 12.5vw;
+  height: 5vh;
+
+  border-radius: 15px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  font-size: 1vw;
+  font-weight: 700;
+
+  background-color: #4492f6;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.question-text {
+  font-size: 1.25vw;
+  font-weight: 700;
+
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>

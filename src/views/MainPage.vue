@@ -85,7 +85,7 @@
           v-if="responsePrompt[currentIndex].question === 'This is a Mini-Game'"
           class="mini-game-wrapper"
         >
-          <MiniGame @finishMiniGame="responseToResult" />
+          <MiniGame @finishMiniGame="responseToResult" @updateScore="updateTotalScore" />
         </div>
 
         <div v-else>
@@ -801,6 +801,9 @@ export default {
     },
     playAgain() {
       this.$router.go(0)
+    },
+    updateTotalScore(empScore) {
+      this.totalScore += empScore
     }
   }
 }

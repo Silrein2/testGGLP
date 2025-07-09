@@ -173,7 +173,7 @@
       </div>
 
       <div class="score-button-container">
-        <button class="play-again-button">Play again</button>
+        <button class="play-again-button" @click="playAgain()">Play again</button>
         <button class="back-to-dashboard-button" @click="saveScoreToFirestore()">
           Back to dashboard
         </button>
@@ -280,7 +280,9 @@ export default {
       understandingNoBGIcon: understandingNoBGIcon,
       starIcon: starIcon,
       graphUpIcon: graphUpIcon,
-      graphDownIcon: graphDownIcon
+      graphDownIcon: graphDownIcon,
+
+      selectedStory: this.$route.query.selectedStory || ''
     }
   },
   async beforeCreate() {
@@ -796,6 +798,9 @@ export default {
       console.log('understanding: ' + this.maxUnderstandingScore)
 
       this.totalMaxScore = this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
+    },
+    playAgain() {
+      this.$router.go(0)
     }
   }
 }

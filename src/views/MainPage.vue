@@ -14,11 +14,11 @@
       </div>
     </div> -->
     <div class="score-box" v-if="currentIndex < responsePrompt.length">
-      <div class="score-group group-one">
-        <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
-        Empathy progress
-      </div>
-      <div class="score-group group-two">
+      <div class="score-group">
+        <div class="group-one">
+          <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
+          Empathy progress
+        </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionCare">
             <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
@@ -1124,14 +1124,23 @@ button {
 }
 
 .score-group {
-  height: 100%;
+  display: flex; /* Arrange items in a row */
+  justify-content: space-around; /* Distribute space evenly */
+  align-items: center; /* Center items vertically */
+  width: 100%; /* Full width of the score-box */
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column; /* Stack the icon and text vertically */
+  align-items: center; /* Center align the content */
+  flex: 1; /* Allow items to grow and fill space equally */
 }
 
 .group-one {
-  width: 30%;
   display: flex;
   align-items: center;
-  padding-left: 2.5%;
+  flex: 1;
 }
 
 .group-one img {
@@ -1144,13 +1153,6 @@ button {
   display: flex; /* Keep horizontal layout */
   justify-content: space-between; /* Space items evenly */
   align-items: flex-end; /* Align items to the bottom */
-}
-
-.score-item {
-  position: relative; /* Create a positioning context for absolute children */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .score-item img {

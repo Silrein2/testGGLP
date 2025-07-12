@@ -493,12 +493,18 @@ export default {
   margin: 10px auto;
   padding: 5px;
   display: block;
+
+  font-weight: 300;
 }
 
 .select-button:hover {
   background-color: #4492f6;
   color: white;
   border: 1px solid #4492f6;
+
+  font-weight: 600;
+
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .story-info {

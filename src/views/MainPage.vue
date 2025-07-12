@@ -321,10 +321,8 @@
       </div> -->
 
       <div class="score-button-container">
-        <button class="play-again-button" @click="playAgain()">Play again</button>
-        <button class="back-to-dashboard-button" @click="saveScoreToFirestore()">
-          Back to dashboard
-        </button>
+        <button class="end-button" @click="playAgain()">Play again</button>
+        <button class="end-button" @click="saveScoreToFirestore()">Back to dashboard</button>
       </div>
     </div>
   </div>
@@ -1128,6 +1126,7 @@ button {
 .button-decision {
   background-color: white;
   border: none;
+
   color: black;
   font-weight: 600;
   padding: 10px 20px;
@@ -1141,6 +1140,11 @@ button {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.button-decision:hover {
+  background-color: #4492f6;
+  color: white;
 }
 
 .left-button-decision,
@@ -1531,22 +1535,7 @@ button {
   width: 100%;
 }
 
-.play-again-button {
-  padding: 10px 20px;
-  background-color: #4492f6;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1vw;
-
-  width: 15vw;
-  height: 5vh;
-
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.back-to-dashboard-button {
+.end-button {
   padding: 10px 20px;
   background-color: white;
   color: grey;
@@ -1559,5 +1548,26 @@ button {
   height: 5vh;
 
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  font-weight: 300;
+}
+
+.end-button:hover {
+  padding: 10px 20px;
+  background-color: #4492f6;
+  color: white;
+
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1vw;
+
+  width: 15vw;
+  height: 5vh;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  font-weight: 600;
 }
 </style>

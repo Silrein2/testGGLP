@@ -425,15 +425,19 @@ export default {
 .stat-icon {
   width: 30px;
   height: auto;
-  margin-right: 5px;
+  margin-right: 2.5%;
 }
 
 .stat-box {
   background-color: #c0c0c0;
-  padding: 5px 10px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  padding: 2.5% 5%;
   border-radius: 5px;
 
-  margin-left: 5px;
+  text-align: center;
+
+  margin-left: 2.5%;
   width: 10%;
 }
 

@@ -24,7 +24,7 @@
           Empathy progress
         </div>
         <div class="score-item">
-          <div class="union-icon" v-if="unionCare">
+          <div class="union-icon" ref="unionCareIcon">
             <div class="union-content">
               <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
               <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
@@ -38,7 +38,7 @@
           </div>
         </div>
         <div class="score-item">
-          <div class="union-icon" v-if="unionRespect">
+          <div class="union-icon" ref="unionRespectIcon">
             <div class="union-content">
               <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
               <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
@@ -51,7 +51,7 @@
           </div>
         </div>
         <div class="score-item">
-          <div class="union-icon" v-if="unionUnderstanding">
+          <div class="union-icon" ref="unionUnderstandingIcon">
             <div class="union-content">
               <img :src="unionGreenIcon" alt="union understanding" v-if="understandingGreenBool" />
               <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
@@ -77,7 +77,8 @@
     <div class="back-button-container" v-if="currentIndex < responsePrompt.length">
       <div class="back-button" @click="goBack">
         <div class="back-arrow-square">
-          <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" />
+          <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
+          <div class="back-arrow-icon"></div>
         </div>
         <!-- <span class="back-button-text">Go back to dashboard</span> -->
       </div>
@@ -193,12 +194,7 @@
               >Care</span
             >
             <div class="progress-bar-background">
-              <div
-                class="progress-bar-foreground"
-                :style="{
-                  width: (careScore / maxCareScore) * 100 + '%'
-                }"
-              ></div>
+              <div class="progress-bar-foreground" ref="careProgressBar"></div>
             </div>
           </div>
 
@@ -231,12 +227,7 @@
               >Respect</span
             >
             <div class="progress-bar-background">
-              <div
-                class="progress-bar-foreground"
-                :style="{
-                  width: (respectScore / maxRespectScore) * 100 + '%'
-                }"
-              ></div>
+              <div class="progress-bar-foreground" ref="respectProgressBar"></div>
             </div>
           </div>
 
@@ -271,12 +262,7 @@
               >Understanding</span
             >
             <div class="progress-bar-background">
-              <div
-                class="progress-bar-foreground"
-                :style="{
-                  width: (understandingScore / maxUnderstandingScore) * 100 + '%'
-                }"
-              ></div>
+              <div class="progress-bar-foreground" ref="understandingProgressBar"></div>
             </div>
           </div>
 
@@ -306,12 +292,7 @@
 
         <div class="progress-bar-container progress-bar-container-total">
           <div class="progress-bar-background">
-            <div
-              class="progress-bar-foreground"
-              :style="{
-                width: (totalScore / totalMaxScore) * 100 + '%'
-              }"
-            ></div>
+            <div class="progress-bar-foreground" ref="totalProgressBar"></div>
           </div>
         </div>
       </div>
@@ -719,7 +700,16 @@ export default {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 1, delay: 1, opacity: 1 }
+          {
+            x: 0,
+            y: 100,
+            duration: 1,
+            delay: 1,
+            opacity: 1,
+            onComplete: () => {
+              this.animateUnionIcon()
+            }
+          }
         )
       } else {
         gsap.fromTo(
@@ -730,6 +720,7 @@ export default {
       }
     },
     resultToResponse() {
+      this.animateUnionIconExit()
       this.hideUnionIcons()
       const tl = gsap.timeline({
         onComplete: () => {
@@ -780,7 +771,16 @@ export default {
         gsap.fromTo(
           this.$refs.scoreDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 1, delay: 0, opacity: 1 }
+          {
+            x: 0,
+            y: 100,
+            duration: 1,
+            delay: 0,
+            opacity: 1,
+            onComplete: () => {
+              this.animateProgressBars()
+            }
+          }
         )
       } else {
         console.warn('scoreDiv ref not found.  Animation skipped.')
@@ -952,6 +952,116 @@ export default {
     },
     updateTotalScore(empScore) {
       this.totalScore += empScore
+    },
+    animateProgressBars() {
+      //references to each progress bars
+      const careProgressBar = this.$refs.careProgressBar
+      const respectProgressBar = this.$refs.respectProgressBar
+      const understandingProgressBar = this.$refs.understandingProgressBar
+
+      const totalProgressBar = this.$refs.totalProgressBar
+
+      const carePercentage = (this.careScore / this.maxCareScore) * 100
+      const respectPercentage = (this.respectScore / this.maxRespectScore) * 100
+      const understandingPercentage = (this.understandingScore / this.maxUnderstandingScore) * 100
+
+      const totalPercentage = (this.totalScore / this.totalMaxScore) * 100
+
+      // care progress bar
+      gsap.fromTo(careProgressBar, { width: '0%' }, { width: `${carePercentage}%`, duration: 2 })
+
+      // respect progress bar
+      gsap.fromTo(
+        respectProgressBar,
+        { width: '0%' },
+        { width: `${respectPercentage}%`, duration: 2 }
+      )
+
+      // understanding progress bar
+      gsap.fromTo(
+        understandingProgressBar,
+        { width: '0%' },
+        { width: `${understandingPercentage}%`, duration: 2 }
+      )
+
+      // total progress bar
+      gsap.fromTo(totalProgressBar, { width: '0' }, { width: `${totalPercentage}%`, duration: 2 })
+    },
+    animateUnionIcon() {
+      const unionCareIcon = this.$refs.unionCareIcon
+      const unionRespectIcon = this.$refs.unionRespectIcon
+      const unionUnderstandingIcon = this.$refs.unionUnderstandingIcon
+
+      gsap.fromTo(
+        unionCareIcon,
+        { opacity: 0, y: -25 },
+        {
+          opacity: 1,
+          y: -50,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
+
+      gsap.fromTo(
+        unionRespectIcon,
+        { opacity: 0, y: -25 },
+        {
+          opacity: 1,
+          y: -50,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
+
+      gsap.fromTo(
+        unionUnderstandingIcon,
+        { opacity: 0, y: -25 },
+        {
+          opacity: 1,
+          y: -50,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
+    },
+    animateUnionIconExit() {
+      const unionCareIcon = this.$refs.unionCareIcon
+      const unionRespectIcon = this.$refs.unionRespectIcon
+      const unionUnderstandingIcon = this.$refs.unionUnderstandingIcon
+
+      gsap.fromTo(
+        unionCareIcon,
+        { opacity: 1, y: -50 },
+        {
+          opacity: 0,
+          y: -75,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
+
+      gsap.fromTo(
+        unionRespectIcon,
+        { opacity: 1, y: -50 },
+        {
+          opacity: 0,
+          y: -75,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
+
+      gsap.fromTo(
+        unionUnderstandingIcon,
+        { opacity: 1, y: -50 },
+        {
+          opacity: 0,
+          y: -75,
+          duration: 0.5,
+          ease: 'power1.out'
+        }
+      )
     }
   }
 }
@@ -1253,7 +1363,7 @@ button {
 .back-arrow-square {
   width: 2vw;
   height: 2vw;
-  border: 2px solid black;
+  border: 2px solid #848688;
   border-radius: 5px;
 
   display: flex;
@@ -1262,9 +1372,21 @@ button {
   margin-right: 10px;
 }
 
+.back-arrow-square:hover {
+  background-color: #4492f6;
+  border: 2px solid #4492f6;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
 .back-arrow-icon {
-  width: 70%;
-  height: auto;
+  border-top: 0.5vw solid transparent;
+  border-bottom: 0.5vw solid transparent;
+  border-right: 1vw solid #848688;
+}
+
+.back-arrow-square:hover .back-arrow-icon {
+  border-right: 1vw solid white;
 }
 
 .back-button-text {
@@ -1356,7 +1478,7 @@ button {
   flex-direction: column;
   align-items: center;
 
-  top: -51%;
+  opacity: 0%;
 }
 
 .union-content {
@@ -1439,6 +1561,8 @@ button {
   background-color: rgba(128, 128, 128, 0.75);
   border-radius: 5px;
   height: 1.25vh;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .progress-bar-foreground {
@@ -1446,6 +1570,10 @@ button {
   height: 100%;
   border-radius: 5px;
   transition: width 0.3s ease;
+
+  width: 0%;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .score-card-point-wrapper {
@@ -1486,6 +1614,8 @@ button {
   border-radius: 5px;
 
   width: 90%;
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .score-group {

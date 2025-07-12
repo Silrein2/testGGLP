@@ -6,11 +6,11 @@
       class="login-container font-weight bg-white box-shadow"
     >
       <img :src="mastheadImage" alt="Masthead" class="masthead-image-login" />
-      <h2 class="login-text-color text-shadow font-size-label">Welcome to AKPK Ceria</h2>
-      <div class="form-content">
-        <label for="email" class="login-text-color text-shadow font-size-form"
-          >Sign in to your account</label
-        >
+      <span class="login-text-color text-shadow font-size-label" style="margin-top: 2.5%"
+        >Welcome to AKPK Ceria</span
+      >
+      <span class="login-text-color text-shadow">Sign in to your account</span>
+      <div class="form-content" style="margin-top: 7.5%">
         <input
           type="email"
           v-model="email"
@@ -20,6 +20,7 @@
         <button
           @click="checkEmail"
           class="login-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
+          style="margin-top: 7.5%"
           v-if="!showUsernameInput"
         >
           Login
@@ -51,13 +52,13 @@
         </div>
         <button
           @click="registerUser"
-          class="register-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
+          class="login-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
         >
           Register
         </button>
         <button
           @click="showUsernameInput = false"
-          class="go-back-button text-shadow border-radius-light bg-white login-text-color font-weight box-shadow margin-element font-size-form"
+          class="login-button text-shadow border-radius-light bg-white login-text-color font-weight box-shadow margin-element font-size-form"
         >
           Go Back
         </button>
@@ -205,19 +206,17 @@ export default {
   padding: 5%;
   text-align: center;
   color: #163760;
+
+  border-radius: 15px;
 }
 
 .login-button {
-  width: 40%;
+  width: 50%;
 }
 
 .register-container {
   width: 75%;
   height: 50%;
   margin: 0 auto;
-}
-
-.go-back-button {
-  width: 40%;
 }
 </style>

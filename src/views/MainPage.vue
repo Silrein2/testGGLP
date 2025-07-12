@@ -423,8 +423,8 @@ export default {
         { x: 0, y: window.innerHeight, opacity: 0 },
         {
           y: 100,
-          duration: 2,
-          delay: 2,
+          duration: 1,
+          delay: 1,
           opacity: 1,
           onComplete: () => {
             this.titleButtonBool = true
@@ -437,7 +437,7 @@ export default {
         gsap.to(this.$refs.titleDiv, {
           y: -window.innerHeight,
           opacity: 0,
-          duration: 2.5,
+          duration: 1.5,
           delay: 0,
           onComplete: () => {
             this.initResponse()
@@ -452,7 +452,7 @@ export default {
           gsap.fromTo(
             this.$refs.responseDiv,
             { x: 0, y: window.innerHeight, opacity: 0 },
-            { y: 100, duration: 2, delay: 0, opacity: 1 }
+            { y: 100, duration: 1, delay: 0, opacity: 1 }
           )
         } else {
           console.warn('responseDiv not found for animation.')
@@ -623,7 +623,7 @@ export default {
         x: this.exitX,
         y: this.exitY,
         opacity: 0,
-        duration: 4,
+        duration: 2,
         delay: 0
       })
 
@@ -633,13 +633,13 @@ export default {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 1, delay: 1, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.resultDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 2, delay: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 1, delay: 1, opacity: 1 }
         )
       }
     },
@@ -666,7 +666,7 @@ export default {
         x: this.exitX,
         y: this.exitY,
         opacity: 0,
-        duration: 4,
+        duration: 2,
         onStart: () => {
           this.resultVisible = false // disable click during exit animation
         }
@@ -677,13 +677,13 @@ export default {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 1, opacity: 1 }
         )
       } else {
         gsap.fromTo(
           this.$refs.responseDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 2, opacity: 1 }
+          { x: 0, y: 100, duration: 1, opacity: 1 }
         )
       }
     },
@@ -694,7 +694,7 @@ export default {
         gsap.fromTo(
           this.$refs.scoreDiv,
           { x: this.entranceX, y: this.entranceY, opacity: 0 },
-          { x: 0, y: 100, duration: 2, delay: 0, opacity: 1 }
+          { x: 0, y: 100, duration: 1, delay: 0, opacity: 1 }
         )
       } else {
         console.warn('scoreDiv ref not found.  Animation skipped.')

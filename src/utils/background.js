@@ -10,7 +10,7 @@ export function setBackgroundImage() {
   backgroundElement.style.transition = 'transform 0.3s'
   backgroundElement.style.overflow = 'hidden'
   backgroundElement.style.cursor = 'pointer'
-  backgroundElement.style.backgroundColor = '#4E2E1D'
+  backgroundElement.style.backgroundColor = 'white'
 
   // Set the background image
   backgroundElement.style.backgroundImage = `url(${backgroundImage})`

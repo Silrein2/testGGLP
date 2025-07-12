@@ -193,7 +193,7 @@ export default {
     },
     highScoreDeterminant() {
       if (this.highScore < -9999) {
-        return 'None'
+        return '-'
       } else {
         return String(this.highScore)
       }

@@ -16,7 +16,11 @@
     <div class="score-box" v-if="currentIndex < responsePrompt.length">
       <div class="score-group">
         <div class="group-one">
-          <img :src="empathyIcon" alt="empathy" style="margin-right: 10%" />
+          <img
+            :src="empathyIcon"
+            alt="empathy"
+            style="margin-right: 10%; width: 2.2vw; height: auto"
+          />
           Empathy progress
         </div>
         <div class="score-item">
@@ -28,8 +32,10 @@
             </div>
           </div>
           <img :src="careIcon" alt="care" />
-          <p>Care</p>
-          <p class="score-text">{{ careScore }}</p>
+          <div class="score-text-item-group">
+            Care
+            <span class="score-text">{{ careScore }}</span>
+          </div>
         </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionRespect">
@@ -40,8 +46,9 @@
             </div>
           </div>
           <img :src="respectIcon" alt="respect" />
-          <p>Respect</p>
-          <p class="score-text">{{ respectScore }}</p>
+          <div class="score-text-item-group">
+            Respect <span class="score-text">{{ respectScore }}</span>
+          </div>
         </div>
         <div class="score-item">
           <div class="union-icon" v-if="unionUnderstanding">
@@ -52,13 +59,17 @@
             </div>
           </div>
           <img :src="understandingIcon" alt="understanding" />
-          <p>Understanding</p>
-          <p class="score-text">{{ understandingScore }}</p>
+          <div class="score-text-item-group">
+            Understanding
+            <span class="score-text">{{ understandingScore }}</span>
+          </div>
         </div>
         <div class="score-item">
           <img :src="scoreIcon" alt="total" />
-          <p>Score</p>
-          <p class="score-text">{{ totalScore }}</p>
+          <div class="score-text-item-group">
+            Score
+            <span class="score-text">{{ totalScore }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -983,7 +994,7 @@ export default {
   align-items: center;
 
   top: 0vh;
-  left: 12.5vw;
+  left: 10vw;
 
   color: black;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -1041,6 +1052,10 @@ export default {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.continue-button:hover {
+  background-color: #144e98;
 }
 
 .title-text {
@@ -1232,10 +1247,11 @@ button {
 }
 
 .back-arrow-square {
-  width: 50px;
-  height: 50px;
+  width: 2vw;
+  height: 2vw;
   border: 2px solid black;
   border-radius: 5px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1308,12 +1324,26 @@ button {
 }
 
 .score-item img {
-  width: 1.8vw;
+  width: 2.2vw;
   height: auto;
 }
 
 .score-text {
   font-weight: 900;
+}
+
+.score-text-item-group {
+  margin-top: 5%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  width: 100%;
+}
+
+.score-text-item-group span {
+  margin-top: 5%;
 }
 
 .union-icon {

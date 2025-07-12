@@ -61,13 +61,13 @@
       </div> -->
       <div class="stats-content">
         <h1 class="text-shadow">Choose your workplace journey</h1>
-        <h3 class="text-shadow">
-          Each of these {{ stories.length }} individuals are dealing with a unique workplace
-          situation.
-        </h3>
-        <h3 class="text-shadow">
-          Select a character to begin your interactive learning experience.
-        </h3>
+        <h4 class="text-shadow" style="color: #5e5f60; font-weight: 500">
+          <p>
+            Each of these {{ stories.length }} individuals are dealing with a unique workplace
+            situation.
+          </p>
+          <p>Select a character to begin your interactive learning experience.</p>
+        </h4>
       </div>
       <div class="center-content">
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
@@ -84,10 +84,25 @@
                   alt="Character Head"
                   class="character-image"
                 />
-                <div class="story-info">{{ story.Name }}</div>
-                <div class="story-info">{{ story.Place }}</div>
-                <div class="story-info">{{ story.Description }}</div>
-                <div class="story-info">
+                <div class="story-info" style="font-size: 1.1vw; font-weight: 700">
+                  {{ story.Name }}
+                </div>
+                <div
+                  class="story-info"
+                  style="
+                    font-size: 0.8vw;
+                    border: 1px solid black;
+                    margin-left: 15%;
+                    margin-right: 15%;
+                    border-radius: 15px;
+                  "
+                >
+                  {{ story.Place }}
+                </div>
+                <div class="story-info" style="font-size: 0.8vw; color: #5e5f60">
+                  {{ story.Description }}
+                </div>
+                <div class="story-info" style="font-size: 0.8vw; color: #5e5f60">
                   <img :src="timerIcon" alt="timer" /> {{ story.ApproxTime.min }} -
                   {{ story.ApproxTime.max }} minutes
                 </div>
@@ -297,6 +312,7 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   background-color: white;
+
   border-radius: 8px;
   padding: 20px;
   margin: 2.5% auto;
@@ -428,6 +444,8 @@ export default {
   background-color: white;
   position: relative;
   border: 1px solid #d9d9d9;
+
+  border-radius: 15px;
 }
 
 .difficulty-box {
@@ -439,6 +457,8 @@ export default {
   padding: 5px;
   border-radius: 30px;
   font-size: 0.7vw;
+
+  font-weight: 600;
 
   width: 30%;
 }
@@ -466,12 +486,19 @@ export default {
   height: 7.5%;
   background-color: white;
   color: grey;
+
   border: 1px solid grey;
   border-radius: 5px;
   cursor: pointer;
   margin: 10px auto;
   padding: 5px;
   display: block;
+}
+
+.select-button:hover {
+  background-color: #4492f6;
+  color: white;
+  border: 1px solid #4492f6;
 }
 
 .story-info {

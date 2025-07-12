@@ -163,13 +163,35 @@
             <div class="score-image-group">
               <img :src="careNoBGIcon" />
             </div>
-            <div class="score-text-group">
+
+            <div class="score-value-group">
               <span style="font-size: 1vw; font-weight: 700">{{ careScore }} </span>
               <span style="font-size: 0.8vw; color: dimgray">/ {{ maxCareScore }} points</span>
             </div>
           </div>
 
-          <p style="text-align: left; padding: 5%">
+          <div class="progress-bar-container">
+            <span
+              style="
+                text-align: left;
+                width: 100%;
+                display: block;
+                font-weight: 700;
+                margin-bottom: 1.5%;
+              "
+              >Care</span
+            >
+            <div class="progress-bar-background">
+              <div
+                class="progress-bar-foreground"
+                :style="{
+                  width: (careScore / maxCareScore) * 100 + '%'
+                }"
+              ></div>
+            </div>
+          </div>
+
+          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
             Your ability to show compassion and concern for others
           </p>
         </div>
@@ -180,13 +202,34 @@
               <img :src="respectNoBGIcon" />
             </div>
 
-            <div class="score-text-group">
+            <div class="score-value-group">
               <span style="font-size: 1vw; font-weight: 700">{{ respectScore }} </span
               ><span style="font-size: 0.8vw; color: dimgray">/ {{ maxRespectScore }} points</span>
             </div>
           </div>
 
-          <p style="text-align: left; padding: 5%">
+          <div class="progress-bar-container">
+            <span
+              style="
+                text-align: left;
+                width: 100%;
+                display: block;
+                font-weight: 700;
+                margin-bottom: 1.5%;
+              "
+              >Respect</span
+            >
+            <div class="progress-bar-background">
+              <div
+                class="progress-bar-foreground"
+                :style="{
+                  width: (respectScore / maxRespectScore) * 100 + '%'
+                }"
+              ></div>
+            </div>
+          </div>
+
+          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
             How well you value and honour other’s perspectives
           </p>
         </div>
@@ -197,7 +240,7 @@
               <img :src="understandingNoBGIcon" />
             </div>
 
-            <div class="score-text-group">
+            <div class="score-value-group">
               <span style="font-size: 1vw; font-weight: 700">{{ understandingScore }}</span>
               <span style="font-size: 0.8vw; color: dimgray"
                 >/ {{ maxUnderstandingScore }} points</span
@@ -205,26 +248,60 @@
             </div>
           </div>
 
-          <p style="text-align: left; padding: 5%">
+          <div class="progress-bar-container">
+            <span
+              style="
+                text-align: left;
+                width: 100%;
+                display: block;
+                font-weight: 700;
+                margin-bottom: 1.5%;
+              "
+              >Understanding</span
+            >
+            <div class="progress-bar-background">
+              <div
+                class="progress-bar-foreground"
+                :style="{
+                  width: (understandingScore / maxUnderstandingScore) * 100 + '%'
+                }"
+              ></div>
+            </div>
+          </div>
+
+          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
             Your capacity to comprehend other’s feelings and situations
           </p>
         </div>
       </div>
 
       <div class="total-score-box">
-        <div class="total-score-group">
-          <div class="score-image-group" style="margin-left: 5%">
-            <img :src="starIcon" />
+        <div class="score-group">
+          <div class="total-score-group">
+            <div class="score-image-group" style="margin-left: 5%">
+              <img :src="starIcon" />
+            </div>
+            <div class="score-text-group" style="margin-left: 1.5%">
+              <span style="font-size: 1.25vw; font-weight: 500">Total empathy score</span>
+              <span style="font-size: 0.8vw">Your overall empathy assessment result</span>
+            </div>
           </div>
-          <div class="score-text-group" style="margin-left: 7.5%">
-            <span style="font-size: 1.25vw; font-weight: 500">Total empathy score</span>
-            <span style="font-size: 0.8vw">Your overall empathy assessment result</span>
+
+          <div class="score-value-group score-value-group-total">
+            <span style="font-size: 1.5vw; font-weight: 700">{{ totalScore }} </span>
+            <span style="font-size: 1vw">/ {{ totalMaxScore }} points</span>
           </div>
         </div>
 
-        <div class="score-value-group">
-          <span style="font-size: 1.5vw; font-weight: 700">{{ totalScore }} </span>
-          <span style="font-size: 1vw">/ {{ totalMaxScore }} points</span>
+        <div class="progress-bar-container progress-bar-container-total">
+          <div class="progress-bar-background">
+            <div
+              class="progress-bar-foreground"
+              :style="{
+                width: (totalScore / totalMaxScore) * 100 + '%'
+              }"
+            ></div>
+          </div>
         </div>
       </div>
 
@@ -1310,7 +1387,36 @@ button {
   background-color: #ebf6e7;
 }
 
+.progress-bar-container {
+  width: 90%;
+  padding: 0;
+  margin-top: 5%;
+
+  margin-left: 5%;
+}
+
+.progress-bar-container-total {
+  position: relative;
+
+  bottom: 25%;
+}
+
+.progress-bar-background {
+  background-color: rgba(128, 128, 128, 0.75);
+  border-radius: 5px;
+  height: 1.25vh;
+}
+
+.progress-bar-foreground {
+  background-color: black;
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
 .score-card-point-wrapper {
+  margin-top: 2.5%;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1328,7 +1434,7 @@ button {
 .score-text-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  text-align: left;
 
   max-width: 70%;
   overflow: hidden;
@@ -1338,31 +1444,42 @@ button {
 
 .total-score-box {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   padding: 15px;
+
   background-color: #9747ff;
   color: white;
   border-radius: 5px;
-  margin: 10px 0;
+
+  width: 90%;
+}
+
+.score-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
 }
 
 .total-score-group {
   display: flex;
   align-items: center;
-  width: 50%;
+  flex: 1;
 }
 
 .score-value-group {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-
   max-width: 20%;
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.score-value-group-total {
+  margin-right: 5%;
 }
 
 .comparison-score-box {

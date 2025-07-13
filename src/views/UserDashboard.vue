@@ -70,7 +70,7 @@
                 {{ story.Difficulty }}
               </div>
               <div class="character-selection">
-                <pre>{{ console.log('Image Head for', story.Name, ':', story.ImageHead) }}</pre>
+                <!-- <pre>{{ console.log('Image Head for', story.Name, ':', story.ImageHead) }}</pre> -->
                 <img
                   :src="story.ImageHead || defaultAvatar"
                   alt="Character Head"

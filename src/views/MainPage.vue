@@ -1,81 +1,85 @@
 <template>
   <div id="background-container">
-    <div class="score-box" v-if="currentIndex < responsePrompt.length" ref="scoreBox">
-      <div class="score-group">
-        <div class="group-one">
-          <img
-            :src="empathyIcon"
-            alt="empathy"
-            style="margin-right: 10%; width: 2.2vw; height: auto"
-          />
-          Empathy progress
-        </div>
-        <div class="score-item">
-          <div class="union-icon" ref="unionCareIcon">
-            <div class="union-content">
-              <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
-              <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
-              <div class="union-text">{{ unionCare }}</div>
+    <div ref="sBox">
+      <div class="score-box" v-if="currentIndex < responsePrompt.length">
+        <div class="score-group">
+          <div class="group-one">
+            <img
+              :src="empathyIcon"
+              alt="empathy"
+              style="margin-right: 10%; width: 2.2vw; height: auto"
+            />
+            Empathy progress
+          </div>
+          <div class="score-item">
+            <div class="union-icon" ref="unionCareIcon">
+              <div class="union-content">
+                <img :src="unionGreenIcon" alt="union care" v-if="careGreenBool" />
+                <img :src="unionRedIcon" alt="union care" v-if="!careGreenBool" />
+                <div class="union-text">{{ unionCare }}</div>
+              </div>
+            </div>
+            <img :src="careIcon" alt="care" />
+            <div class="score-text-item-group">
+              Care
+              <span class="score-text">{{ careScore }}</span>
             </div>
           </div>
-          <img :src="careIcon" alt="care" />
-          <div class="score-text-item-group">
-            Care
-            <span class="score-text">{{ careScore }}</span>
-          </div>
-        </div>
-        <div class="score-item">
-          <div class="union-icon" ref="unionRespectIcon">
-            <div class="union-content">
-              <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
-              <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
-              <div class="union-text">{{ unionRespect }}</div>
+          <div class="score-item">
+            <div class="union-icon" ref="unionRespectIcon">
+              <div class="union-content">
+                <img :src="unionGreenIcon" alt="union respect" v-if="respectGreenBool" />
+                <img :src="unionRedIcon" alt="union respect" v-if="!respectGreenBool" />
+                <div class="union-text">{{ unionRespect }}</div>
+              </div>
+            </div>
+            <img :src="respectIcon" alt="respect" />
+            <div class="score-text-item-group">
+              Respect <span class="score-text">{{ respectScore }}</span>
             </div>
           </div>
-          <img :src="respectIcon" alt="respect" />
-          <div class="score-text-item-group">
-            Respect <span class="score-text">{{ respectScore }}</span>
-          </div>
-        </div>
-        <div class="score-item">
-          <div class="union-icon" ref="unionUnderstandingIcon">
-            <div class="union-content">
-              <img :src="unionGreenIcon" alt="union understanding" v-if="understandingGreenBool" />
-              <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
-              <div class="union-text">{{ unionUnderstanding }}</div>
+          <div class="score-item">
+            <div class="union-icon" ref="unionUnderstandingIcon">
+              <div class="union-content">
+                <img
+                  :src="unionGreenIcon"
+                  alt="union understanding"
+                  v-if="understandingGreenBool"
+                />
+                <img :src="unionRedIcon" alt="union understanding" v-if="!understandingGreenBool" />
+                <div class="union-text">{{ unionUnderstanding }}</div>
+              </div>
+            </div>
+            <img :src="understandingIcon" alt="understanding" />
+            <div class="score-text-item-group">
+              Understanding
+              <span class="score-text">{{ understandingScore }}</span>
             </div>
           </div>
-          <img :src="understandingIcon" alt="understanding" />
-          <div class="score-text-item-group">
-            Understanding
-            <span class="score-text">{{ understandingScore }}</span>
-          </div>
-        </div>
-        <div class="score-item">
-          <img :src="scoreIcon" alt="total" />
-          <div class="score-text-item-group">
-            Score
-            <span class="score-text">{{ totalScore }}</span>
+          <div class="score-item">
+            <img :src="scoreIcon" alt="total" />
+            <div class="score-text-item-group">
+              Score
+              <span class="score-text">{{ totalScore }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      class="back-button-container"
-      v-if="currentIndex < responsePrompt.length"
-      ref="backButtonContainer"
-    >
-      <div @click="goBack">
-        <div class="back-arrow-square">
-          <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
-          <div class="back-arrow-icon"></div>
+    <div ref="bbContainer">
+      <div class="back-button-container" v-if="currentIndex < responsePrompt.length">
+        <div @click="goBack">
+          <div class="back-arrow-square">
+            <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
+            <div class="back-arrow-icon"></div>
+          </div>
+          <!-- <span class="back-button-text">Go back to dashboard</span> -->
         </div>
-        <!-- <span class="back-button-text">Go back to dashboard</span> -->
       </div>
     </div>
 
-    <div class="mute-button-container">
+    <div class="mute-button-container" ref="mbContainer">
       <div @click="pauseBGM">
         <div class="back-arrow-square">
           <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
@@ -339,7 +343,7 @@ import {
 
 import { fadeIn } from '@/utils/animation'
 
-import { success } from '@/assets/Sound/BGM/bgm'
+import { success, successCredit } from '@/assets/Sound/BGM/bgm'
 
 export default {
   name: 'MainPage',
@@ -418,6 +422,7 @@ export default {
       selectedStory: this.$route.query.selectedStory || '',
 
       bgm: success,
+      bgmCredit: successCredit,
       audioMusic: null,
       isPlaying: false
     }
@@ -447,7 +452,6 @@ export default {
     this.getFirestoreVariables()
     this.$setBackgroundImage()
     this.$updateBackgroundSize()
-    this.initFadeIn()
 
     this.playBGM()
   },
@@ -460,11 +464,17 @@ export default {
   },
   methods: {
     initFadeIn() {
-      const scoreBox = this.$refs.scoreBox
-      const backButtonContainer = this.$refs.backButtonContainer
+      const scoreBox = this.$refs.sBox
+      const backButtonContainer = this.$refs.bbContainer
+      const muteButtonContainer = this.$refs.mbContainer
+
+      // console.log(scoreBox)
+      // console.log(backButtonContainer)
+      // console.log(muteButtonContainer)
 
       fadeIn(scoreBox)
       fadeIn(backButtonContainer)
+      fadeIn(muteButtonContainer)
     },
     getUserDetails(dbData) {
       this.userName = dbData.Name
@@ -509,6 +519,7 @@ export default {
       })
     },
     initTitle() {
+      this.initFadeIn()
       gsap.fromTo(
         this.$refs.titleDiv,
         { x: 0, y: window.innerHeight, opacity: 0 },
@@ -594,7 +605,7 @@ export default {
       this.currentResult = resultString
 
       if (answerDirection === 'Bottom' && resultString === 'You have finished the mini-game') {
-        console.log('Mini-game finished:', resultString)
+        // console.log('Mini-game finished:', resultString)
       }
 
       this.animateResponseExit()
@@ -811,7 +822,7 @@ export default {
       }
     },
     async saveScoreToFirestore() {
-      console.log(this.userEmail)
+      // console.log(this.userEmail)
 
       try {
         const scoreCollection = collection(db, 'Score')
@@ -918,7 +929,7 @@ export default {
       this.maxRespectScore = 0
       this.maxUnderstandingScore = 0
 
-      console.log(this.responsePrompt)
+      // console.log(this.responsePrompt)
 
       for (let i = 0; i < this.responsePrompt.length; i++) {
         const prompt = this.responsePrompt[i]
@@ -966,9 +977,9 @@ export default {
         }
       }
 
-      console.log('care: ' + this.maxCareScore)
-      console.log('respect: ' + this.maxRespectScore)
-      console.log('understanding: ' + this.maxUnderstandingScore)
+      // console.log('care: ' + this.maxCareScore)
+      // console.log('respect: ' + this.maxRespectScore)
+      // console.log('understanding: ' + this.maxUnderstandingScore)
 
       this.totalMaxScore =
         this.totalMaxScore + this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
@@ -1094,6 +1105,8 @@ export default {
         this.audioMusic = new Audio(this.bgm)
         this.audioMusic.volume = 0.5
         this.audioMusic.loop = true
+
+        console.log(this.bgmCredit)
       }
 
       if (!this.isPlaying) {
@@ -1422,6 +1435,8 @@ button {
   right: 7.5vw;
   display: flex;
   align-items: center;
+
+  opacity: 0;
 }
 
 .back-arrow-square {

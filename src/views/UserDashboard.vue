@@ -9,7 +9,7 @@
             </div>
           </div>
           <div class="greeting-container">
-            <span
+            <span style="font-size: 1vw"
               >Hello, <span class="username">{{ username }}</span></span
             >
             <span style="font-size: 0.8vw; color: dimgray">Ready for your next challenge?</span>
@@ -50,15 +50,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="header">
-        <h2 class="welcome-message text-shadow text-tea-cream">Welcome, {{ username }}</h2>
-        <button
-          @click="logout"
-          class="logout-button text-shadow border-radius bg-tea-four font-weight no-border box-shadow margin-element text-tea-cream font-size-button"
-        >
-          Logout
-        </button>
-      </div> -->
+
       <div class="stats-content">
         <h1 class="text-shadow">Choose your workplace journey</h1>
         <h4 class="text-shadow" style="color: #5e5f60; font-weight: 500">

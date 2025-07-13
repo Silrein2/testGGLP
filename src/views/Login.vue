@@ -1,10 +1,7 @@
 <template>
   <div id="background-container" class="login-wrapper" @click="showLogin">
-    <img v-if="!loginVisible" :src="mastheadImage" alt="Masthead" class="masthead-image" />
-    <div
-      v-if="loginVisible && !showUsernameInput"
-      class="login-container font-weight bg-white box-shadow"
-    >
+    <img :src="mastheadImage" alt="Masthead" class="masthead-image" ref="mastheadImage" />
+    <div class="login-container font-weight bg-white box-shadow login-form" ref="loginContainer">
       <img :src="mastheadImage" alt="Masthead" class="masthead-image-login" />
       <span class="login-text-color text-shadow font-size-label" style="margin-top: 2.5%"
         >Welcome to AKPK Ceria</span
@@ -19,30 +16,35 @@
         />
         <button
           @click="checkEmail"
-          class="login-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
+          class="login-button text-shadow border-radius-light font-weight no-border box-shadow margin-element font-size-form"
           style="margin-top: 7.5%"
-          v-if="!showUsernameInput"
         >
           Login
         </button>
       </div>
     </div>
     <div
-      v-if="loginVisible && showUsernameInput"
-      class="login-container font-weight bg-white box-shadow"
+      class="login-container font-weight bg-white box-shadow register-form"
+      ref="registerContainer"
     >
       <div class="form-content-register">
-        <div class="text-group">
-          <h2 for="username" class="login-text-color text-shadow font-size-label">
+        <div class="text-group" style="margin-bottom: 7.5%">
+          <span class="login-text-color text-shadow" style="font-size: 1.5vw">
             Let's get acquainted
-          </h2>
-          <h4 for="username" class="login-text-color text-shadow font-size-form">
+          </span>
+          <br />
+          <span class="login-text-color text-shadow" style="font-size: 0.9vw">
             As this is your first login, what name should we use to address you?
-          </h4>
+          </span>
         </div>
-        <div class="register-container register-box-color border-radius-light">
-          <h1 class="text-white text-shadow">Hello</h1>
-          <h3 class="text-white text-shadow">My name is</h3>
+        <div
+          class="register-container register-box-color border-radius-light"
+          style="margin-bottom: 5%"
+        >
+          <span style="font-weight: 900; font-size: 2vw; color: white">Hello</span>
+          <span style="font-weight: 100; font-size: 1.5vw; color: white; margin-bottom: 5%"
+            >My name is</span
+          >
           <input
             type="text"
             v-model="username"
@@ -52,13 +54,13 @@
         </div>
         <button
           @click="registerUser"
-          class="login-button text-shadow border-radius-light login-button-blue font-weight no-border box-shadow margin-element text-white font-size-form"
+          class="login-button text-shadow border-radius-light font-weight no-border box-shadow margin-element font-size-form"
         >
           Register
         </button>
         <button
-          @click="showUsernameInput = false"
-          class="login-button text-shadow border-radius-light bg-white login-text-color font-weight box-shadow margin-element font-size-form"
+          @click="returnLogin"
+          class="login-button text-shadow border-radius-light bg-white font-weight box-shadow margin-element font-size-form"
         >
           Go Back
         </button>
@@ -71,6 +73,8 @@
 import { db } from '@/firebase'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { mastheadImage } from '@/assets/GUI/backgroundGui'
+
+import { gsap } from 'gsap'
 
 export default {
   name: 'LoginPage',
@@ -92,7 +96,73 @@ export default {
   },
   methods: {
     showLogin() {
-      this.loginVisible = true
+      const mastheadImg = this.$refs.mastheadImage
+      const loginContainer = this.$refs.loginContainer
+
+      gsap.to(mastheadImg, {
+        opacity: 0,
+        duration: 0.5,
+        pointerEvents: 'none',
+        onComplete: () => {
+          gsap.to(loginContainer, {
+            opacity: 1,
+            duration: 0.5,
+            pointerEvents: 'auto'
+          })
+        }
+      })
+    },
+    showRegister() {
+      const loginContainer = this.$refs.loginContainer
+      const registerContainer = this.$refs.registerContainer
+
+      gsap
+        .timeline()
+        .to(loginContainer, {
+          opacity: 0,
+          duration: 0.3,
+          pointerEvents: 'none',
+          onComplete: () => {
+            gsap.set(loginContainer, { visibility: 'hidden' })
+          }
+        })
+        .fromTo(
+          registerContainer,
+          { opacity: 0, visibility: 'hidden', pointerEvents: 'none' },
+          {
+            opacity: 1,
+            duration: 0.3,
+            visibility: 'visible',
+            pointerEvents: 'auto',
+            delay: 0.05
+          }
+        )
+    },
+    returnLogin() {
+      const loginContainer = this.$refs.loginContainer
+      const registerContainer = this.$refs.registerContainer
+
+      gsap
+        .timeline()
+        .to(registerContainer, {
+          opacity: 0,
+          duration: 0.3,
+          pointerEvents: 'none',
+          onComplete: () => {
+            gsap.set(registerContainer, { visibility: 'hidden' })
+          }
+        })
+        .fromTo(
+          loginContainer,
+          { opacity: 0, visibility: 'hidden', pointerEvents: 'none' },
+          {
+            opacity: 1,
+            duration: 0.3,
+            visibility: 'visible',
+            pointerEvents: 'auto',
+            delay: 0.05
+          }
+        )
     },
     async checkEmail() {
       if (this.email === '') {
@@ -116,7 +186,9 @@ export default {
         this.$router.push({ name: 'UserDashboardPage' })
       } else {
         alert('Since it is your first time logging in, what should we call you?')
-        this.showUsernameInput = true // First-time user
+        // this.showUsernameInput = true // First-time user
+
+        this.showRegister()
       }
     },
     async registerUser() {
@@ -167,6 +239,8 @@ export default {
 }
 
 .login-container {
+  position: absolute;
+
   padding: 20px;
   border-radius: 8px;
   width: 25vw;
@@ -174,6 +248,17 @@ export default {
   z-index: 2;
   display: flex;
   flex-direction: column;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.login-form {
+  pointer-events: none;
+}
+
+.register-form {
+  pointer-events: none;
 }
 
 .form-content {
@@ -186,8 +271,8 @@ export default {
 }
 
 .form-content-register {
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-left: 3%;
+  padding-right: 3%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,12 +296,30 @@ export default {
 }
 
 .login-button {
+  background-color: white;
+  border: 1px solid gray;
+
+  color: #163760;
+
   width: 50%;
 }
 
+.login-button:hover {
+  background-color: #4492f6;
+  color: white;
+
+  border: 1px solid #4492f6;
+}
+
 .register-container {
-  width: 75%;
-  height: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 90%;
+  height: 90%;
   margin: 0 auto;
+  padding: 15px;
 }
 </style>

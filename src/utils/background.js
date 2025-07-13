@@ -37,7 +37,7 @@ export function setBackgroundImageAdmin() {
   backgroundElement.style.position = 'absolute'
   backgroundElement.style.top = '0'
   backgroundElement.style.left = '0'
-  backgroundElement.style.width = '100%'
+  backgroundElement.style.width = '100vw'
   backgroundElement.style.display = 'flex'
   backgroundElement.style.transition = 'transform 0.3s'
   backgroundElement.style.overflow = 'hidden'
@@ -58,7 +58,7 @@ export function updateBackgroundSize() {
   this.containerHeight = Math.max(windowHeight, windowWidth / targetAspectRatio)
   this.containerWidth = Math.max(windowWidth, this.containerHeight * targetAspectRatio)
 
-  backgroundContainer.style.width = `${this.containerWidth}px`
-  backgroundContainer.style.height = `${this.containerHeight}px`
+  backgroundContainer.style.width = `100vw`
+  backgroundContainer.style.height = `100vh`
   backgroundContainer.style.transform = `translate(${offsetX}px, ${offsetY}px)`
 }

@@ -1,6 +1,6 @@
 <template>
   <div id="background-container">
-    <div class="dashboard-container">
+    <div class="dashboard-container" ref="dashboardContainer">
       <div class="info-box">
         <div class="group-one">
           <div class="info-item">
@@ -117,6 +117,7 @@ import { logoutIcon, gamesIcon, highscoreIcon, lastscoreIcon } from '@/assets/GU
 import { timerIcon } from '@/assets/GUI/icons/icons'
 
 import { defaultAvatar } from '@/assets/GUI/avatars/avatars'
+import { fadeIn, fadeOut } from '@/utils/animation'
 
 export default {
   name: 'UserDashboard',
@@ -152,11 +153,22 @@ export default {
     this.$setBackgroundImage()
     this.$updateBackgroundSize()
     this.fetchStories()
+    this.initFadeIn()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.$updateBackgroundSize)
   },
   methods: {
+    initFadeIn() {
+      const dashboardContainer = this.$refs.dashboardContainer
+
+      fadeIn(dashboardContainer)
+    },
+    initFadeOut() {
+      const dashboardContainer = this.$refs.dashboardContainer
+
+      fadeOut(dashboardContainer)
+    },
     async extractUsername(email) {
       try {
         const docRef = doc(db, 'Score', email)
@@ -190,8 +202,12 @@ export default {
     logout() {
       const confirmLogout = confirm('Are you sure you want to logout?')
       if (confirmLogout) {
-        localStorage.removeItem('userEmail')
-        this.$router.push('/login')
+        this.initFadeOut()
+
+        setTimeout(() => {
+          localStorage.removeItem('userEmail')
+          this.$router.push('/login')
+        }, 1200)
       }
     },
     goToMainPage(storyButton) {

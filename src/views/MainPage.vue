@@ -1,19 +1,6 @@
 <template>
   <div id="background-container">
-    <!-- <div
-      ref="scoreHoverDiv"
-      class="score-hover-div box-shadow border-radius bg-tea-three text-shadow text-tea-cream font-weight"
-      @mouseenter="showScores = true"
-      @mouseleave="showScores = false"
-    >
-      <div v-if="!showScores">CURRENT SCORE ▼</div>
-      <div v-else>
-        <p>Care: {{ careScore }}</p>
-        <p>Respect: {{ respectScore }}</p>
-        <p>Understanding: {{ understandingScore }}</p>
-      </div>
-    </div> -->
-    <div class="score-box" v-if="currentIndex < responsePrompt.length">
+    <div class="score-box" v-if="currentIndex < responsePrompt.length" ref="scoreBox">
       <div class="score-group">
         <div class="group-one">
           <img
@@ -74,7 +61,11 @@
       </div>
     </div>
 
-    <div class="back-button-container" v-if="currentIndex < responsePrompt.length">
+    <div
+      class="back-button-container"
+      v-if="currentIndex < responsePrompt.length"
+      ref="backButtonContainer"
+    >
       <div class="back-button" @click="goBack">
         <div class="back-arrow-square">
           <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
@@ -335,6 +326,8 @@ import {
   graphDownIcon
 } from '@/assets/GUI/icons/icons'
 
+import { fadeIn } from '@/utils/animation'
+
 export default {
   name: 'MainPage',
   components: {
@@ -442,6 +435,13 @@ export default {
     window.removeEventListener('resize', this.$updateBackgroundSize)
   },
   methods: {
+    initFadeIn() {
+      const scoreBox = this.$refs.scoreBox
+      const backButtonContainer = this.$refs.backButtonContainer
+
+      fadeIn(scoreBox)
+      fadeIn(backButtonContainer)
+    },
     getUserDetails(dbData) {
       this.userName = dbData.Name
       this.currentHighScore = dbData.HighScore

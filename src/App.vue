@@ -7,31 +7,8 @@ import { RouterView } from 'vue-router'
 </template>
 
 <script>
-// import { db } from '@/firebase'
-// import { doc, getDoc } from 'firebase/firestore'
-
 export default {
   name: 'App'
-  //   async beforeCreate() {
-  //     const userEmail = this.getUserEmail()
-
-  //     if (userEmail) {
-  //       const docRef = doc(db, 'Score', userEmail)
-  //       const docSnap = await getDoc(docRef)
-  //       if (!docSnap.exists()) {
-  //         this.$router.push('/')
-  //       } else {
-  //         this.$router.push('/main')
-  //       }
-  //     } else {
-  //       this.$router.push('/')
-  //     }
-  //   },
-  //   methods: {
-  //     getUserEmail() {
-  //       return localStorage.getItem('userEmail')
-  //     }
-  //   }
 }
 </script>
 

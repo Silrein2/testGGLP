@@ -75,6 +75,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { mastheadImage } from '@/assets/GUI/backgroundGui'
 
 import { gsap } from 'gsap'
+import { fadeIn } from '@/utils/animation'
 
 export default {
   name: 'LoginPage',
@@ -90,11 +91,32 @@ export default {
   mounted() {
     this.$setBackgroundImage()
     this.$updateBackgroundSize()
+    this.initFadeIn()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.$updateBackgroundSize)
   },
   methods: {
+    initFadeIn() {
+      const mastheadImg = this.$refs.mastheadImage
+
+      fadeIn(mastheadImg)
+    },
+    fadeOutAndNavigate(element, routeName) {
+      gsap.to(element, {
+        // Changed from fromTo to to for fading out
+        opacity: 0,
+        duration: 0.7, // Duration matches your external fadeOut
+        visibility: 'hidden',
+        pointerEvents: 'none',
+        delay: 0.05, // Delay matches your external fadeOut
+        onComplete: () => {
+          // Only navigate AFTER the animation is complete and element is truly hidden
+          localStorage.setItem('userEmail', this.email.trim()) // Ensure userEmail is set before navigating
+          this.$router.push({ name: routeName })
+        }
+      })
+    },
     showLogin() {
       const mastheadImg = this.$refs.mastheadImage
       const loginContainer = this.$refs.loginContainer
@@ -182,8 +204,7 @@ export default {
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
-        localStorage.setItem('userEmail', this.email.trim()) // local storage
-        this.$router.push({ name: 'UserDashboardPage' })
+        this.fadeOutAndNavigate(this.$refs.loginContainer, 'UserDashboardPage')
       } else {
         alert('Since it is your first time logging in, what should we call you?')
         // this.showUsernameInput = true // First-time user
@@ -207,9 +228,9 @@ export default {
         HighScore: -10000,
         TimesPlayed: 0
       })
-
       alert('Registration successful! Redirecting to main page...')
-      this.$router.push({ name: 'UserDashboardPage' })
+
+      this.fadeOutAndNavigate(this.$refs.loginContainer, 'UserDashboardPage')
     }
   }
 }

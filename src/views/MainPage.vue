@@ -66,10 +66,21 @@
       v-if="currentIndex < responsePrompt.length"
       ref="backButtonContainer"
     >
-      <div class="back-button" @click="goBack">
+      <div @click="goBack">
         <div class="back-arrow-square">
           <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
           <div class="back-arrow-icon"></div>
+        </div>
+        <!-- <span class="back-button-text">Go back to dashboard</span> -->
+      </div>
+    </div>
+
+    <div class="mute-button-container">
+      <div @click="pauseBGM">
+        <div class="back-arrow-square">
+          <!-- <img :src="backArrowIcon" alt="Back" class="back-arrow-icon" /> -->
+          <div class="play-button-icon" v-if="isPlaying"></div>
+          <div class="mute-button-icon" v-if="!isPlaying"></div>
         </div>
         <!-- <span class="back-button-text">Go back to dashboard</span> -->
       </div>
@@ -328,6 +339,8 @@ import {
 
 import { fadeIn } from '@/utils/animation'
 
+import { success } from '@/assets/Sound/BGM/bgm'
+
 export default {
   name: 'MainPage',
   components: {
@@ -402,7 +415,11 @@ export default {
       graphUpIcon: graphUpIcon,
       graphDownIcon: graphDownIcon,
 
-      selectedStory: this.$route.query.selectedStory || ''
+      selectedStory: this.$route.query.selectedStory || '',
+
+      bgm: success,
+      audioMusic: null,
+      isPlaying: false
     }
   },
   async beforeCreate() {
@@ -430,9 +447,16 @@ export default {
     this.getFirestoreVariables()
     this.$setBackgroundImage()
     this.$updateBackgroundSize()
+    this.initFadeIn()
+
+    this.playBGM()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.$updateBackgroundSize)
+  },
+  beforeRouteLeave(to, from, next) {
+    this.stopBGM()
+    next()
   },
   methods: {
     initFadeIn() {
@@ -811,6 +835,7 @@ export default {
 
         alert('Score is saved to FireStore')
         // window.location.reload()
+        this.stopBGM()
         this.$router.push('/user-dashboard')
       } catch (error) {
         console.error('Error saving score to Firestore:', error)
@@ -885,6 +910,7 @@ export default {
       }
     },
     goBack() {
+      this.stopBGM()
       this.$router.push('/user-dashboard')
     },
     calculateMaximumScore() {
@@ -1062,6 +1088,36 @@ export default {
           ease: 'power1.out'
         }
       )
+    },
+    playBGM() {
+      if (!this.audioMusic) {
+        this.audioMusic = new Audio(this.bgm)
+        this.audioMusic.volume = 0.5
+        this.audioMusic.loop = true
+      }
+
+      if (!this.isPlaying) {
+        this.audioMusic.play().catch((error) => {
+          console.error('Error playing audio:', error)
+        })
+        this.isPlaying = true
+      }
+    },
+    stopBGM() {
+      if (this.audioMusic) {
+        this.audioMusic.pause()
+        this.audioMusic.currentTime = 0
+        this.isPlaying = false
+      }
+    },
+    pauseBGM() {
+      if (this.isPlaying) {
+        this.audioMusic.pause()
+        this.isPlaying = false
+      } else {
+        this.audioMusic.play()
+        this.isPlaying = true
+      }
     }
   }
 }
@@ -1355,7 +1411,15 @@ button {
 .back-button-container {
   position: absolute;
   top: 2.5vh;
-  left: 10vw;
+  left: 7.5vw;
+  display: flex;
+  align-items: center;
+}
+
+.mute-button-container {
+  position: absolute;
+  top: 2.5vh;
+  right: 7.5vw;
   display: flex;
   align-items: center;
 }
@@ -1387,6 +1451,31 @@ button {
 
 .back-arrow-square:hover .back-arrow-icon {
   border-right: 1vw solid white;
+}
+
+.play-button-icon {
+  background-image: url('@/assets/GUI/sound icons/PlaySpeakerIcon_Black.png');
+}
+
+.back-arrow-square:hover .play-button-icon {
+  background-image: url('@/assets/GUI/sound icons/PlaySpeakerIcon_White.png');
+}
+
+.mute-button-icon {
+  background-image: url('@/assets/GUI/sound icons/PlaySpeakerIcon_Black_Mute.png');
+}
+
+.back-arrow-square:hover .mute-button-icon {
+  background-image: url('@/assets/GUI/sound icons/PlaySpeakerIcon_White_Mute.png');
+}
+
+.play-button-icon,
+.mute-button-icon {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
 }
 
 .back-button-text {

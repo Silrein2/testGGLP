@@ -1,6 +1,6 @@
 <template>
   <div id="background-container" class="login-wrapper" @click="showLogin">
-    <img :src="mastheadImage" alt="Masthead" class="masthead-image" ref="mastheadImage" />
+    <!-- <img :src="mastheadImage" alt="Masthead" class="masthead-image" ref="mastheadImage" /> -->
     <div class="login-container font-weight bg-white box-shadow login-form" ref="loginContainer">
       <img :src="mastheadImage" alt="Masthead" class="masthead-image-login" />
       <span class="login-text-color text-shadow font-size-label" style="margin-top: 2.5%"
@@ -98,9 +98,12 @@ export default {
   },
   methods: {
     initFadeIn() {
-      const mastheadImg = this.$refs.mastheadImage
+      // const mastheadImg = this.$refs.mastheadImage
+      // fadeIn(mastheadImg)
 
-      fadeIn(mastheadImg)
+      const loginContainer = this.$refs.loginContainer
+
+      fadeIn(loginContainer)
     },
     fadeOutAndNavigate(element, routeName) {
       gsap.to(element, {
@@ -117,23 +120,23 @@ export default {
         }
       })
     },
-    showLogin() {
-      const mastheadImg = this.$refs.mastheadImage
-      const loginContainer = this.$refs.loginContainer
+    // showLogin() {
+    //   const mastheadImg = this.$refs.mastheadImage
+    //   const loginContainer = this.$refs.loginContainer
 
-      gsap.to(mastheadImg, {
-        opacity: 0,
-        duration: 0.5,
-        pointerEvents: 'none',
-        onComplete: () => {
-          gsap.to(loginContainer, {
-            opacity: 1,
-            duration: 0.5,
-            pointerEvents: 'auto'
-          })
-        }
-      })
-    },
+    //   gsap.to(mastheadImg, {
+    //     opacity: 0,
+    //     duration: 0.5,
+    //     pointerEvents: 'none',
+    //     onComplete: () => {
+    //       gsap.to(loginContainer, {
+    //         opacity: 1,
+    //         duration: 0.5,
+    //         pointerEvents: 'auto'
+    //       })
+    //     }
+    //   })
+    // },
     showRegister() {
       const loginContainer = this.$refs.loginContainer
       const registerContainer = this.$refs.registerContainer

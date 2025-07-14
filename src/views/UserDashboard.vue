@@ -5,7 +5,7 @@
         <div class="group-one">
           <div class="info-item">
             <div class="initial-circle">
-              <span class="initial">{{ username.charAt(0).toUpperCase() }}</span>
+              <span style="font-size: 1.75vw">{{ username.charAt(0).toUpperCase() }}</span>
             </div>
           </div>
           <div class="greeting-container">
@@ -52,8 +52,8 @@
       </div>
 
       <div class="stats-content">
-        <h1 class="text-shadow">Choose your workplace journey</h1>
-        <h4 class="text-shadow" style="color: #5e5f60; font-weight: 500">
+        <h1 class="text-shadow" style="font-size: 2.5vw">Choose your workplace journey</h1>
+        <h4 class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
           <p>
             Each of these {{ stories.length }} individuals are dealing with a unique workplace
             situation.
@@ -384,8 +384,8 @@ export default {
   color: white;
   border-radius: 50%;
 
-  width: 50px;
-  height: 50px;
+  width: 3.5vw;
+  height: 3.5vw;
 
   display: flex;
   justify-content: center;
@@ -412,7 +412,7 @@ export default {
 }
 
 .logout-icon {
-  width: 30px;
+  width: 3vw;
   height: auto;
 }
 
@@ -431,7 +431,7 @@ export default {
 }
 
 .stat-icon {
-  width: 30px;
+  width: 2vw;
   height: auto;
   margin-right: 2.5%;
 }
@@ -507,6 +507,7 @@ export default {
   display: block;
 
   font-weight: 300;
+  font-size: 1.2vw;
 }
 
 .select-button:hover {

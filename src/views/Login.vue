@@ -6,7 +6,7 @@
       <span class="login-text-color text-shadow font-size-label" style="margin-top: 2.5%"
         >Welcome to AKPK Ceria</span
       >
-      <span class="login-text-color text-shadow">Sign in to your account</span>
+      <span class="login-text-color text-shadow font-size-button">Sign in to your account</span>
       <div class="form-content" style="margin-top: 7.5%">
         <input
           type="email"

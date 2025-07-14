@@ -9,7 +9,7 @@
               alt="empathy"
               style="margin-right: 10%; width: 2.2vw; height: auto"
             />
-            Empathy progress
+            <span style="font-size: 1.2vw">Empathy progress</span>
           </div>
           <div class="score-item">
             <div class="union-icon" ref="unionCareIcon">
@@ -21,7 +21,7 @@
             </div>
             <img :src="careIcon" alt="care" />
             <div class="score-text-item-group">
-              Care
+              <span style="font-size: 1.2vw">Care</span>
               <span class="score-text">{{ careScore }}</span>
             </div>
           </div>
@@ -35,7 +35,8 @@
             </div>
             <img :src="respectIcon" alt="respect" />
             <div class="score-text-item-group">
-              Respect <span class="score-text">{{ respectScore }}</span>
+              <span style="font-size: 1.2vw">Respect</span>
+              <span class="score-text">{{ respectScore }}</span>
             </div>
           </div>
           <div class="score-item">
@@ -52,14 +53,14 @@
             </div>
             <img :src="understandingIcon" alt="understanding" />
             <div class="score-text-item-group">
-              Understanding
+              <span style="font-size: 1.2vw">Understanding</span>
               <span class="score-text">{{ understandingScore }}</span>
             </div>
           </div>
           <div class="score-item">
             <img :src="scoreIcon" alt="total" />
             <div class="score-text-item-group">
-              Score
+              <span style="font-size: 1.2vw">Score</span>
               <span class="score-text">{{ totalScore }}</span>
             </div>
           </div>
@@ -169,7 +170,7 @@
       v-if="responseBool && (currentIndex >= responsePrompt.length || currentIndex == null)"
     >
       <div class="score-intro">
-        <img :src="congratsIcon" />
+        <img :src="congratsIcon" style="width: 5vw; height: auto" />
         <p style="font-size: 1.75vw; font-weight: 700">Congratulations!</p>
         <p style="font-size: 1.25vw; font-weight: 500">You've completed the assessment</p>
         <p style="font-size: 0.8vw; color: dimgray">Here's your detailed score breakdown</p>
@@ -179,7 +180,7 @@
         <div class="care-score-card">
           <div class="score-card-point-wrapper">
             <div class="score-image-group">
-              <img :src="careNoBGIcon" />
+              <img :src="careNoBGIcon" style="width: 2.5vw; height: auto" />
             </div>
 
             <div class="score-value-group">
@@ -196,6 +197,7 @@
                 display: block;
                 font-weight: 700;
                 margin-bottom: 1.5%;
+                font-size: 1.15vw;
               "
               >Care</span
             >
@@ -204,7 +206,15 @@
             </div>
           </div>
 
-          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
+          <p
+            style="
+              text-align: left;
+              padding-left: 5%;
+              padding-right: 5%;
+              color: #5e5f60;
+              font-size: 1.15vw;
+            "
+          >
             Your ability to show compassion and concern for others
           </p>
         </div>
@@ -212,7 +222,7 @@
         <div class="respect-score-card">
           <div class="score-card-point-wrapper">
             <div class="score-image-group">
-              <img :src="respectNoBGIcon" />
+              <img :src="respectNoBGIcon" style="width: 2.5vw; height: auto" />
             </div>
 
             <div class="score-value-group">
@@ -229,6 +239,7 @@
                 display: block;
                 font-weight: 700;
                 margin-bottom: 1.5%;
+                font-size: 1.15vw;
               "
               >Respect</span
             >
@@ -237,7 +248,15 @@
             </div>
           </div>
 
-          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
+          <p
+            style="
+              text-align: left;
+              padding-left: 5%;
+              padding-right: 5%;
+              color: #5e5f60;
+              font-size: 1.15vw;
+            "
+          >
             How well you value and honour other’s perspectives
           </p>
         </div>
@@ -245,7 +264,7 @@
         <div class="understanding-score-card">
           <div class="score-card-point-wrapper">
             <div class="score-image-group">
-              <img :src="understandingNoBGIcon" />
+              <img :src="understandingNoBGIcon" style="width: 2.5vw; height: auto" />
             </div>
 
             <div class="score-value-group">
@@ -264,6 +283,7 @@
                 display: block;
                 font-weight: 700;
                 margin-bottom: 1.5%;
+                font-size: 1.15vw;
               "
               >Understanding</span
             >
@@ -272,7 +292,15 @@
             </div>
           </div>
 
-          <p style="text-align: left; padding-left: 5%; padding-right: 5%; color: #5e5f60">
+          <p
+            style="
+              text-align: left;
+              padding-left: 5%;
+              padding-right: 5%;
+              color: #5e5f60;
+              font-size: 1.15vw;
+            "
+          >
             Your capacity to comprehend other’s feelings and situations
           </p>
         </div>
@@ -282,7 +310,7 @@
         <div class="score-group">
           <div class="total-score-group">
             <div class="score-image-group" style="margin-left: 5%">
-              <img :src="starIcon" />
+              <img :src="starIcon" style="width: 3vw; height: auto" />
             </div>
             <div class="score-text-group" style="margin-left: 1.5%">
               <span style="font-size: 1.25vw; font-weight: 500">Total empathy score</span>
@@ -1237,6 +1265,8 @@ export default {
 
 .title-text {
   margin: 0;
+
+  font-size: 2.5vw;
 }
 .result-div {
   position: absolute;
@@ -1313,7 +1343,7 @@ button {
   text-decoration: none;
   display: inline-block;
 
-  font-size: 100%;
+  font-size: 1.1vw;
   cursor: pointer;
 
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -1560,6 +1590,8 @@ button {
 
 .score-text {
   font-weight: 900;
+  margin-top: 5%;
+  font-size: 1.25vw;
 }
 
 .score-text-item-group {
@@ -1570,10 +1602,6 @@ button {
 
   align-items: center;
   width: 100%;
-}
-
-.score-text-item-group span {
-  margin-top: 5%;
 }
 
 .union-icon {
@@ -1593,7 +1621,7 @@ button {
 }
 
 .union-icon img {
-  width: 2vw;
+  width: 2.5vw;
   height: auto;
 }
 
@@ -1602,6 +1630,8 @@ button {
   color: white;
   font-weight: bold;
   text-align: center;
+
+  font-size: 1.1vw;
 }
 
 .score-div {
@@ -1664,7 +1694,7 @@ button {
 .progress-bar-background {
   background-color: rgba(128, 128, 128, 0.75);
   border-radius: 5px;
-  height: 1.25vh;
+  height: 0.8vw;
 
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }

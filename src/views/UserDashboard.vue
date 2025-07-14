@@ -507,7 +507,7 @@ export default {
   display: block;
 
   font-weight: 300;
-  font-size: 1.2vw;
+  font-size: 1.1vw;
 }
 
 .select-button:hover {

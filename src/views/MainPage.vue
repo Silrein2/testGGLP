@@ -212,7 +212,7 @@
               padding-left: 5%;
               padding-right: 5%;
               color: #5e5f60;
-              font-size: 1.15vw;
+              font-size: 1vw;
             "
           >
             Your ability to show compassion and concern for others
@@ -254,7 +254,7 @@
               padding-left: 5%;
               padding-right: 5%;
               color: #5e5f60;
-              font-size: 1.15vw;
+              font-size: 1vw;
             "
           >
             How well you value and honour other’s perspectives
@@ -298,7 +298,7 @@
               padding-left: 5%;
               padding-right: 5%;
               color: #5e5f60;
-              font-size: 1.15vw;
+              font-size: 1vw;
             "
           >
             Your capacity to comprehend other’s feelings and situations
@@ -324,7 +324,7 @@
           </div>
         </div>
 
-        <div class="progress-bar-container progress-bar-container-total">
+        <div class="progress-bar-container-total">
           <div class="progress-bar-background">
             <div class="progress-bar-foreground" ref="totalProgressBar"></div>
           </div>
@@ -1530,7 +1530,7 @@ button {
 
 .score-box {
   background-color: white;
-  height: 12.5vh;
+  height: 15vh;
   position: absolute;
   bottom: 10vh;
 
@@ -1656,7 +1656,7 @@ button {
 .respect-score-card,
 .understanding-score-card {
   width: 30vw;
-  height: 20vh;
+  height: 22.5vh;
   border-radius: 5px;
   text-align: center;
 
@@ -1680,13 +1680,18 @@ button {
 .progress-bar-container {
   width: 90%;
   padding: 0;
-  margin-top: 5%;
+  margin-top: 2%;
 
   margin-left: 5%;
 }
 
 .progress-bar-container-total {
   position: relative;
+
+  width: 90%;
+  padding: 0;
+  margin-top: 5%;
+  margin-left: 5%;
 
   bottom: 25%;
 }

@@ -1063,7 +1063,7 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 0.5,
+          duration: 1.25,
           ease: 'power1.out'
         }
       )
@@ -1074,7 +1074,7 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 0.5,
+          duration: 1.25,
           ease: 'power1.out'
         }
       )
@@ -1085,7 +1085,7 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 0.5,
+          duration: 1.25,
           ease: 'power1.out'
         }
       )

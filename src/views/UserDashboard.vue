@@ -53,13 +53,13 @@
 
       <div class="stats-content">
         <h1 class="text-shadow" style="font-size: 2.5vw">Choose your workplace journey</h1>
-        <h4 class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
+        <div class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
           <p>
             Each of these {{ stories.length }} individuals are dealing with a unique workplace
             situation.
           </p>
           <p>Select a character to begin your interactive learning experience.</p>
-        </h4>
+        </div>
       </div>
       <div class="center-content">
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
@@ -283,7 +283,7 @@ export default {
 }
 
 .center-content {
-  margin-top: 5%;
+  margin-top: 2.5%;
 }
 
 .main-page-link {

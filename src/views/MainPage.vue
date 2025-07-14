@@ -161,7 +161,9 @@
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
       <h1 class="font-size-title response-result">{{ currentResult }}</h1>
-      <button @click="resultToResponse()" class="continue-button">Continue</button>
+      <button @click="resultToResponse()" class="continue-button" ref="resultContinueButton">
+        Continue
+      </button>
     </div>
 
     <div
@@ -1053,6 +1055,10 @@ export default {
       gsap.fromTo(totalProgressBar, { width: '0' }, { width: `${totalPercentage}%`, duration: 2 })
     },
     animateUnionIcon() {
+      const rCButton = this.$refs.resultContinueButton
+
+      this.pointerPause(rCButton)
+
       const unionCareIcon = this.$refs.unionCareIcon
       const unionRespectIcon = this.$refs.unionRespectIcon
       const unionUnderstandingIcon = this.$refs.unionUnderstandingIcon
@@ -1063,7 +1069,7 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 1.25,
+          duration: 1,
           ease: 'power1.out'
         }
       )
@@ -1074,7 +1080,7 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 1.25,
+          duration: 1,
           ease: 'power1.out'
         }
       )
@@ -1085,8 +1091,11 @@ export default {
         {
           opacity: 1,
           y: -50,
-          duration: 1.25,
-          ease: 'power1.out'
+          duration: 1,
+          ease: 'power1.out',
+          onComplete: () => {
+            this.pointerReset(rCButton)
+          }
         }
       )
     },
@@ -1101,7 +1110,7 @@ export default {
         {
           opacity: 0,
           y: -75,
-          duration: 0.5,
+          duration: 1,
           ease: 'power1.out'
         }
       )
@@ -1112,7 +1121,7 @@ export default {
         {
           opacity: 0,
           y: -75,
-          duration: 0.5,
+          duration: 1,
           ease: 'power1.out'
         }
       )
@@ -1123,7 +1132,7 @@ export default {
         {
           opacity: 0,
           y: -75,
-          duration: 0.5,
+          duration: 1,
           ease: 'power1.out'
         }
       )
@@ -1159,6 +1168,12 @@ export default {
         this.audioMusic.play()
         this.isPlaying = true
       }
+    },
+    pointerPause(buttonElement) {
+      buttonElement.pointerEvents = 'None'
+    },
+    pointerReset(buttonElement) {
+      buttonElement.pointerEvents = 'Auto'
     }
   }
 }

@@ -759,6 +759,7 @@ export default {
       }
 
       this.totalScore = this.careScore + this.respectScore + this.understandingScore
+      this.animateUnionIcon()
     },
     animateResponseExit() {
       gsap.to(this.$refs.responseDiv, {
@@ -780,10 +781,10 @@ export default {
             y: 100,
             duration: 1,
             delay: 1,
-            opacity: 1,
-            onComplete: () => {
-              this.animateUnionIcon()
-            }
+            opacity: 1
+            // onComplete: () => {
+            //   this.animateUnionIcon()
+            // }
           }
         )
       } else {
@@ -798,7 +799,6 @@ export default {
       this.audioInstance.playSound(this.clickSound)
 
       this.animateUnionIconExit()
-      this.hideUnionIcons()
       const tl = gsap.timeline({
         onComplete: () => {
           this.nextStory()
@@ -1153,7 +1153,10 @@ export default {
           opacity: 0,
           y: -75,
           duration: 1,
-          ease: 'power1.out'
+          ease: 'power1.out',
+          onComplete: () => {
+            this.hideUnionIcons()
+          }
         }
       )
     },

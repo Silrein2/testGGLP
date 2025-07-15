@@ -55,8 +55,8 @@
         <h1 class="text-shadow" style="font-size: 2.5vw">Choose your workplace journey</h1>
         <div class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
           <p>
-            Each of these {{ stories.length }} individuals are dealing with a unique workplace
-            situation.
+            Each of these {{ calculateStoryLength() }} individuals are dealing with a unique
+            workplace situation.
           </p>
           <p>Select a character to begin your interactive learning experience.</p>
         </div>
@@ -65,7 +65,11 @@
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
         <div class="story-button-container">
           <div v-for="(story, index) in stories" :key="index" class="story-button-wrapper">
-            <div class="story-box" @click="goToMainPage(story.Name)">
+            <div
+              class="story-box"
+              @click="goToMainPage(story.Name)"
+              v-if="story.ActiveStory == true"
+            >
               <div class="difficulty-box" :style="getDifficultyStyles(story.Difficulty)">
                 {{ story.Difficulty }}
               </div>
@@ -254,6 +258,17 @@ export default {
             backgroundColor: 'grey'
           }
       }
+    },
+    calculateStoryLength() {
+      let finalStoryLength = this.stories.length
+
+      for (let i = 0; i < this.stories.length; i++) {
+        if (this.stories[i].ActiveStory == false) {
+          finalStoryLength = finalStoryLength - 1
+        }
+      }
+
+      return finalStoryLength
     }
   }
 }

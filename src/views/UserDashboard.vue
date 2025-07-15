@@ -119,6 +119,9 @@ import { timerIcon } from '@/assets/GUI/icons/icons'
 import { defaultAvatar } from '@/assets/GUI/avatars/avatars'
 import { fadeIn, fadeOut } from '@/utils/animation'
 
+import { clickSound } from '@/assets/Sound/SFX/sfx'
+import audioService from '@/utils/audioService'
+
 export default {
   name: 'UserDashboard',
   data() {
@@ -137,7 +140,10 @@ export default {
       lastscoreIcon: lastscoreIcon,
 
       defaultAvatar: defaultAvatar,
-      timerIcon: timerIcon
+      timerIcon: timerIcon,
+
+      clickSound: clickSound,
+      audioInstance: audioService
     }
   },
   created() {
@@ -200,6 +206,8 @@ export default {
       }
     },
     logout() {
+      this.audioInstance.playSound(this.clickSound)
+
       const confirmLogout = confirm('Are you sure you want to logout?')
       if (confirmLogout) {
         this.initFadeOut()
@@ -211,6 +219,8 @@ export default {
       }
     },
     goToMainPage(storyButton) {
+      this.audioInstance.playSound(this.clickSound)
+
       this.selectedStory = storyButton
       this.$router.push({ name: 'MainPage', query: { selectedStory: this.selectedStory } }) // Navigate to Main Page
     },

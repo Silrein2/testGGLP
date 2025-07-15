@@ -77,6 +77,9 @@ import { mastheadImage } from '@/assets/GUI/backgroundGui'
 import { gsap } from 'gsap'
 import { fadeIn } from '@/utils/animation'
 
+import { clickSound } from '@/assets/Sound/SFX/sfx'
+import audioService from '@/utils/audioService'
+
 export default {
   name: 'LoginPage',
   data() {
@@ -85,7 +88,10 @@ export default {
       username: '',
       showUsernameInput: false,
       loginVisible: false,
-      mastheadImage: mastheadImage
+      mastheadImage: mastheadImage,
+
+      clickSound: clickSound,
+      audioInstance: audioService
     }
   },
   mounted() {
@@ -164,6 +170,8 @@ export default {
         )
     },
     returnLogin() {
+      this.audioInstance.playSound(this.clickSound)
+
       const loginContainer = this.$refs.loginContainer
       const registerContainer = this.$refs.registerContainer
 
@@ -190,6 +198,8 @@ export default {
         )
     },
     async checkEmail() {
+      this.audioInstance.playSound(this.clickSound)
+
       if (this.email === '') {
         alert('Please enter your email.')
         return
@@ -216,6 +226,8 @@ export default {
       }
     },
     async registerUser() {
+      this.audioInstance.playSound(this.clickSound)
+
       if (this.username === '') {
         alert('Please enter your username.')
         return

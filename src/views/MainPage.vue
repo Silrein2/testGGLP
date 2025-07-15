@@ -375,6 +375,9 @@ import { fadeIn } from '@/utils/animation'
 
 import { success, successCredit } from '@/assets/Sound/BGM/bgm'
 
+import { clickSound } from '@/assets/Sound/SFX/sfx'
+import audioService from '@/utils/audioService'
+
 export default {
   name: 'MainPage',
   components: {
@@ -454,7 +457,10 @@ export default {
       bgm: success,
       bgmCredit: successCredit,
       audioMusic: null,
-      isPlaying: false
+      isPlaying: false,
+
+      clickSound: clickSound,
+      audioInstance: audioService
     }
   },
   async beforeCreate() {
@@ -565,6 +571,8 @@ export default {
       )
     },
     animateTitleExit() {
+      this.audioInstance.playSound(this.clickSound)
+
       if (this.titleButtonBool == true) {
         gsap.to(this.$refs.titleDiv, {
           y: -window.innerHeight,
@@ -592,6 +600,8 @@ export default {
       })
     },
     responseToResult(answerDirection, resultString) {
+      this.audioInstance.playSound(this.clickSound)
+
       // console.log('CurrentIndex: ' + this.currentIndex)
 
       this.bottomBool = false
@@ -785,6 +795,8 @@ export default {
       }
     },
     resultToResponse() {
+      this.audioInstance.playSound(this.clickSound)
+
       this.animateUnionIconExit()
       this.hideUnionIcons()
       const tl = gsap.timeline({
@@ -852,6 +864,8 @@ export default {
       }
     },
     async saveScoreToFirestore() {
+      this.audioInstance.playSound(this.clickSound)
+
       // console.log(this.userEmail)
 
       try {
@@ -951,6 +965,8 @@ export default {
       }
     },
     goBack() {
+      this.audioInstance.playSound(this.clickSound)
+
       this.stopBGM()
       this.$router.push('/user-dashboard')
     },
@@ -1015,6 +1031,8 @@ export default {
         this.totalMaxScore + this.maxCareScore + this.maxRespectScore + this.maxUnderstandingScore
     },
     playAgain() {
+      this.audioInstance.playSound(this.clickSound)
+
       this.$router.go(0)
     },
     updateTotalScore(empScore) {
@@ -1161,6 +1179,8 @@ export default {
       }
     },
     pauseBGM() {
+      this.audioInstance.playSound(this.clickSound)
+
       if (this.isPlaying) {
         this.audioMusic.pause()
         this.isPlaying = false

@@ -514,8 +514,13 @@ export default {
     },
     getUserDetails(dbData) {
       this.userName = dbData.Name
-      this.currentHighScore = dbData.HighScore
-      this.timesPlayed = dbData.TimesPlayed
+
+      const storyScoreKey = `${this.selectedStory}Score`
+      this.currentHighScore =
+        dbData[storyScoreKey] != null && dbData[storyScoreKey] !== undefined
+          ? dbData[storyScoreKey]
+          : 0
+      this.timesPlayed = dbData.TimesPlayed || 0
     },
     async getFirestoreVariables() {
       const selectedStory = this.$route.query.selectedStory
@@ -868,8 +873,6 @@ export default {
     async saveScoreToFirestore() {
       this.audioInstance.playSound(this.clickSound)
 
-      // console.log(this.userEmail)
-
       try {
         const scoreCollection = collection(db, 'Score')
 
@@ -881,17 +884,35 @@ export default {
 
         let tempHighScore = Math.max(this.totalScore, this.currentHighScore)
 
-        await updateDoc(scoreDocRef, {
+        const sanitizedStoryName = this.selectedStory.replace(/\./g, '').replace(/\s/g, '')
+
+        const storyScoreKey = `${sanitizedStoryName}Score`
+
+        console.log('Original selectedStory:', this.selectedStory)
+        console.log('Sanitized storyScoreKey:', storyScoreKey)
+
+        const scoreDoc = await getDoc(scoreDocRef)
+        const existingScore = scoreDoc.data() ? scoreDoc.data()[storyScoreKey] : null
+
+        const updateData = {
+          [storyScoreKey]: tempHighScore,
           CareScore: this.careScore,
           RespectScore: this.respectScore,
           UnderstandingScore: this.understandingScore,
           EmpathyScore: this.totalScore,
           HighScore: tempHighScore,
           TimesPlayed: this.timesPlayed
-        })
+        }
+
+        if (existingScore == null) {
+          // If it doesn't exist, create it with tempHighScore
+          await updateDoc(scoreDocRef, updateData)
+        } else {
+          // If it exists, update the scores and the storyScoreKey
+          await updateDoc(scoreDocRef, updateData)
+        }
 
         alert('Score is saved to FireStore')
-        // window.location.reload()
         this.stopBGM()
         this.$router.push('/user-dashboard')
       } catch (error) {

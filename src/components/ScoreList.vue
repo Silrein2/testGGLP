@@ -5,9 +5,6 @@
       <label for="sort-by" style="color: white">Sort by:</label>
       <select id="sort-by" v-model="sortBy" @change="sortScores">
         <option value="id">ID</option>
-        <!-- <option value="CareScore">Care Score</option>
-        <option value="RespectScore">Respect Score</option>
-        <option value="UnderstandingScore">Understanding Score</option> -->
         <option value="EmpathyScore">Empathy Score</option>
         <option value="TimesPlayed">Times Played</option>
       </select>
@@ -21,7 +18,9 @@
         <h4 style="color: white">Name: {{ score.Name }}</h4>
 
         <div v-for="story in stories" :key="story.Name">
-          <p style="color: white">{{ story.Name }} Scores: {{ getScoreValue(story.Name) }}</p>
+          <p style="color: white">
+            {{ story.Name }} Scores: {{ getStoryScoreValue(score, story.Name) }}
+          </p>
         </div>
 
         <p style="color: white">Empathy Score: {{ score.EmpathyScore }}</p>
@@ -42,7 +41,7 @@ export default {
     return {
       scores: [],
       loading: true,
-      sortBy: 'id', //default sorting
+      sortBy: 'id', // default sorting
       stories: []
     }
   },
@@ -73,6 +72,12 @@ export default {
     this.fetchScores()
   },
   methods: {
+    sanitizeStoryNameForFirestore(storyName) {
+      //for the purpose of avoiding the variable turned into map within Firestore.
+      //space and period is removed so that the name becomes a single string
+      return storyName.replace(/\./g, '').replace(/\s/g, '')
+    },
+
     async fetchScores() {
       try {
         const querySnapshot = await getDocs(collection(db, 'Score'))
@@ -94,11 +99,11 @@ export default {
         console.error('Error fetching stories: ', error)
       }
     },
-    getScoreValue(storyName) {
-      const scoreKey = storyName + 'Score'
-      const score = this.scores.find((score) => score[scoreKey] !== undefined)
+    getStoryScoreValue(scoreItem, storyName) {
+      const sanitizedStoryName = this.sanitizeStoryNameForFirestore(storyName)
+      const scoreKey = `${sanitizedStoryName}Score`
 
-      return score && score[scoreKey] != null ? score[scoreKey] : 0
+      return scoreItem && scoreItem[scoreKey] != null ? scoreItem[scoreKey] : 0
     },
     exportToExcel() {
       const data = this.sortedScores.map((score) => {
@@ -109,8 +114,10 @@ export default {
           TimesPlayed: score.TimesPlayed
         }
         this.stories.forEach((story) => {
-          const scoreKey = story.Name + 'Score'
-          row[story.Name + ' Scores'] = score[scoreKey] != null ? score[scoreKey] : 0
+          // Sanitize the story name to create the correct scoreKey for lookup
+          const sanitizedStoryName = this.sanitizeStoryNameForFirestore(story.Name)
+          const scoreKey = `${sanitizedStoryName}Score`
+          row[`${story.Name} Scores`] = score[scoreKey] != null ? score[scoreKey] : 0
         })
         return row
       })
@@ -119,7 +126,17 @@ export default {
       const wb = XLSX.utils.book_new()
       XLSX.utils.book_append_sheet(wb, ws, 'Scores')
 
-      XLSX.writeFile(wb, 'scores.xlsx')
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, '0') // Months are 0-indexed
+      const day = String(now.getDate()).padStart(2, '0')
+      const hours = String(now.getHours()).padStart(2, '0')
+      const minutes = String(now.getMinutes()).padStart(2, '0')
+
+      const timestamp = `${day}${month}${year}_${hours}${minutes}`
+      const filename = `PlayCeria_Scores_${timestamp}.xlsx`
+
+      XLSX.writeFile(wb, filename)
     }
   }
 }

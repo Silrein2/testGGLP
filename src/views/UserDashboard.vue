@@ -75,6 +75,7 @@
                 />
                 <div class="story-info" style="font-size: 1.1vw; font-weight: 700">
                   {{ story.Name }}
+                  <span v-if="!story.ActiveStory" style="color: grey">(Inactive)</span>
                 </div>
                 <div
                   class="story-info"

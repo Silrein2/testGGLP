@@ -371,11 +371,11 @@ import {
   graphDownIcon
 } from '@/assets/GUI/icons/icons'
 
-import { fadeIn } from '@/utils/animation'
+import { fadeIn, fadeOut } from '@/utils/animation'
 
 import { success, successCredit } from '@/assets/Sound/BGM/bgm'
 
-import { clickSound } from '@/assets/Sound/SFX/sfx'
+import { clickSound, completeSound } from '@/assets/Sound/SFX/sfx'
 import audioService from '@/utils/audioService'
 
 export default {
@@ -842,6 +842,8 @@ export default {
       }
     },
     animateScoreDivEnter() {
+      this.fadeOutAudio(2500)
+
       this.timesPlayed++
 
       if (this.$refs.scoreDiv) {
@@ -1194,6 +1196,26 @@ export default {
     },
     pointerReset(buttonElement) {
       buttonElement.pointerEvents = 'Auto'
+    },
+    fadeOutAudio(duration) {
+      const mbContainer = this.$refs.mbContainer
+      fadeOut(mbContainer)
+
+      const fadeOutInterval = 50
+      const steps = duration / fadeOutInterval
+      const volumeDecrement = this.audioMusic.volume / steps
+
+      const musicFadeOut = setInterval(() => {
+        if (this.audioMusic.volume > 0) {
+          this.audioMusic.volume = Math.max(0, this.audioMusic.volume - volumeDecrement)
+        } else {
+          clearInterval(musicFadeOut)
+          this.audioMusic.pause()
+          this.audioMusic.currentTime = 0
+        }
+      }, fadeOutInterval)
+
+      this.audioInstance.playSound(completeSound)
     }
   }
 }

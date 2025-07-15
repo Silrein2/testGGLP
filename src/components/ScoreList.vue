@@ -5,9 +5,9 @@
       <label for="sort-by" style="color: white">Sort by:</label>
       <select id="sort-by" v-model="sortBy" @change="sortScores">
         <option value="id">ID</option>
-        <option value="CareScore">Care Score</option>
+        <!-- <option value="CareScore">Care Score</option>
         <option value="RespectScore">Respect Score</option>
-        <option value="UnderstandingScore">Understanding Score</option>
+        <option value="UnderstandingScore">Understanding Score</option> -->
         <option value="EmpathyScore">Empathy Score</option>
         <option value="TimesPlayed">Times Played</option>
       </select>
@@ -18,9 +18,11 @@
       <div v-for="score in sortedScores" :key="score.id" class="score-item">
         <h3 style="color: white">ID: {{ score.id }}</h3>
         <h4 style="color: white">Name: {{ score.Name }}</h4>
-        <p style="color: white">Care Score: {{ score.CareScore }}</p>
-        <p style="color: white">Respect Score: {{ score.RespectScore }}</p>
-        <p style="color: white">Understanding Score: {{ score.UnderstandingScore }}</p>
+
+        <div v-for="story in stories" :key="story.Name">
+          <p style="color: white">{{ story.Name }} Scores: {{ getScoreValue(story.Name) }}</p>
+        </div>
+
         <p style="color: white">Empathy Score: {{ score.EmpathyScore }}</p>
         <p style="color: white">Times Played: {{ score.TimesPlayed }}</p>
       </div>
@@ -38,7 +40,8 @@ export default {
     return {
       scores: [],
       loading: true,
-      sortBy: 'id' //default sorting
+      sortBy: 'id', //default sorting
+      stories: []
     }
   },
   computed: {
@@ -64,6 +67,7 @@ export default {
     }
   },
   mounted() {
+    this.fetchStories()
     this.fetchScores()
   },
   methods: {
@@ -79,6 +83,20 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    async fetchStories() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Story_List'))
+        this.stories = querySnapshot.docs.map((doc) => doc.data())
+      } catch (error) {
+        console.error('Error fetching stories: ', error)
+      }
+    },
+    getScoreValue(storyName) {
+      const scoreKey = storyName + 'Score'
+      const score = this.scores.find((score) => score[scoreKey] !== undefined)
+
+      return score && score[scoreKey] != null ? score[scoreKey] : 0
     }
   }
 }

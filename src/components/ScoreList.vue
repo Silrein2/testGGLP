@@ -11,6 +11,7 @@
         <option value="EmpathyScore">Empathy Score</option>
         <option value="TimesPlayed">Times Played</option>
       </select>
+      <button class="export-button" @click="exportToExcel">Export to XLSX</button>
     </div>
     <div v-if="loading">Loading scores...</div>
     <div v-else-if="scores.length === 0">No scores found.</div>
@@ -33,6 +34,7 @@
 <script>
 import { db } from '@/firebase'
 import { collection, getDocs } from 'firebase/firestore'
+import * as XLSX from 'xlsx'
 
 export default {
   name: 'ScoreList',
@@ -97,6 +99,27 @@ export default {
       const score = this.scores.find((score) => score[scoreKey] !== undefined)
 
       return score && score[scoreKey] != null ? score[scoreKey] : 0
+    },
+    exportToExcel() {
+      const data = this.sortedScores.map((score) => {
+        const row = {
+          ID: score.id,
+          Name: score.Name,
+          EmpathyScore: score.EmpathyScore,
+          TimesPlayed: score.TimesPlayed
+        }
+        this.stories.forEach((story) => {
+          const scoreKey = story.Name + 'Score'
+          row[story.Name + ' Scores'] = score[scoreKey] != null ? score[scoreKey] : 0
+        })
+        return row
+      })
+
+      const ws = XLSX.utils.json_to_sheet(data)
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Scores')
+
+      XLSX.writeFile(wb, 'scores.xlsx')
     }
   }
 }
@@ -136,5 +159,24 @@ export default {
 .filter-options select {
   padding: 5px;
   border-radius: 4px;
+}
+
+.export-button {
+  margin-left: 10px;
+
+  border-radius: 5px;
+
+  background-color: #f5962c;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  color: #fcdfc2;
+  font-size: 1vw;
+  font-weight: 700;
+
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.export-button:hover {
+  background-color: #4e2e1d;
 }
 </style>

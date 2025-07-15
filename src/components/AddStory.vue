@@ -66,6 +66,13 @@
         </label>
       </div>
 
+      <div class="active-check">
+        <label>
+          <input type="checkbox" v-model="isActive" class="checkbox-input" />
+          Is the story active?
+        </label>
+      </div>
+
       <input
         type="file"
         @change="onFileChange"
@@ -82,15 +89,13 @@
       >
         Create Story Collection
       </button>
-      <!-- <button @click="copyQuestions">Copy Questions to Prototype</button> -->
-      <!-- meant to copy from one collection in FireStore to another -->
     </div>
   </div>
 </template>
 
 <script>
 import { db } from '@/firebase'
-import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 export default {
@@ -100,6 +105,7 @@ export default {
       initialStory: '',
       message: '',
       isLinear: false,
+      isActive: false, // New property for active story
       selectedFile: null,
       imageUrl: '',
       place: '',
@@ -166,6 +172,7 @@ export default {
             Name: this.collectionName,
             InitialStory: this.initialStory,
             LinearStory: this.isLinear,
+            ActiveStory: this.isActive,
             ImageHead: imageHeadUrl,
             Place: this.place,
             Description: this.description,
@@ -183,6 +190,7 @@ export default {
               Name: this.collectionName,
               InitialStory: this.initialStory,
               LinearStory: this.isLinear,
+              ActiveStory: this.isActive,
               ImageHead: imageHeadUrl,
               Place: this.place,
               Description: this.description,
@@ -200,26 +208,6 @@ export default {
       } catch (error) {
         console.error('Error creating/updating collection:', error)
         alert('Error creating/updating collection. Please try again.')
-      }
-    },
-    async copyQuestions() {
-      // not meant to be incorporated in final product to clients
-      try {
-        const questionsRef = collection(db, 'Question_Bank')
-        const querySnapshot = await getDocs(questionsRef)
-
-        const prototypeRef = collection(db, 'Prototype_Question_Bank')
-
-        for (const dbdoc of querySnapshot.docs) {
-          await setDoc(doc(prototypeRef, dbdoc.id), {
-            ...dbdoc.data()
-          })
-        }
-
-        alert('Questions copied to Prototype_Question_Bank successfully!')
-      } catch (error) {
-        console.error('Error copying questions:', error)
-        alert('Error copying questions. Please try again.')
       }
     },
     validateTimeInput() {
@@ -262,10 +250,8 @@ export default {
 
 .div-form {
   position: absolute;
-
   left: 50%;
   transform: translateX(-50%);
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,7 +262,6 @@ export default {
 .form-input {
   width: 12.5vw;
   height: 7.5vh;
-
   text-align: center;
 }
 .form-input-initial-story {
@@ -289,7 +274,6 @@ export default {
 .form-input-button {
   width: 12.5vw;
   height: 7.5vh;
-
   text-align: center;
 }
 

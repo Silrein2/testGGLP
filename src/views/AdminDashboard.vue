@@ -29,40 +29,46 @@
       </select>
 
       <button
-        class="delete-story-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="confirmDeleteStory"
       >
         Delete Current Story
       </button>
       <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
+        @click="animateFormExit('editStory')"
+      >
+        Edit Current Story
+      </button>
+      <button
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="animateFormExit('addStory')"
       >
-        <h3>Add Story</h3>
+        Add Story
       </button>
       <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="animateFormExit('addQuestion')"
       >
-        <h3>Add Questions</h3>
+        Add Questions
       </button>
       <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="animateFormExit('listQuestion')"
       >
-        <h3>Question List</h3>
+        Question List
       </button>
       <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="animateFormExit('scoreList')"
       >
-        <h3>Score List</h3>
+        Score List
       </button>
       <button
-        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius bg-tea-four box-shadow"
+        class="form-list-button text-shadow text-tea-cream font-weight font-size-form no-border border-radius box-shadow"
         @click="animateFormExit('test')"
       >
-        <h3>Things to do</h3>
+        Things to do
       </button>
     </div>
 
@@ -127,6 +133,11 @@
         :questionId="selectedQuestionId"
         @cancel-edit="cancelEdit"
       />
+      <EditStory
+        v-if="editStoryBool"
+        :selectedStory="selectedStory"
+        @update-complete="fetchStories"
+      />
     </div>
   </div>
 </template>
@@ -140,6 +151,7 @@ import AddQuestions from '@/components/AddQuestions.vue'
 import QuestionList from '@/components/QuestionList.vue'
 import EditQuestion from '@/components/EditQuestion.vue'
 import ScoreList from '@/components/ScoreList.vue'
+import EditStory from '@/components/EditStory.vue'
 
 import AddStory from '@/components/AddStory.vue'
 
@@ -150,7 +162,8 @@ export default {
     QuestionList,
     EditQuestion,
     ScoreList,
-    AddStory
+    AddStory,
+    EditStory
   },
   data() {
     return {
@@ -167,6 +180,7 @@ export default {
       selectedQuestionId: null,
 
       addStoryBool: false,
+      editStoryBool: false,
 
       stories: [],
       selectedStory: '',
@@ -252,6 +266,7 @@ export default {
           this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
+          this.editStoryBool = false
           break
         case 'addStory':
           this.addStoryBool = true
@@ -260,6 +275,7 @@ export default {
           this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
+          this.editStoryBool = false
           break
         case 'listQuestion':
           this.addStoryBool = false
@@ -268,6 +284,7 @@ export default {
           this.scoreListBool = false
           this.testBool = false
           this.editQuestionBool = false
+          this.editStoryBool = false
           break
         case 'scoreList':
           this.addStoryBool = false
@@ -276,6 +293,7 @@ export default {
           this.scoreListBool = true
           this.testBool = false
           this.editQuestionBool = false
+          this.editStoryBool = false
           break
         case 'test':
           this.addStoryBool = false
@@ -284,6 +302,16 @@ export default {
           this.scoreListBool = false
           this.testBool = true
           this.editQuestionBool = false
+          this.editStoryBool = false
+          break
+        case 'editStory':
+          this.addStoryBool = false
+          this.addQuestionBool = false
+          this.listQuestionBool = false
+          this.scoreListBool = false
+          this.testBool = false
+          this.editQuestionBool = false
+          this.editStoryBool = true
           break
       }
     },
@@ -402,14 +430,21 @@ export default {
 }
 
 .form-list-button {
-  padding: 0px 20px;
+  padding: 0px 10px;
   text-align: center;
   text-decoration: none;
+
   display: inline-block;
   margin: 10px 10px;
   cursor: pointer;
   width: 12.5vw;
-  height: 7.5vh;
+  height: 5vh;
+
+  background-color: #f37600;
+}
+
+.form-list-button:hover {
+  background-color: #4e2e1d;
 }
 
 .dashboard-list-buttons {

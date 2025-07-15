@@ -54,10 +54,7 @@
       <div class="stats-content">
         <h1 class="text-shadow" style="font-size: 2.5vw">Choose your workplace journey</h1>
         <div class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
-          <p>
-            Each of these {{ calculateStoryLength() }} individuals are dealing with a unique
-            workplace situation.
-          </p>
+          <p>{{ calculateStoryLength() }} dealing with a unique workplace situation.</p>
           <p>Select a character to begin your interactive learning experience.</p>
         </div>
       </div>
@@ -262,13 +259,21 @@ export default {
     calculateStoryLength() {
       let finalStoryLength = this.stories.length
 
+      let finalStatement = ''
+
       for (let i = 0; i < this.stories.length; i++) {
         if (this.stories[i].ActiveStory == false) {
           finalStoryLength = finalStoryLength - 1
         }
       }
 
-      return finalStoryLength
+      if (finalStoryLength < 2) {
+        finalStatement = 'This individual is'
+      } else {
+        finalStatement = 'Each of these ' + finalStoryLength + ' individuals are'
+      }
+
+      return finalStatement
     }
   }
 }

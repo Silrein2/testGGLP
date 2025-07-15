@@ -62,11 +62,7 @@
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
         <div class="story-button-container">
           <div v-for="(story, index) in stories" :key="index" class="story-button-wrapper">
-            <div
-              class="story-box"
-              @click="goToMainPage(story.Name)"
-              v-if="story.ActiveStory == true"
-            >
+            <div class="story-box" @click="goToMainPage(story.Name)" v-if="shouldShowStory(story)">
               <div class="difficulty-box" :style="getDifficultyStyles(story.Difficulty)">
                 {{ story.Difficulty }}
               </div>
@@ -145,6 +141,11 @@ export default {
 
       clickSound: clickSound,
       audioInstance: audioService
+    }
+  },
+  computed: {
+    isCustomDomain() {
+      return window.location.hostname === 'play-ceria.com'
     }
   },
   created() {
@@ -257,23 +258,29 @@ export default {
       }
     },
     calculateStoryLength() {
-      let finalStoryLength = this.stories.length
-
-      let finalStatement = ''
-
+      let activeStoriesCount = 0
       for (let i = 0; i < this.stories.length; i++) {
-        if (this.stories[i].ActiveStory == false) {
-          finalStoryLength = finalStoryLength - 1
+        if (this.shouldShowStory(this.stories[i])) {
+          activeStoriesCount++
         }
       }
 
-      if (finalStoryLength < 2) {
+      let finalStatement = ''
+
+      if (activeStoriesCount < 2) {
         finalStatement = 'This individual is'
       } else {
-        finalStatement = 'Each of these ' + finalStoryLength + ' individuals are'
+        finalStatement = 'Each of these ' + activeStoriesCount + ' individuals are'
       }
 
       return finalStatement
+    },
+    shouldShowStory(story) {
+      if (this.isCustomDomain) {
+        return story.ActiveStory === true
+      } else {
+        return true
+      }
     }
   }
 }

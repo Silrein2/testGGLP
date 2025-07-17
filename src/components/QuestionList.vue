@@ -192,21 +192,21 @@ export default {
             if (question.LeftAnswer && question.LeftAnswer.Desc) {
               updates.LeftAnswer = {
                 ...question.LeftAnswer,
-                NextQuestion: question.LeftAnswer.NextQuestion
+                ...(this.isLinear ? {} : { NextQuestion: question.LeftAnswer.NextQuestion })
               }
             }
 
             if (question.MiddleAnswer && question.MiddleAnswer.Desc) {
               updates.MiddleAnswer = {
                 ...question.MiddleAnswer,
-                NextQuestion: question.MiddleAnswer.NextQuestion
+                ...(this.isLinear ? {} : { NextQuestion: question.MiddleAnswer.NextQuestion })
               }
             }
 
             if (question.RightAnswer && question.RightAnswer.Desc) {
               updates.RightAnswer = {
                 ...question.RightAnswer,
-                NextQuestion: question.RightAnswer.NextQuestion
+                ...(this.isLinear ? {} : { NextQuestion: question.RightAnswer.NextQuestion })
               }
             }
 

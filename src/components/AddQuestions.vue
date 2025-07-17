@@ -95,6 +95,10 @@ export default {
     selectedStory: {
       type: String,
       required: true
+    },
+    isLinear: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -146,7 +150,7 @@ export default {
                 Care: this.leftCare,
                 Respect: this.leftRespect,
                 Understanding: this.leftUnderstanding,
-                NextQuestion: null
+                ...(this.isLinear ? {} : { NextQuestion: null })
               }
             : null
 
@@ -158,7 +162,7 @@ export default {
                 Care: this.rightCare,
                 Respect: this.rightRespect,
                 Understanding: this.rightUnderstanding,
-                NextQuestion: null
+                ...(this.isLinear ? {} : { NextQuestion: null })
               }
             : null
 
@@ -174,7 +178,7 @@ export default {
                   Care: this.middleCare,
                   Respect: this.middleRespect,
                   Understanding: this.middleUnderstanding,
-                  NextQuestion: null
+                  ...(this.isLinear ? {} : { NextQuestion: null })
                 }
               : null
         }

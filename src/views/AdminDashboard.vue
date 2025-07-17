@@ -74,7 +74,7 @@
 
     <div ref="formDiv" class="form-div bg-tea-four no-border border-radius box-shadow">
       <AddStory v-if="addStoryBool" />
-      <AddQuestions v-if="addQuestionBool" :selectedStory="selectedStory" />
+      <AddQuestions v-if="addQuestionBool" :selectedStory="selectedStory" :isLinear="isLinear" />
       <QuestionList
         v-if="listQuestionBool"
         :selectedStory="selectedStory"

@@ -27,10 +27,9 @@ export default {
       empathyScore: 0
     }
   },
-  beforeCreate() {
-    this.preloadImages()
-  },
+  beforeCreate() {},
   mounted() {
+    this.preloadImages()
     this.startMiniGame()
   },
   methods: {
@@ -122,6 +121,7 @@ export default {
   width: 15vw; /* Adjust size as needed */
   height: auto;
   margin-bottom: 20px;
+  border: 15px;
 }
 
 .button-container {

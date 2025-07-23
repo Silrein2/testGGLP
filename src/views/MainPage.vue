@@ -809,6 +809,9 @@ export default {
           this.nextStory()
           // console.log(this.currentIndex)
 
+          console.log(this.currentIndex)
+          console.log(this.responsePrompt.length)
+
           if (this.currentIndex >= this.responsePrompt.length) {
             this.$nextTick(() => {
               // console.log('score div')

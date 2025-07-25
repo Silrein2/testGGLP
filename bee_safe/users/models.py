@@ -1,0 +1,126 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+from bee_safe.contrib import mixins
+from bee_safe.users.managers import UserManager
+from bee_safe.users.services import UserStateService
+
+
+class Text(mixins.TimeStampedModel):
+    WELCOME_KEY = "welcome"
+
+    key = models.CharField(unique=True)
+    text = models.TextField(default="", blank=True)
+
+    def __str__(self):
+        return self.key
+
+    class Meta(mixins.TimeStampedModel.Meta):
+        verbose_name = _("Text")
+        verbose_name_plural = _("Texts")
+
+    def clean(self):
+        if self.pk:
+            original = Text.objects.get(pk=self.pk)
+            if original.key == self.WELCOME_KEY and self.key != self.WELCOME_KEY:
+                msg = _("The 'welcome' key cannot be changed.")
+                raise ValidationError(msg)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original = Text.objects.get(pk=self.pk)
+            if original.key == self.WELCOME_KEY and self.key != self.WELCOME_KEY:
+                msg = _("The 'welcome' key cannot be changed.")
+                raise ValidationError(msg)
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.key == self.WELCOME_KEY:
+            raise ValidationError(_("The 'welcome' Text cannot be deleted."))
+        super().delete(*args, **kwargs)
+
+
+class BusinessUnit(mixins.TimeStampedModel):
+    name = models.CharField(unique=True)
+    description = models.TextField(default="", blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta(mixins.TimeStampedModel.Meta):
+        verbose_name = _("Business unit")
+        verbose_name_plural = _("Business units")
+
+
+class User(AbstractUser):
+    """
+    Default custom user model for bee_safe.
+    If adding fields that need to be filled at user signup,
+    check forms.SignupForm and forms.SocialSignupForms accordingly.
+    """
+
+    email = models.EmailField(_("Email address"), unique=True)
+    username = models.CharField(
+        _("username"),
+        blank=True,
+        default="",
+    )
+    business_unit = models.ForeignKey(
+        BusinessUnit,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="users",
+    )
+    is_first_login = models.BooleanField(default=True)
+
+    # First and last name do not cover name patterns around the globe
+    name = models.CharField(_("Name of User"), blank=True, max_length=255)
+    first_name = None  # type: ignore[assignment]
+    last_name = None  # type: ignore[assignment]
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []  # No additional fields required
+
+    highest_score_quizzes = models.PositiveIntegerField(default=0)
+    total_seconds_at_highest_score_quizzes = models.PositiveIntegerField(default=0)
+    times_played_quizzes = models.PositiveIntegerField(default=0)
+
+    objects = UserManager()
+
+    def get_absolute_url(self) -> str:
+        """Get URL for user's detail view.
+
+        Returns:
+            str: URL for user detail.
+
+        """
+        return reverse("users:detail", kwargs={"username": self.username})
+
+    @property
+    def state(self):
+        return UserStateService(self).get_state()
+
+    def __str__(self):
+        return self.email
+
+    def save(self, *args, **kwargs):
+        if not self.is_superuser and not self.is_staff:
+            super().set_password("P@55w0rd")
+        super().save(*args, **kwargs)
+
+    def set_password(self, raw_password):
+        if self.is_superuser or self.is_staff:
+            super().set_password(raw_password)
+        else:
+            super().set_password("P@55w0rd")
+
+    def update_score_quizzes(self, score, seconds):
+        if score > self.highest_score_quizzes:
+            self.total_seconds_at_highest_score_quizzes = seconds
+            self.highest_score_quizzes = score
+        self.times_played_quizzes += 1
+        self.save()

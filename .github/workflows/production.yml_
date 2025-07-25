@@ -1,0 +1,129 @@
+# This is a basic workflow to help you get started with Actions
+
+name: production-backend
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Building image
+        run: |
+          sed -i "/^DJANGO_SECRET_KEY=/c\DJANGO_SECRET_KEY=${PRODUCTION_DJANGO_SECRET_KEY}" .envs/.production/.django
+          sed -i "/^DJANGO_ALLOWED_HOSTS=/c\DJANGO_ALLOWED_HOSTS=${PRODUCTION_DJANGO_ALLOWED_HOSTS}" .envs/.production/.django
+
+          sed -i "/^DJANGO_EMAIL_HOST=/c\DJANGO_EMAIL_HOST=${PRODUCTION_DJANGO_EMAIL_HOST}" .envs/.production/.django
+          sed -i "/^DJANGO_EMAIL_PORT=/c\DJANGO_EMAIL_PORT=${PRODUCTION_DJANGO_EMAIL_PORT}" .envs/.production/.django
+          sed -i "s/^DJANGO_EMAIL_HOST_USER=.*/DJANGO_EMAIL_HOST_USER=${PRODUCTION_DJANGO_EMAIL_HOST_USER}/" .envs/.production/.django
+          sed -i "s/^DJANGO_EMAIL_HOST_PASSWORD=.*/DJANGO_EMAIL_HOST_PASSWORD=${PRODUCTION_DJANGO_EMAIL_HOST_PASSWORD}/" .envs/.production/.django
+
+          sed -i "s/^DJANGO_DEFAULT_FROM_EMAIL=.*/DJANGO_DEFAULT_FROM_EMAIL=${PRODUCTION_DJANGO_DEFAULT_FROM_EMAIL}/" .envs/.production/.django
+          sed -i "s/^DJANGO_SERVER_EMAIL=.*/DJANGO_SERVER_EMAIL=${PRODUCTION_DJANGO_SERVER_EMAIL}/" .envs/.production/.django
+          sed -i "s/^CELERY_FLOWER_USER=.*/CELERY_FLOWER_USER=${PRODUCTION_CELERY_FLOWER_USER}/" .envs/.production/.django
+          sed -i "s/^CELERY_FLOWER_PASSWORD=.*/CELERY_FLOWER_PASSWORD=${PRODUCTION_CELERY_FLOWER_PASSWORD}/" .envs/.production/.django
+
+          sed -i "s/^POSTGRES_HOST=.*/POSTGRES_HOST=${PRODUCTION_POSTGRES_HOST}/" .envs/.production/.postgres
+          sed -i "s/^POSTGRES_PORT=.*/POSTGRES_PORT=${PRODUCTION_POSTGRES_PORT}/" .envs/.production/.postgres
+          sed -i "s/^POSTGRES_DB=.*/POSTGRES_DB=${PRODUCTION_POSTGRES_DB}/" .envs/.production/.postgres
+          sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=${PRODUCTION_POSTGRES_USER}/" .envs/.production/.postgres
+          sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=${PRODUCTION_POSTGRES_PASSWORD}/" .envs/.production/.postgres
+
+          sed -i "s/^DB_HOST=.*/DB_HOST=${PRODUCTION_POSTGRES_HOST}/" .envs/.production/.postgres
+          sed -i "s/^DB_PORT=.*/DB_PORT=${PRODUCTION_POSTGRES_PORT}/" .envs/.production/.postgres
+          sed -i "s/^DB_NAME=.*/DB_NAME=${PRODUCTION_POSTGRES_DB}/" .envs/.production/.postgres
+          sed -i "s/^DB_USER=.*/DB_USER=${PRODUCTION_POSTGRES_USER}/" .envs/.production/.postgres
+          sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${PRODUCTION_POSTGRES_PASSWORD}/" .envs/.production/.postgres
+          sed -i "s/^ADMIN_USERS=.*/ADMIN_USERS=${PRODUCTION_POSTGRES_USER}/" .envs/.production/.postgres
+
+          python merge_production_dotenvs_in_dotenv.py
+
+          docker compose -f docker-compose.production.yml build django celeryworker celerybeat
+
+        env:
+          PRODUCTION_DJANGO_SECRET_KEY: ${{ secrets.PRODUCTION_DJANGO_SECRET_KEY }}
+          PRODUCTION_DJANGO_ALLOWED_HOSTS: ${{ secrets.PRODUCTION_DJANGO_ALLOWED_HOSTS }}
+
+          PRODUCTION_DJANGO_EMAIL_HOST: ${{ secrets.PRODUCTION_DJANGO_EMAIL_HOST }}
+          PRODUCTION_DJANGO_EMAIL_PORT: ${{ secrets.PRODUCTION_DJANGO_EMAIL_PORT }}
+          PRODUCTION_DJANGO_EMAIL_HOST_USER: ${{ secrets.PRODUCTION_DJANGO_EMAIL_HOST_USER }}
+          PRODUCTION_DJANGO_EMAIL_HOST_PASSWORD: ${{ secrets.PRODUCTION_DJANGO_EMAIL_HOST_PASSWORD }}
+
+          PRODUCTION_DJANGO_DEFAULT_FROM_EMAIL: ${{ secrets.PRODUCTION_DJANGO_DEFAULT_FROM_EMAIL }}
+          PRODUCTION_DJANGO_SERVER_EMAIL: ${{ secrets.PRODUCTION_DJANGO_SERVER_EMAIL }}
+          PRODUCTION_CELERY_FLOWER_USER: ${{ secrets.PRODUCTION_CELERY_FLOWER_USER }}
+          PRODUCTION_CELERY_FLOWER_PASSWORD: ${{ secrets.PRODUCTION_CELERY_FLOWER_PASSWORD }}
+
+          PRODUCTION_POSTGRES_HOST: ${{ secrets.PRODUCTION_POSTGRES_HOST }}
+          PRODUCTION_POSTGRES_PORT: ${{ secrets.PRODUCTION_POSTGRES_PORT }}
+          PRODUCTION_POSTGRES_DB: ${{ secrets.PRODUCTION_POSTGRES_DB }}
+          PRODUCTION_POSTGRES_USER: ${{ secrets.PRODUCTION_POSTGRES_USER }}
+          PRODUCTION_POSTGRES_PASSWORD: ${{ secrets.PRODUCTION_POSTGRES_PASSWORD }}
+
+      - name: Export images to files
+        run: |
+          for service in django celeryworker celerybeat; do
+            docker save bee_safe_production_${service}:latest > bee_safe_production_${service}.tar
+          done
+
+      - name: Copy .django to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          source: ".envs/.production/.django"
+          target: ~/bee_safe-backend
+          timeout: 10m
+
+      - name: Copy .postgres to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          source: ".envs/.production/.postgres"
+          target: ~/bee_safe-backend
+          timeout: 10m
+
+      - name: Copy images to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          source: "*.tar"
+          target: ~/bee_safe-images
+          timeout: 10m
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd ~/bee_safe-images
+            docker load < bee_safe_production_django.tar
+            docker load < bee_safe_production_celeryworker.tar
+            docker load < bee_safe_production_celerybeat.tar
+            cd ~/bee_safe-backend
+            docker compose -f docker-compose.production.yml up -d --wait postgres django celeryworker celerybeat
+            docker compose -f docker-compose.production.yml run --rm django python manage.py makemigrations && docker compose -f docker-compose.production.yml run --rm django python manage.py migrate
+            docker container prune -f
+            docker rmi $(docker images -f "dangling=true" -q)
+
+concurrency: production-backend

@@ -1,0 +1,20 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=project_name
+POSTGRES_USER=U8h2Pj6sK3fDrN8vTcX9Lh0rS9zJbCwY
+POSTGRES_PASSWORD=7pT2Nf5wR3cF6xQjH1mV9oL7yW4kD6nAqX5gU2bE8jR0tF1sK8pG3zV4lR1qW5mJ
+
+# PgBouncer
+# ------------------------------------------------------------------------------
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=project_name
+DB_USER=U8h2Pj6sK3fDrN8vTcX9Lh0rS9zJbCwY
+DB_PASSWORD=7pT2Nf5wR3cF6xQjH1mV9oL7yW4kD6nAqX5gU2bE8jR0tF1sK8pG3zV4lR1qW5mJ
+POOL_MODE=transaction
+MAX_CLIENT_CONN=2000
+DEFAULT_POOL_SIZE=50
+ADMIN_USERS=U8h2Pj6sK3fDrN8vTcX9Lh0rS9zJbCwY
+AUTH_TYPE=scram-sha-256

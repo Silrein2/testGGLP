@@ -1,0 +1,121 @@
+name: staging-backend
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["staging"]
+  pull_request:
+    branches: ["staging"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Building image
+        run: |
+          sed -i "/^DJANGO_SECRET_KEY=/c\DJANGO_SECRET_KEY=${STAGING_DJANGO_SECRET_KEY}" .envs/.staging/.django
+          sed -i "/^DJANGO_ALLOWED_HOSTS=/c\DJANGO_ALLOWED_HOSTS=${STAGING_DJANGO_ALLOWED_HOSTS}" .envs/.staging/.django
+
+          sed -i "s/^MAILGUN_API_KEY=.*/MAILGUN_API_KEY=${STAGING_MAILGUN_API_KEY}/" .envs/.staging/.django
+          sed -i "s/^MAILGUN_DOMAIN=.*/MAILGUN_DOMAIN=${STAGING_MAILGUN_DOMAIN}/" .envs/.staging/.django
+          sed -i "s/^DJANGO_DEFAULT_FROM_EMAIL=.*/DJANGO_DEFAULT_FROM_EMAIL=${STAGING_DJANGO_DEFAULT_FROM_EMAIL}/" .envs/.staging/.django
+          sed -i "s/^DJANGO_SERVER_EMAIL=.*/DJANGO_SERVER_EMAIL=${STAGING_DJANGO_SERVER_EMAIL}/" .envs/.staging/.django
+          sed -i "s/^CELERY_FLOWER_USER=.*/CELERY_FLOWER_USER=${STAGING_CELERY_FLOWER_USER}/" .envs/.staging/.django
+          sed -i "s/^CELERY_FLOWER_PASSWORD=.*/CELERY_FLOWER_PASSWORD=${STAGING_CELERY_FLOWER_PASSWORD}/" .envs/.staging/.django
+
+          sed -i "s/^POSTGRES_HOST=.*/POSTGRES_HOST=${STAGING_POSTGRES_HOST}/" .envs/.staging/.postgres
+          sed -i "s/^POSTGRES_PORT=.*/POSTGRES_PORT=${STAGING_POSTGRES_PORT}/" .envs/.staging/.postgres
+          sed -i "s/^POSTGRES_DB=.*/POSTGRES_DB=${STAGING_POSTGRES_DB}/" .envs/.staging/.postgres
+          sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=${STAGING_POSTGRES_USER}/" .envs/.staging/.postgres
+          sed -i "s/^POSTGRES_PASSWORD=.*/POSTGRES_PASSWORD=${STAGING_POSTGRES_PASSWORD}/" .envs/.staging/.postgres
+
+          sed -i "s/^DB_HOST=.*/DB_HOST=${STAGING_POSTGRES_HOST}/" .envs/.staging/.postgres
+          sed -i "s/^DB_PORT=.*/DB_PORT=${STAGING_POSTGRES_PORT}/" .envs/.staging/.postgres
+          sed -i "s/^DB_NAME=.*/DB_NAME=${STAGING_POSTGRES_DB}/" .envs/.staging/.postgres
+          sed -i "s/^DB_USER=.*/DB_USER=${STAGING_POSTGRES_USER}/" .envs/.staging/.postgres
+          sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=${STAGING_POSTGRES_PASSWORD}/" .envs/.staging/.postgres
+          sed -i "s/^ADMIN_USERS=.*/ADMIN_USERS=${STAGING_POSTGRES_USER}/" .envs/.staging/.postgres
+
+          python merge_staging_dotenvs_in_dotenv.py
+
+          docker compose -f docker-compose.staging.yml build django celeryworker celerybeat
+
+        env:
+          STAGING_DJANGO_SECRET_KEY: ${{ secrets.STAGING_DJANGO_SECRET_KEY }}
+          STAGING_DJANGO_ALLOWED_HOSTS: ${{ secrets.STAGING_DJANGO_ALLOWED_HOSTS }}
+
+          STAGING_MAILGUN_API_KEY: ${{ secrets.STAGING_MAILGUN_API_KEY }}
+          STAGING_MAILGUN_DOMAIN: ${{ secrets.STAGING_MAILGUN_DOMAIN }}
+          STAGING_DJANGO_DEFAULT_FROM_EMAIL: ${{ secrets.STAGING_DJANGO_DEFAULT_FROM_EMAIL }}
+          STAGING_DJANGO_SERVER_EMAIL: ${{ secrets.STAGING_DJANGO_SERVER_EMAIL }}
+          STAGING_CELERY_FLOWER_USER: ${{ secrets.STAGING_CELERY_FLOWER_USER }}
+          STAGING_CELERY_FLOWER_PASSWORD: ${{ secrets.STAGING_CELERY_FLOWER_PASSWORD }}
+
+          STAGING_POSTGRES_HOST: ${{ secrets.STAGING_POSTGRES_HOST }}
+          STAGING_POSTGRES_PORT: ${{ secrets.STAGING_POSTGRES_PORT }}
+          STAGING_POSTGRES_DB: ${{ secrets.STAGING_POSTGRES_DB }}
+          STAGING_POSTGRES_USER: ${{ secrets.STAGING_POSTGRES_USER }}
+          STAGING_POSTGRES_PASSWORD: ${{ secrets.STAGING_POSTGRES_PASSWORD }}
+
+      - name: Export images to files
+        run: |
+          for service in django celeryworker celerybeat; do
+            docker save bee_safe_staging_${service}:latest > bee_safe_staging_${service}.tar
+          done
+
+      - name: Copy .django to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          source: ".envs/.staging/.django"
+          target: ~/bee_safe-backend
+          timeout: 10m
+
+      - name: Copy .postgres to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          source: ".envs/.staging/.postgres"
+          target: ~/bee_safe-backend
+          timeout: 10m
+
+      - name: Copy images to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ vars.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          source: "*.tar"
+          target: ~/bee_safe-images
+          timeout: 10m
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd ~/bee_safe-images
+            docker load < bee_safe_staging_django.tar
+            docker load < bee_safe_staging_celeryworker.tar
+            docker load < bee_safe_staging_celerybeat.tar
+            cd ~/bee_safe-backend
+            docker compose -f docker-compose.staging.yml up -d --wait postgres django celeryworker celerybeat
+            docker compose -f docker-compose.staging.yml run --rm django python manage.py makemigrations && docker compose -f docker-compose.staging.yml run --rm django python manage.py migrate
+            docker container prune -f
+            docker rmi $(docker images -f "dangling=true" -q)
+
+concurrency: staging-backend

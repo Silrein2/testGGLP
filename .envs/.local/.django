@@ -1,0 +1,12 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+DJANGO_DEBUG=True
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=iuTfHguhYyMVgbOoXlTKZlMqxVpCyLam
+CELERY_FLOWER_PASSWORD=8kwABOgejhMZhsaB5FemCFr0rUqflW4IeWyMnkoL417wtxvh5aEUJCNFoh3RUa6C

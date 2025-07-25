@@ -1,0 +1,84 @@
+volumes:
+  staging_postgres_data: {}
+  staging_postgres_data_backups: {}
+  staging_traefik: {}
+
+  staging_redis_data: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/staging/django/Dockerfile
+
+    image: bee_safe_staging_django
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.staging/.django
+      - ./.envs/.staging/.postgres
+    command: /start
+    restart: unless-stopped
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/staging/postgres/Dockerfile
+    image: bee_safe_staging_postgres
+    volumes:
+      - staging_postgres_data:/var/lib/postgresql/data
+      - staging_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.staging/.postgres
+    command: postgres -c max_connections=1000 -c shared_buffers=512MB -c work_mem=16MB -c effective_cache_size=2GB
+    restart: unless-stopped
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    container_name: pgbouncer
+    ports:
+      - "6432:6432"
+    env_file:
+      - ./.envs/.staging/.postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/staging/traefik/Dockerfile
+    image: bee_safe_staging_traefik
+    depends_on:
+      - django
+    volumes:
+      - staging_traefik:/etc/traefik/acme
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    restart: unless-stopped
+
+  redis:
+    image: docker.io/redis:6
+    volumes:
+      - staging_redis_data:/data
+    restart: unless-stopped
+
+  celeryworker:
+    <<: *django
+    image: bee_safe_staging_celeryworker
+    command: /start-celeryworker
+    restart: unless-stopped
+
+  celerybeat:
+    <<: *django
+    image: bee_safe_staging_celerybeat
+    command: /start-celerybeat
+    restart: unless-stopped
+
+  flower:
+    <<: *django
+    image: bee_safe_staging_flower
+    command: /start-flower
+    restart: unless-stopped

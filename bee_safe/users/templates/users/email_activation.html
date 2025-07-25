@@ -1,0 +1,26 @@
+{% load i18n %}
+
+{% block subject %}
+{% blocktrans %}Account activation on {{ site_name }}{% endblocktrans %}
+{% endblock subject %}
+
+{% block text_body %}
+{% blocktrans %}You have registered successfully to {{ site_name }} game.{% endblocktrans %}
+{% blocktrans %}To verify your registration, kindly click on the link below.{% endblocktrans %}
+
+{{ protocol }}://{{ domain }}/{{ url|safe }}
+
+{% blocktrans %}If you have not registered but is receiving this email, kindly approach HR on this matter.{% endblocktrans %}
+
+{% endblock text_body %}
+
+{% block html_body %}
+<p>{% blocktrans %}You have registered successfully to {{ site_name }} game.{% endblocktrans %}</p>
+<p>{% blocktrans %}To verify your registration, kindly click on the link below.{% endblocktrans %}</p>
+
+<p><a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}</a></p>
+
+<p>{% blocktrans %}If you have not registered but is receiving this email, kindly approach HR on this matter.{% endblocktrans %}</p>
+
+{% endblock html_body %}
+

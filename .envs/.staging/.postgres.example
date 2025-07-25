@@ -1,0 +1,20 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=project_name
+POSTGRES_USER=NewUser12345
+POSTGRES_PASSWORD=SecurePassword67890
+
+# PgBouncer
+# ------------------------------------------------------------------------------
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=project_name
+DB_USER=NewUser12345
+DB_PASSWORD=SecurePassword67890
+POOL_MODE=transaction
+MAX_CLIENT_CONN=2000
+DEFAULT_POOL_SIZE=50
+ADMIN_USERS=NewUser12345
+AUTH_TYPE=scram-sha-256

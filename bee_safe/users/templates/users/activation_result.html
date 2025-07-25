@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Account Activation</title>
+</head>
+<body>
+  {% if success %}
+    <h1 style="color: green;">{{ message }}</h1>
+    <p>✅ Successfully verified! Click <a href="{{ home_url }}">HERE</a> to login now.
+  {% else %}
+    <h1 style="color: red;">{{ message }}</h1>
+    <p>❌ Verification failed!</p>
+  {% endif %}
+</body>
+</html>
+
+

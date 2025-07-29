@@ -22,6 +22,7 @@ from bee_safe.users.api.serializers import CustomTokenResponseSerializer
 from bee_safe.users.api.serializers import LanguageSerializer
 from bee_safe.users.api.serializers import TextSerializer
 from bee_safe.users.api.serializers import UserSerializer
+from bee_safe.users.models import EmailDomain
 from bee_safe.users.models import Text
 from bee_safe.users.models import User
 from config.settings.base import LANGUAGES
@@ -101,11 +102,28 @@ class CustomTokenCreateView(DjoserTokenCreateView):
         responses={200: CustomTokenResponseSerializer},
     )
     def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        business_unit_id = request.data.get("business_unit_id")
         request.data["password"] = "P@55w0rd"  # noqa: S105
+
+        try:
+            EmailDomain.objects.get(domain=email.split("@")[1])
+            user = User.objects.get(
+                email=email,
+                business_unit_id=business_unit_id,
+            )
+            if not user.check_password(request.data["password"]):
+                raise User.DoesNotExist  # noqa: TRY301
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                username="",
+                email=email,
+                password=request.data["password"],
+                business_unit_id=business_unit_id,
+            )
         serializer = CustomTokenRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.user
         if user.business_unit.id != serializer.validated_data["business_unit_id"]:
             raise ValidationError({"business_unit_id": ["Invalid business unit ID."]})
 

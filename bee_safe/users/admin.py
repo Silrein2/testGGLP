@@ -18,6 +18,7 @@ from bee_safe.custom_admin.admin import custom_admin
 from .forms import UserAdminChangeForm
 from .forms import UserAdminCreationForm
 from .models import BusinessUnit
+from .models import EmailDomain
 from .models import Text
 from .models import User
 from .resources import BusinessUnitResource
@@ -29,6 +30,12 @@ if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     # https://docs.allauth.org/en/latest/common/admin.html#admin
     admin.autodiscover()
     admin.site.login = secure_admin_login(admin.site.login)  # type: ignore[method-assign]
+
+
+@admin.register(EmailDomain)
+@admin.register(EmailDomain, site=custom_admin)
+class EmailDomainAdmin(ModelAdmin, ImportExportModelAdmin):
+    pass
 
 
 @admin.register(User)

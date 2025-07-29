@@ -55,6 +55,17 @@ class BusinessUnit(mixins.TimeStampedModel):
         verbose_name_plural = _("Business units")
 
 
+class EmailDomain(mixins.TimeStampedModel):
+    domain = models.CharField(unique=True)
+
+    class Meta(mixins.TimeStampedModel.Meta):
+        verbose_name = _("Email domain")
+        verbose_name_plural = _("Email domains")
+
+    def __str__(self):
+        return self.domain
+
+
 class User(AbstractUser):
     """
     Default custom user model for bee_safe.

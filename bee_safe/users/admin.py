@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportModelAdmin
 from modeltranslation.admin import TabbedTranslationAdmin
 from unfold.admin import ModelAdmin
+from unfold.decorators import action
 from unfold.forms import AdminPasswordChangeForm
 
 from bee_safe.custom_admin.admin import custom_admin
@@ -109,6 +110,23 @@ class UserAdmin(
     list_display_links = ["email", "business_unit"]
     search_fields = ["email", "business_unit", "name"]
     readonly_fields = ["date_joined", "last_login"]
+    actions = ["run_reset_scores"]
+
+    @action(
+        description="Reset scores",
+    )
+    def run_reset_scores(self, request, queryset):
+        for user in queryset:
+            user.highest_score_quizzes = 0
+            user.total_seconds_at_highest_score_quizzes = 0
+            user.times_played_quizzes = 0
+            user.save(
+                update_fields=[
+                    "highest_score_quizzes",
+                    "total_seconds_at_highest_score_quizzes",
+                    "times_played_quizzes",
+                ],
+            )
 
     def get_actions(self, request):
         actions = super().get_actions(request)

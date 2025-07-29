@@ -96,6 +96,8 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # No additional fields required
 
+    current_score_quizzes = models.PositiveIntegerField(default=0)
+    total_questions_answered_this_session = models.PositiveIntegerField(default=0)
     highest_score_quizzes = models.PositiveIntegerField(default=0)
     total_seconds_at_highest_score_quizzes = models.PositiveIntegerField(default=0)
     times_played_quizzes = models.PositiveIntegerField(default=0)
@@ -129,9 +131,11 @@ class User(AbstractUser):
         else:
             super().set_password("P@55w0rd")
 
+    def reset_quizzes(self):
+        return UserStateService(self).reset_quizzes()
+
+    def reset_state(self):
+        return UserStateService(self).reset_state()
+
     def update_score_quizzes(self, score, seconds):
-        if score > self.highest_score_quizzes:
-            self.total_seconds_at_highest_score_quizzes = seconds
-            self.highest_score_quizzes = score
-        self.times_played_quizzes += 1
-        self.save()
+        return UserStateService(self).update_score_quizzes(score, seconds)

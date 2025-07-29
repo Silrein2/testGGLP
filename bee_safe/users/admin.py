@@ -83,6 +83,8 @@ class UserAdmin(
             _("Scores (Quizzes)"),
             {
                 "fields": (
+                    "current_score_quizzes",
+                    "total_questions_answered_this_session",
                     "highest_score_quizzes",
                     "total_seconds_at_highest_score_quizzes",
                     "times_played_quizzes",
@@ -117,23 +119,22 @@ class UserAdmin(
     list_display_links = ["email", "business_unit"]
     search_fields = ["email", "business_unit", "name"]
     readonly_fields = ["date_joined", "last_login"]
-    actions = ["run_reset_scores"]
+    actions = [
+        "run_reset_quizzes_scores",
+        "run_reset_user_states",
+    ]
 
     @action(
-        description="Reset scores",
+        description="Reset quizzes scores",
     )
-    def run_reset_scores(self, request, queryset):
+    def run_reset_quizzes_scores(self, request, queryset):
         for user in queryset:
-            user.highest_score_quizzes = 0
-            user.total_seconds_at_highest_score_quizzes = 0
-            user.times_played_quizzes = 0
-            user.save(
-                update_fields=[
-                    "highest_score_quizzes",
-                    "total_seconds_at_highest_score_quizzes",
-                    "times_played_quizzes",
-                ],
-            )
+            user.reset_quizzes()
+
+    @action(description="Reset user states")
+    def run_reset_user_states(self, request, queryset):
+        for user in queryset:
+            user.reset_state()
 
     def get_actions(self, request):
         actions = super().get_actions(request)

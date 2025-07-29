@@ -25,22 +25,30 @@ class TextSerializer(serializers.ModelSerializer[Text]):
         fields = ["key", "text"]
 
 
-class UserStateSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    business_unit_id = serializers.IntegerField()
-    business_unit = serializers.CharField()
-    is_first_login = serializers.BooleanField()
+class UserStateQuizzesSerializer(serializers.Serializer):
+    current_score_quizzes = serializers.IntegerField()
+    total_questions_answered_this_session = serializers.IntegerField()
     highest_score_quizzes = serializers.IntegerField()
     total_seconds_at_highest_score_quizzes = serializers.IntegerField()
     times_played_quizzes = serializers.IntegerField()
 
 
 class UserSerializer(serializers.ModelSerializer[User]):
-    state = UserStateSerializer(read_only=True)
+    email = serializers.EmailField()
+    business_unit_id = serializers.IntegerField()
+    business_unit = serializers.CharField()
+    is_first_login = serializers.BooleanField()
+    quizzes = UserStateQuizzesSerializer()
 
     class Meta:
         model = User
-        fields = ["state"]
+        fields = [
+            "email",
+            "business_unit_id",
+            "business_unit",
+            "is_first_login",
+            "quizzes",
+        ]
         ref_name = "CustomUser"
 
 
@@ -56,5 +64,9 @@ class CustomTokenRequestSerializer(DjoserTokenCreateSerializer):
 
 
 class CustomTokenResponseSerializer(serializers.Serializer):
-    state = UserStateSerializer()
     auth_token = serializers.CharField()
+    email = serializers.EmailField()
+    business_unit_id = serializers.IntegerField()
+    business_unit = serializers.CharField()
+    is_first_login = serializers.BooleanField()
+    quizzes = UserStateQuizzesSerializer()

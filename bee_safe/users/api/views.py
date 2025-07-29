@@ -92,7 +92,7 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
 
     @action(detail=False)
     def state(self, request):
-        serializer = UserSerializer(request.user, context={"request": request})
+        serializer = UserSerializer(request.user.state, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
@@ -129,11 +129,7 @@ class CustomTokenCreateView(DjoserTokenCreateView):
 
         token, _ = Token.objects.get_or_create(user=user)
 
-        QuizQuestion = apps.get_model("quizzes", "QuizQuestion")
-        QuizQuestion.objects.filter(user=user).delete()
-
-        MatchAnswerProgress = apps.get_model("quizzes", "MatchAnswerProgress")
-        MatchAnswerProgress.objects.filter(user=user).delete()
+        user.reset_quizzes()
 
         def mark_not_first_login():
             if user.is_first_login:
@@ -143,8 +139,8 @@ class CustomTokenCreateView(DjoserTokenCreateView):
         threading.Timer(0.1, mark_not_first_login).start()
 
         data = {
-            "state": user.state,
             "auth_token": token.key,
         }
+        data.update(user.state)
 
         return Response(data, status=200)

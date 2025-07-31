@@ -1,0 +1,76 @@
+import {
+  _decorator,
+  Button,
+  Component,
+  instantiate,
+  Label,
+  Node,
+  Prefab,
+  SpriteFrame,
+} from "cc";
+import { SelectUIButton } from "./SelectUIButton";
+import { ButtonStates } from "../Page/Enums";
+const { ccclass, property } = _decorator;
+
+@ccclass("SelectUI")
+export class SelectUI extends Component {
+  @property({ type: Label })
+  private headerLabel: Label;
+
+  @property({ type: Prefab })
+  private selectOptionPrefab: Prefab;
+
+  @property({ type: Node })
+  private optionsContainer: Node;
+
+  private selectUIButtons: SelectUIButton[] = [];
+
+  public show(
+    header: string,
+    options: any[],
+    defaultValue: any,
+    callback: Function,
+  ) {
+    this.headerLabel.string = header;
+
+    this.optionsContainer.removeAllChildren();
+    this.selectUIButtons = [];
+
+    for (const option of options) {
+      const optionNode = instantiate(this.selectOptionPrefab) as Node;
+      this.optionsContainer.addChild(optionNode);
+
+      const optionButton = optionNode.getComponent(Button);
+      const selectUIButton = optionNode.getComponent(SelectUIButton);
+      selectUIButton.init(option);
+      this.selectUIButtons.push(selectUIButton);
+
+      if (optionButton) {
+        optionButton.node.on(
+          Button.EventType.CLICK,
+          () => {
+            callback(option.value);
+            this.onClickClose();
+          },
+          this,
+        );
+      }
+    }
+    this.node.active = true;
+    this.onOptionSelected(defaultValue);
+  }
+
+  private onOptionSelected(value: any) {
+    for (const selectUIButton of this.selectUIButtons) {
+      if (value === selectUIButton.data.value) {
+        selectUIButton.setState(ButtonStates.Selected);
+      } else {
+        selectUIButton.setState(ButtonStates.Normal);
+      }
+    }
+  }
+
+  private onClickClose() {
+    this.node.active = false;
+  }
+}

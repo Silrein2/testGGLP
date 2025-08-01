@@ -6,6 +6,7 @@ export enum PageStates {
   DialogueGame1,
   Game1,
   Game2,
+  Result,
 }
 
 export enum ButtonStates {
@@ -13,4 +14,9 @@ export enum ButtonStates {
   Selected,
   Correct,
   Wrong,
+}
+
+export enum QuestionTypes {
+  MCQ = "MCQ",
+  MATCH = "MATCH",
 }

@@ -16,12 +16,52 @@ export interface BusinessUnit {
   description: string;
 }
 
+export interface Quizzes {
+  current_score_quizzes: number;
+  total_questions_answered_this_session: number;
+  highest_score_quizzes: number;
+  total_seconds_at_highest_score_quizzes: number;
+  times_played_quizzes: number;
+}
+
+export interface UserState {
+  email: string;
+  business_unit_id: number;
+  business_unit: string;
+  is_first_login: boolean;
+  quizzes: Quizzes;
+  next_question: Question;
+}
+
+export interface MCQOption {
+  id: number;
+  text: string;
+  is_correct: boolean;
+}
+
+export interface MatchPair {
+  options_a: string[];
+  options_b: string[];
+}
+
+export interface Question {
+  id: number;
+  question_type: string;
+  text: string;
+  mcq_options: MCQOption[];
+  match_pairs: MatchPair;
+}
+
+export const QUESTION_CHANGED = "question-changed";
+
 @ccclass("DataManager")
 export class DataManager extends Component {
   private static _instance: DataManager | null = null;
 
-  public languages: Language[];
-  public businessUnits: BusinessUnit[];
+  public languages: Language[] = [];
+  public businessUnits: BusinessUnit[] = [];
+  public userState: UserState | null = null;
+  public question: Question | null = null;
 
   public static get instance(): DataManager {
     if (this._instance) {
@@ -44,5 +84,14 @@ export class DataManager extends Component {
 
   public setBusinessUnits(businessUnits: BusinessUnit[]) {
     this.businessUnits = businessUnits;
+  }
+
+  public setUserState(userState: UserState) {
+    this.userState = userState;
+  }
+
+  public setQuestion(question: Question) {
+    this.question = question;
+    this.node.emit(QUESTION_CHANGED, question);
   }
 }

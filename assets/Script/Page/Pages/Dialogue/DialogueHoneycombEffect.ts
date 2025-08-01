@@ -4,10 +4,10 @@ const { ccclass, property } = _decorator;
 @ccclass("DialogueHoneycombEffect")
 export class DialogueHoneycombEffect extends Component {
   @property({ type: Node })
-  highlight: Node;
+  highlight: Node | null = null;
 
   @property({ type: Node })
-  honeycomb: Node;
+  honeycomb: Node | null = null;
 
   start() {
     tween(this.highlight)

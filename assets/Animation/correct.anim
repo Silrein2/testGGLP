@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.AnimationClip",
-    "_name": "transition",
+    "_name": "correct",
     "_objFlags": 0,
     "__editorExtras__": {
       "embeddedPlayerGroups": []
@@ -67,15 +67,15 @@
     ],
     "_values": [
       {
-        "__uuid__": "499d81ec-4ecd-4491-bd9c-79a6cb383501@f9941",
+        "__uuid__": "db152e80-3f3a-4b3a-9b95-b4f63c8b9036@f9941",
         "__expectedType__": "cc.SpriteFrame"
       },
       {
-        "__uuid__": "4bf3b681-1623-437f-a4ab-29c729b9af04@f9941",
+        "__uuid__": "e2fe48db-188c-4a54-9988-330334f1c214@f9941",
         "__expectedType__": "cc.SpriteFrame"
       },
       {
-        "__uuid__": "499d81ec-4ecd-4491-bd9c-79a6cb383501@f9941",
+        "__uuid__": "e2fe48db-188c-4a54-9988-330334f1c214@f9941",
         "__expectedType__": "cc.SpriteFrame"
       }
     ]

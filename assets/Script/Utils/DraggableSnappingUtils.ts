@@ -1,4 +1,4 @@
-import { Node, Vec3 } from "cc";
+import { Node, tween, Vec3 } from "cc";
 
 export class DraggableSnappingUtils {
   public static snapToNearestSlot(
@@ -22,7 +22,14 @@ export class DraggableSnappingUtils {
     });
 
     if (closestSlot) {
-      draggedNode.setWorldPosition(closestSlot.worldPosition);
+      //draggedNode.setWorldPosition(closestSlot.worldPosition);
+      tween(draggedNode)
+        .to(
+          0.4,
+          { worldPosition: closestSlot.worldPosition },
+          { easing: "backOut" },
+        )
+        .start();
       return closestSlot;
     }
     return null;

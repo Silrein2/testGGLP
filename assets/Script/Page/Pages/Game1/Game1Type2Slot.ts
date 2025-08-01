@@ -8,14 +8,15 @@ export class Game1Type2Slot extends Component {
 
   private label: Label;
 
-  public data: any;
+  public data: string;
 
   onLoad() {
     this.label = this.node.getComponentInChildren(Label);
   }
 
-  public init(data: any) {
+  public init(data: string) {
+    this.node.active = data !== null;
     this.data = data;
-    if (this.label) this.label.string = data.text;
+    if (this.label) this.label.string = data;
   }
 }

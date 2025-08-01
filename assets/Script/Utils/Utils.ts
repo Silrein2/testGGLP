@@ -23,3 +23,16 @@ export function isNullOrEmpty(str: string | null | undefined): boolean {
   }
   return str.trim() === "";
 }
+
+export function timeString(elapsedTime: number): string {
+  const totalSeconds = Math.floor(elapsedTime);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  let timeString = "";
+  if (minutes > 0) {
+    timeString += `${minutes}m`;
+  }
+  timeString += `${seconds}s`;
+  return timeString;
+}

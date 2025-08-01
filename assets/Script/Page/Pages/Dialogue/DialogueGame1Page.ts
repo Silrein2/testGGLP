@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 @ccclass("DialogueGame1Page")
 export class DialogueGame1Page extends DialoguePage {
   @property({ type: SpriteFrame })
-  beeSmileSprite: SpriteFrame;
+  beeSmileSprite: SpriteFrame | null = null;
 
   start() {
     this.dialogueScript = [

@@ -2,17 +2,23 @@ import { _decorator, Component, Node } from "cc";
 import { ApiClient } from "../Api/ApiClient";
 import { AuthService } from "../Api/AuthService";
 import { UserService } from "../Api/UserService";
+import { QuizService } from "../Api/QuizService";
 import { DataManager } from "./DataManager";
 import { UIManager } from "./UIManager";
+import { Timer } from "../Utils/Timer";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
   private static _instance: GameManager | null = null;
 
+  @property({ type: Timer })
+  public timer: Timer | null = null;
+
   private apiClient: ApiClient | null = null;
   public authService: AuthService | null = null;
   public userService: UserService | null = null;
+  public quizService: QuizService | null = null;
 
   public static get instance(): GameManager {
     if (this._instance) {
@@ -39,15 +45,15 @@ export class GameManager extends Component {
     this.apiClient = new ApiClient(BASE_API_URL);
     this.authService = new AuthService(this.apiClient);
     this.userService = new UserService(this.apiClient);
+    this.quizService = new QuizService(this.apiClient);
   }
 
   public setAuthToken(token: string) {
     this.apiClient.setAuthToken(token);
   }
 
-  private async getLangauges() {
-    const data = await GameManager.instance.userService.getLanguages();
-    DataManager.instance.setLanguages(data);
+  private getLangauges() {
+    GameManager.instance.userService.getLanguages();
   }
 
   public showLanguageSetting() {

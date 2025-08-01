@@ -3,17 +3,18 @@ import { Game1Page } from "./Game1Page";
 import { getComponentInParent } from "../../../Utils/Utils";
 import { ButtonStates } from "../../Enums";
 import { Game1Assets } from "./Game1Assets";
+import { MCQOption } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game1Type1Option")
 export class Game1Type1Option extends Component {
-  private sprite: Sprite;
-  private button: Button;
-  private label: Label;
-  private game1Page: Game1Page;
-  private game1Assets: Game1Assets;
+  private sprite: Sprite | null = null;
+  private button: Button | null = null;
+  private label: Label | null = null;
+  private game1Page: Game1Page | null = null;
+  private game1Assets: Game1Assets | null = null;
 
-  public data: any;
+  public data: MCQOption | null = null;
 
   onLoad() {
     this.sprite = this.node.getComponent(Sprite);
@@ -25,9 +26,10 @@ export class Game1Type1Option extends Component {
     this.button.node.on(Button.EventType.CLICK, this.onClickButton, this);
   }
 
-  public init(data: any) {
+  public init(data: MCQOption) {
     this.data = data;
     this.label.string = data.text;
+    this.setState(ButtonStates.Normal);
   }
 
   public setState(state: ButtonStates) {

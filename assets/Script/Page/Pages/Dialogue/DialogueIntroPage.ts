@@ -6,22 +6,22 @@ const { ccclass, property } = _decorator;
 @ccclass("DialogueIntroPage")
 export class DialogueIntroPage extends DialoguePage {
   @property({ type: SpriteFrame })
-  beeSmileSprite: SpriteFrame;
+  beeSmileSprite: SpriteFrame | null = null;
 
   @property({ type: SpriteFrame })
-  beeShockedSprite: SpriteFrame;
+  beeShockedSprite: SpriteFrame | null = null;
 
   @property({ type: Node })
-  beeBad1: Node;
+  beeBad1: Node | null = null;
 
   @property({ type: Node })
-  beeBad2: Node;
+  beeBad2: Node | null = null;
 
   @property({ type: Node })
-  beeBad3: Node;
+  beeBad3: Node | null = null;
 
   @property({ type: Node })
-  honeycomb: Node;
+  honeycomb: Node | null = null;
 
   start() {
     this.dialogueScript = [

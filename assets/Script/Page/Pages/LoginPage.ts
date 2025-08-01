@@ -1,4 +1,12 @@
-import { _decorator, Button, Component, EditBox, Label, Node } from "cc";
+import {
+  _decorator,
+  Button,
+  CCBoolean,
+  Component,
+  EditBox,
+  Label,
+  Node,
+} from "cc";
 import { Page } from "../Page";
 import { PageStates } from "../Enums";
 import { GameManager } from "../../Manager/GameManager";
@@ -10,26 +18,23 @@ const { ccclass, property } = _decorator;
 @ccclass("LoginPage")
 export class LoginPage extends Page {
   @property({ type: EditBox })
-  emailInput: EditBox;
+  private emailInput: EditBox | null = null;
 
   @property({ type: Label })
-  businessUnitLabel: Label;
+  private businessUnitLabel: Label | null = null;
 
-  @property({ type: Button })
-  loginButton: Button;
+  @property
+  private quickLogin: boolean = false;
 
   private businessUnitId: number | null = null;
-  onLoad() {
-    this.loginButton.node.on(Button.EventType.CLICK, this.onClickLogin, this);
-  }
 
   start() {
     this.getBusinessUnits();
   }
 
-  private async getBusinessUnits() {
-    const data = await GameManager.instance.userService.getBusinessUnits();
-    DataManager.instance.setBusinessUnits(data);
+  private getBusinessUnits() {
+    GameManager.instance.userService.getBusinessUnits();
+    this.getAuthToken();
   }
 
   protected setPageState() {
@@ -38,6 +43,17 @@ export class LoginPage extends Page {
 
   public onEnter() {
     super.onEnter();
+  }
+
+  private async getAuthToken() {
+    if (!this.quickLogin) return;
+    UIManager.instance.showLoading(true);
+    GameManager.instance.setAuthToken(
+      "8637a47575328dd08eecd138284889edce3dc504",
+    );
+    await GameManager.instance.userService.fetchUserState();
+    this.pageManager.transitionState(PageStates.DialogueIntro);
+    UIManager.instance.showLoading(false);
   }
 
   private async onClickLogin() {
@@ -51,6 +67,7 @@ export class LoginPage extends Page {
         this.businessUnitId,
       );
       GameManager.instance.setAuthToken(data.auth_token);
+      await GameManager.instance.userService.fetchUserState();
       this.pageManager.transitionState(PageStates.DialogueIntro);
     } catch (error) {
       console.error(error);

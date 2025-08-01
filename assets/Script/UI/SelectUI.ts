@@ -15,13 +15,13 @@ const { ccclass, property } = _decorator;
 @ccclass("SelectUI")
 export class SelectUI extends Component {
   @property({ type: Label })
-  private headerLabel: Label;
+  private headerLabel: Label | null = null;
 
   @property({ type: Prefab })
-  private selectOptionPrefab: Prefab;
+  private selectOptionPrefab: Prefab | null = null;
 
   @property({ type: Node })
-  private optionsContainer: Node;
+  private optionsContainer: Node | null = null;
 
   private selectUIButtons: SelectUIButton[] = [];
 

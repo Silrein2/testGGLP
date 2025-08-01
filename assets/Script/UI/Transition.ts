@@ -6,16 +6,16 @@ export const TRANSITION_HIDDEN = "transition-hidden";
 @ccclass("Transition")
 export class Transition extends Component {
   @property({ type: Node })
-  top: Node;
+  top: Node | null = null;
 
   @property({ type: Node })
-  bottom: Node;
+  bottom: Node | null = null;
 
   @property({ type: Node })
-  character: Node;
+  character: Node | null = null;
 
   @property({ type: Node })
-  blockInput: Node;
+  blockInput: Node | null = null;
 
   play() {
     this.setActive(true);

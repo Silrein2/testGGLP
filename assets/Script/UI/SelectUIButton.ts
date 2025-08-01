@@ -5,14 +5,14 @@ const { ccclass, property } = _decorator;
 @ccclass("SelectUIButton")
 export class SelectUIButton extends Component {
   @property({ type: SpriteFrame })
-  private buttonBlueSpriteFrame: SpriteFrame;
+  private buttonBlueSpriteFrame: SpriteFrame | null = null;
 
   @property({ type: SpriteFrame })
-  private buttonYellowSpriteFrame: SpriteFrame;
+  private buttonYellowSpriteFrame: SpriteFrame | null = null;
 
-  private sprite: Sprite;
-  private label: Label;
-  public data: any;
+  private sprite: Sprite | null = null;
+  private label: Label | null = null;
+  public data: any | null = null;
 
   onLoad() {
     this.sprite = this.node.getComponent(Sprite);

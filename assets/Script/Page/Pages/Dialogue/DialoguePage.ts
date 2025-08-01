@@ -16,16 +16,16 @@ const { ccclass, property } = _decorator;
 @ccclass("DialoguePage")
 export class DialoguePage extends Page {
   @property({ type: Label })
-  dialogueLabel: Label;
+  private dialogueLabel: Label;
 
   @property({ type: Sprite })
-  speakerSprite: Sprite;
+  private speakerSprite: Sprite;
 
   @property({ type: Label })
-  speakerLabel: Label;
+  private speakerLabel: Label;
 
   @property({ type: Button })
-  advanceButton: Button;
+  private advanceButton: Button;
 
   private currentLineIndex: number = 0;
   private isTyping: boolean = false;

@@ -11,12 +11,12 @@ const { ccclass, property } = _decorator;
 
 @ccclass("Game1Type2Option")
 export class Game1Type2Option extends Component {
-  private label: Label;
-  private game1Page: Game1Page;
-  private slots: Node[];
+  private label: Label | null = null;
+  private game1Page: Game1Page | null = null;
+  private slots: Node[] = [];
 
-  public draggableObject: DraggableObject;
-  public data: any;
+  public draggableObject: DraggableObject | null = null;
+  public data: string | null = null;
 
   onLoad() {
     this.draggableObject = this.node.getComponent(DraggableObject);
@@ -25,10 +25,12 @@ export class Game1Type2Option extends Component {
     this.draggableObject.node.on(DRAG_END_EVENT, this.onDragEnd, this);
   }
 
-  public init(data: any, slots: Game1Type2Slot[]) {
+  public init(data: string, slots: Game1Type2Slot[]) {
+    this.node.active = data !== null;
     this.data = data;
-    this.label.string = data.text;
+    this.label.string = data;
     this.slots = slots.map((x) => x.slot);
+    this.resetPosition();
   }
 
   private onDragEnd(draggedNode: Node, draggedWorldPosition: Vec3) {
@@ -46,12 +48,16 @@ export class Game1Type2Option extends Component {
       );
       this.game1Page.onDropType2Option(this.data, type2Slot.data, this);
     } else {
-      this.resetPosition();
+      this.moveResetPosition();
       this.game1Page.onDropType2Option(this.data, null, this);
     }
   }
 
   public resetPosition() {
     this.draggableObject?.resetPosition();
+  }
+
+  public moveResetPosition() {
+    this.draggableObject?.moveResetPosition();
   }
 }

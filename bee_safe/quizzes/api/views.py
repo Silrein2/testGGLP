@@ -18,6 +18,7 @@ from bee_safe.quizzes.api.serializers import MatchAnswerSerializer
 from bee_safe.quizzes.api.serializers import MCQAnswerSerializer
 from bee_safe.quizzes.api.serializers import QuestionSerializer
 from bee_safe.quizzes.api.serializers import TextSerializer
+from bee_safe.quizzes.api.serializers import YesNoAnswerSerializer
 from bee_safe.quizzes.models import Question
 from bee_safe.quizzes.models import QuizQuestion
 from bee_safe.quizzes.models import Text
@@ -38,6 +39,17 @@ match_example = OpenApiExample(
     value={
         "id": 666,
         "answer": {"option_a": "Greavard", "option_b": "Ghost"},
+        "seconds_spent": 20,
+        "wrong_count": 0,
+    },
+    request_only=True,
+)
+
+yes_no_example = OpenApiExample(
+    "Yes/No Answer",
+    value={
+        "id": 666,
+        "answer": {"is_yes": True},
         "seconds_spent": 20,
         "wrong_count": 0,
     },
@@ -148,7 +160,7 @@ question_post_200_no_more_questions = OpenApiExample(
         202: OpenApiResponse(description="Match opton pair submitted successfully."),
         400: OpenApiResponse(description="Invalid answer."),
     },
-    examples=[mcq_example, match_example],
+    examples=[mcq_example, match_example, yes_no_example],
     description="Submit a correct answer to a question. Only correct answers are accepted.",
 )
 class QuestionView(APIView):
@@ -267,6 +279,26 @@ class QuestionView(APIView):
                 _("Correct pair recorded. More pairs required."),
                 status=status.HTTP_202_ACCEPTED,
             )
+        elif question.question_type == Question.YES_NO:
+            answer_serializer = YesNoAnswerSerializer(
+                data=answer_data,
+                context={"question": question, "user": request.user},
+            )
+            answer_serializer.is_valid(raise_exception=True)
+            is_correct = question.yes_no_answer.is_yes == answer_data["is_yes"]
+
+            QuizQuestion.objects.get_or_create(
+                user=request.user,
+                question=question,
+                defaults={
+                    "seconds_spent": seconds_spent,
+                    "wrong_count": wrong_count,
+                    "is_correct": is_correct,
+                },
+            )
+            update_score_quizzes(request.user)
+            request.user.total_questions_answered_this_session += 1
+            request.user.save()
 
         return end_of_questions_reached(request.user)
 

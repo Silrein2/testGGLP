@@ -10,9 +10,12 @@ from bee_safe.quizzes.services import QuestionService
 class Question(mixins.TimeStampedModel):
     MCQ = "MCQ"
     MATCH = "MATCH"
+    YES_NO = "YES_NO"
+
     QUESTION_TYPES = [
         (MCQ, _("MCQ")),
         (MATCH, _("Match option pairs")),
+        (YES_NO, _("Yes or no")),
     ]
 
     text = models.TextField(verbose_name=_("Question text"))
@@ -76,6 +79,24 @@ class MatchOptionPair(mixins.TimeStampedModel):
 
     def __str__(self):
         return f"{self.option_a} ↔ {self.option_b}"
+
+
+class YesNoAnswer(mixins.TimeStampedModel):
+    question = models.OneToOneField(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="yes_no_answer",
+        limit_choices_to={"question_type": Question.YES_NO},
+        verbose_name=_("Question"),
+    )
+    is_yes = models.BooleanField(verbose_name=_("Is 'Yes' the correct answer?"))
+
+    class Meta(mixins.TimeStampedModel.Meta):
+        verbose_name = _("Yes/No answer")
+        verbose_name_plural = _("Yes/No answers")
+
+    def __str__(self):
+        return _("Yes") if self.is_yes else _("No")
 
 
 class Text(mixins.TimeStampedModel):

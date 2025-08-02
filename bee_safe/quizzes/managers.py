@@ -4,7 +4,11 @@ from django.db import models
 
 class QuestionManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("mcq_options", "match_pairs")
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related("mcq_options", "match_pairs", "yes_no_answer")
+        )
 
     def get_next_question(self, user):
         QuizQuestion = apps.get_model("quizzes", "QuizQuestion")
@@ -25,5 +29,9 @@ class QuizQuestionManager(models.Manager):
         return (
             super()
             .get_queryset()
-            .prefetch_related("question__mcq_options", "question__match_pairs")
+            .prefetch_related(
+                "question__mcq_options",
+                "question__match_pairs",
+                "question__yes_no_answer",
+            )
         )

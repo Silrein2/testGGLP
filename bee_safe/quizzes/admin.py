@@ -12,11 +12,13 @@ from unfold.contrib.import_export.forms import SelectableFieldsExportForm
 
 from bee_safe.custom_admin.admin import custom_admin
 
+from .forms import YesNoAnswerForm
 from .models import MatchOptionPair
 from .models import MCQOption
 from .models import Question
 from .models import QuizQuestion
 from .models import Text
+from .models import YesNoAnswer
 from .resources import QuestionResource
 from .resources import TextResource
 
@@ -33,6 +35,13 @@ class MatchOptionPairInline(StackedInline, TranslationStackedInline):
     fields = ["option_a", "option_b"]
 
 
+class YesNoAnswerInline(TabularInline):
+    model = YesNoAnswer
+    form = YesNoAnswerForm
+    extra = 1
+    fields = ["is_yes"]
+
+
 @admin.register(Question)
 @admin.register(Question, site=custom_admin)
 class QuestionAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
@@ -47,6 +56,10 @@ class QuestionAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
         if obj and obj.question_type == Question.MATCH:
             return [
                 MatchOptionPairInline(self.model, self.admin_site),
+            ]
+        if obj and obj.question_type == Question.YES_NO:
+            return [
+                YesNoAnswerInline(self.model, self.admin_site),
             ]
         return [
             MCQOptionInline(self.model, self.admin_site),

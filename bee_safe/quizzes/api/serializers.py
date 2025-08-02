@@ -5,6 +5,7 @@ from bee_safe.quizzes.models import MCQOption
 from bee_safe.quizzes.models import Question
 from bee_safe.quizzes.models import QuizQuestion
 from bee_safe.quizzes.models import Text
+from bee_safe.quizzes.models import YesNoAnswer
 
 
 class MCQOptionSerializer(serializers.ModelSerializer):
@@ -141,5 +142,29 @@ class MatchAnswerSerializer(serializers.Serializer):
         ).exists():
             msg = "Pair already submitted."
             raise serializers.ValidationError(msg)
+
+        return data
+
+
+class YesNoAnswerSerializer(serializers.Serializer):
+    is_yes = serializers.BooleanField()
+
+    def validate(self, data):
+        question = self.context["question"]
+        user = self.context["user"]
+
+        if question.question_type != Question.YES_NO:
+            raise serializers.ValidationError("Invalid question type for Yes/No.")
+
+        try:
+            answer = question.yes_no_answer  # Uses related_name
+        except YesNoAnswer.DoesNotExist:
+            raise serializers.ValidationError("Answer not configured.")
+
+        if answer.is_yes != data["is_yes"]:
+            raise serializers.ValidationError("Incorrect answer.")
+
+        if QuizQuestion.objects.filter(question=question, user=user).exists():
+            raise serializers.ValidationError("Answer already submitted.")
 
         return data

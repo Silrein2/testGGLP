@@ -12,6 +12,7 @@ from .models import MatchOptionPair
 from .models import MCQOption
 from .models import Question
 from .models import Text
+from .models import YesNoAnswer
 
 
 class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResource):
@@ -25,6 +26,11 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
         attribute=None,
         widget=CharWidget(),
     )
+    yes_no_answer = fields.Field(
+        column_name="yes_no_answer",
+        attribute=None,
+        widget=CharWidget(),
+    )
 
     class Meta:
         model = Question
@@ -35,6 +41,7 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
             *tuple(text_translation_fields),
             "mcq_options",
             "match_pairs",
+            "yes_no_answer",
         )
 
     def get_supported_languages(self):
@@ -82,6 +89,15 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
 
         return json.dumps(result, ensure_ascii=False)
 
+    def dehydrate_yes_no_answer(self, obj):
+        if obj.question_type != Question.YES_NO:
+            return ""
+
+        try:
+            return json.dumps({"is_yes": obj.yes_no_answer.is_yes}, ensure_ascii=False)
+        except YesNoAnswer.DoesNotExist:
+            return ""
+
     def import_field(self, field, obj, data, is_m2m=False, **kwargs):
         result = super().import_field(field, obj, data, is_m2m, **kwargs)
 
@@ -89,17 +105,23 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
             obj._import_mcq_data = data.get("mcq_options", "")
         elif field.column_name == "match_pairs":
             obj._import_match_data = data.get("match_pairs", "")
+        elif field.column_name == "yes_no_answer":
+            obj._import_yes_no_data = data.get("yes_no_answer", "")
 
         return result
 
     def after_save_instance(self, instance, *args, **kwargs):
+        # Clear existing related data
         instance.mcq_options.all().delete()
         instance.match_pairs.all().delete()
+        YesNoAnswer.objects.filter(question=instance).delete()
 
+        # Translatable fields
         text_translation_fields = get_translation_fields("text")
         option_a_fields = get_translation_fields("option_a")
         option_b_fields = get_translation_fields("option_b")
 
+        # Import MCQ
         if hasattr(instance, "_import_mcq_data") and instance._import_mcq_data:
             try:
                 mcq_list = json.loads(instance._import_mcq_data)
@@ -114,6 +136,7 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
                 pass
             delattr(instance, "_import_mcq_data")
 
+        # Import Match Pairs
         if hasattr(instance, "_import_match_data") and instance._import_match_data:
             try:
                 pair_list = json.loads(instance._import_match_data)
@@ -129,12 +152,28 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
                 pass
             delattr(instance, "_import_match_data")
 
+        # Import Yes/No Answer
+        if hasattr(instance, "_import_yes_no_data") and instance._import_yes_no_data:
+            try:
+                yes_no_data = json.loads(instance._import_yes_no_data)
+
+                is_yes = yes_no_data.get("is_yes")
+                if isinstance(is_yes, bool):
+                    YesNoAnswer.objects.create(question=instance, is_yes=is_yes)
+                else:
+                    raise ValueError("Missing or invalid 'is_yes' in yes_no_answer")
+            except (json.JSONDecodeError, ValueError):
+                pass
+            delattr(instance, "_import_yes_no_data")
+
     def get_instance(self, instance_loader, row):
         instance = super().get_instance(instance_loader, row)
         if hasattr(instance, "_import_mcq_data"):
             delattr(instance, "_import_mcq_data")
         if hasattr(instance, "_import_match_data"):
             delattr(instance, "_import_match_data")
+        if hasattr(instance, "_import_yes_no_data"):
+            delattr(instance, "_import_yes_no_data")
         return instance
 
 

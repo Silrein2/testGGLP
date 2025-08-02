@@ -6,6 +6,7 @@ class QuestionService:
         self.question = question
         self.MCQOption = apps.get_model("quizzes", "MCQOption")
         self.MatchOptionPair = apps.get_model("quizzes", "MatchOptionPair")
+        self.YesNoAnswer = apps.get_model("quizzes", "YesNoAnswer")
         self.Question = apps.get_model("quizzes", "Question")
 
     def _get_mcq_options(self):
@@ -14,9 +15,14 @@ class QuestionService:
     def _get_match_pairs(self):
         return self.MatchOptionPair.objects.filter(question=self.question)
 
+    def _get_yes_no(self):
+        return self.YesNoAnswer.objects.filter(question=self.question)
+
     def get_answer_options(self):
         if self.question.question_type == self.Question.MATCH:
             return self._get_match_pairs()
+        if self.question.question_type == self.Question.YES_NO:
+            return self._get_yes_no()
         return self._get_mcq_options()
 
 

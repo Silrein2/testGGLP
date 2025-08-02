@@ -65,10 +65,11 @@ question_post_200_mcq = OpenApiExample(
         "is_first_login": False,
         "quizzes": {
             "current_score_quizzes": 180,
+            "total_score_quizzes": 540,
             "total_questions_answered_this_session": 1,
-            "highest_score_quizzes": 180,
-            "total_seconds_at_highest_score_quizzes": 20,
-            "times_played_quizzes": 0,
+            "highest_score_quizzes": 580,
+            "total_seconds_at_highest_score_quizzes": 40,
+            "times_played_quizzes": 5,
         },
     },
     media_type="application/json",
@@ -93,10 +94,11 @@ question_post_200_match = OpenApiExample(
         "is_first_login": False,
         "quizzes": {
             "current_score_quizzes": 360,
+            "total_score_quizzes": 540,
             "total_questions_answered_this_session": 2,
-            "highest_score_quizzes": 360,
+            "highest_score_quizzes": 580,
             "total_seconds_at_highest_score_quizzes": 40,
-            "times_played_quizzes": 0,
+            "times_played_quizzes": 5,
         },
     },
     media_type="application/json",
@@ -112,10 +114,11 @@ question_post_200_no_more_questions = OpenApiExample(
         "is_first_login": False,
         "quizzes": {
             "current_score_quizzes": 540,
+            "total_score_quizzes": 540,
             "total_questions_answered_this_session": 3,
-            "highest_score_quizzes": 540,
-            "total_seconds_at_highest_score_quizzes": 60,
-            "times_played_quizzes": 1,
+            "highest_score_quizzes": 580,
+            "total_seconds_at_highest_score_quizzes": 40,
+            "times_played_quizzes": 5,
         },
     },
     media_type="application/json",
@@ -176,6 +179,7 @@ class QuestionView(APIView):
                 "next_question": QuestionSerializer(next_q).data,
             }
             current_score_quizzes = user.state["quizzes"]["current_score_quizzes"]
+            total_score_quizzes = user.state["quizzes"]["total_score_quizzes"]
             total_questions_answered_this_session = user.state["quizzes"][
                 "total_questions_answered_this_session"
             ]
@@ -185,6 +189,7 @@ class QuestionView(APIView):
                 user.reset_quizzes()
             response.update(user.state)
             response["quizzes"]["current_score_quizzes"] = current_score_quizzes
+            response["quizzes"]["total_score_quizzes"] = total_score_quizzes
             response["quizzes"]["total_questions_answered_this_session"] = (
                 total_questions_answered_this_session
             )
@@ -197,9 +202,19 @@ class QuestionView(APIView):
                 total_score=Sum("score"),
                 total_seconds=Sum("seconds_spent"),
             )
+            score = 0
+            try:
+                quiz_question = QuizQuestion.objects.filter(user=user).latest(
+                    "created_at",
+                )
+                score = quiz_question.score
+            except QuizQuestion.DoesNotExist:
+                score = 0
+
             user.update_score_quizzes(
-                final_score["total_score"] if final_score["total_score"] else 0,
+                score,
                 final_score["total_seconds"] if final_score["total_seconds"] else 0,
+                final_score["total_score"] if final_score["total_score"] else 0,
             )
 
         if question.question_type == Question.MCQ:

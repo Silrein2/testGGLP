@@ -84,6 +84,7 @@ class UserAdmin(
             {
                 "fields": (
                     "current_score_quizzes",
+                    "total_score_quizzes",
                     "total_questions_answered_this_session",
                     "highest_score_quizzes",
                     "total_seconds_at_highest_score_quizzes",
@@ -118,7 +119,16 @@ class UserAdmin(
     ]
     list_display_links = ["email", "business_unit"]
     search_fields = ["email", "business_unit", "name"]
-    readonly_fields = ["date_joined", "last_login"]
+    readonly_fields = [
+        "date_joined",
+        "last_login",
+        "current_score_quizzes",
+        "total_score_quizzes",
+        "total_questions_answered_this_session",
+        "highest_score_quizzes",
+        "total_seconds_at_highest_score_quizzes",
+        "times_played_quizzes",
+    ]
     actions = [
         "run_reset_quizzes_scores",
         "run_reset_user_states",

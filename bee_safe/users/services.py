@@ -13,6 +13,7 @@ class UserStateService:
             "is_first_login": self.user.is_first_login,
             "quizzes": {
                 "current_score_quizzes": self.user.current_score_quizzes,
+                "total_score_quizzes": self.user.total_score_quizzes,
                 "total_questions_answered_this_session": self.user.total_questions_answered_this_session,
                 "highest_score_quizzes": self.user.highest_score_quizzes,
                 "total_seconds_at_highest_score_quizzes": self.user.total_seconds_at_highest_score_quizzes,
@@ -28,6 +29,7 @@ class UserStateService:
         MatchAnswerProgress.objects.filter(user=self.user).delete()
 
         self.user.current_score_quizzes = 0
+        self.user.total_score_quizzes = 0
         self.user.total_questions_answered_this_session = 0
 
         self.user.save()
@@ -42,9 +44,10 @@ class UserStateService:
 
         self.user.save()
 
-    def update_score_quizzes(self, score, seconds):
+    def update_score_quizzes(self, score, seconds, total_score):
         self.user.current_score_quizzes = score
-        if score > self.user.highest_score_quizzes:
-            self.user.highest_score_quizzes = score
+        self.user.total_score_quizzes = total_score
+        if total_score > self.user.highest_score_quizzes:
+            self.user.highest_score_quizzes = total_score
             self.user.total_seconds_at_highest_score_quizzes = seconds
         self.user.save()

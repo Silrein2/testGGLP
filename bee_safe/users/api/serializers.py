@@ -27,6 +27,7 @@ class TextSerializer(serializers.ModelSerializer[Text]):
 
 class UserStateQuizzesSerializer(serializers.Serializer):
     current_score_quizzes = serializers.IntegerField()
+    total_score_quizzes = serializers.IntegerField()
     total_questions_answered_this_session = serializers.IntegerField()
     highest_score_quizzes = serializers.IntegerField()
     total_seconds_at_highest_score_quizzes = serializers.IntegerField()

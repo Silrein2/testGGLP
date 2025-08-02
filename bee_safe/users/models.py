@@ -97,6 +97,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []  # No additional fields required
 
     current_score_quizzes = models.PositiveIntegerField(default=0)
+    total_score_quizzes = models.PositiveIntegerField(default=0)
     total_questions_answered_this_session = models.PositiveIntegerField(default=0)
     highest_score_quizzes = models.PositiveIntegerField(default=0)
     total_seconds_at_highest_score_quizzes = models.PositiveIntegerField(default=0)
@@ -137,5 +138,5 @@ class User(AbstractUser):
     def reset_state(self):
         return UserStateService(self).reset_state()
 
-    def update_score_quizzes(self, score, seconds):
-        return UserStateService(self).update_score_quizzes(score, seconds)
+    def update_score_quizzes(self, score, seconds, total_score):
+        return UserStateService(self).update_score_quizzes(score, seconds, total_score)

@@ -18,21 +18,21 @@ export class DialogueGame1Page extends DialoguePage {
         skipTypewriterEffect: false,
       },
     ];
-
-    this.scheduleOnce(() => {
-      this.startDialogue();
-    }, 1);
   }
 
   protected setPageState() {
     this.pageState = PageStates.DialogueGame1;
   }
 
+  public onPostEnterTransition() {
+    super.onPostEnterTransition();
+    this.startDialogue();
+  }
   protected endDialogue() {
-    this.pageManager.transitionState(PageStates.Game1);
+    this.transitionPage(PageStates.Game1);
   }
 
   public onClickSkip() {
-    this.pageManager.transitionState(PageStates.Game1);
+    this.endDialogue();
   }
 }

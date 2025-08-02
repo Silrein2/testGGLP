@@ -28,14 +28,14 @@ export class DialogueIntroPage extends DialoguePage {
       {
         speaker: "Bee Safe",
         portrait: this.beeSmileSprite,
-        text: "Hello, I'm BeeSafe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
+        text: "Hello, I'm Bee Safe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
         effects: [],
         skipTypewriterEffect: false,
       },
       {
         speaker: "Bee Safe",
         portrait: this.beeShockedSprite,
-        text: "Hello, I'm BeeSafe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
+        text: "Hello, I'm Bee Safe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
         effects: [this.beeBad1, this.beeBad2, this.beeBad3],
         skipTypewriterEffect: true,
       },
@@ -47,21 +47,30 @@ export class DialogueIntroPage extends DialoguePage {
         skipTypewriterEffect: false,
       },
     ];
-
-    this.scheduleOnce(() => {
-      this.startDialogue();
-    }, 1);
   }
 
   protected setPageState() {
     this.pageState = PageStates.DialogueIntro;
   }
 
-  protected endDialogue() {
-    this.pageManager.transitionState(PageStates.GameSelection);
+  public onExit() {
+    super.onExit();
+    this.beeBad1.active = false;
+    this.beeBad2.active = false;
+    this.beeBad3.active = false;
+    this.honeycomb.active = false;
   }
 
-  public onClickSkip() {
-    this.pageManager.transitionState(PageStates.GameSelection);
+  public onPostEnterTransition() {
+    super.onPostEnterTransition();
+    this.startDialogue();
+  }
+
+  protected endDialogue() {
+    this.transitionPage(PageStates.GameSelection);
+  }
+
+  private onClickSkip() {
+    this.endDialogue();
   }
 }

@@ -20,13 +20,14 @@ export class Game1Type1Option extends Component {
     this.sprite = this.node.getComponent(Sprite);
     this.button = this.node.getComponentInChildren(Button);
     this.label = this.node.getComponentInChildren(Label);
-    this.game1Page = getComponentInParent(this.node, Game1Page);
     this.game1Assets = getComponentInParent(this.node, Game1Assets);
 
     this.button.node.on(Button.EventType.CLICK, this.onClickButton, this);
   }
 
-  public init(data: MCQOption) {
+  public init(data: MCQOption, game1Page: Game1Page) {
+    this.node.active = data !== null;
+    this.game1Page = game1Page;
     this.data = data;
     this.label.string = data.text;
     this.setState(ButtonStates.Normal);

@@ -1,0 +1,40 @@
+import { _decorator, Component, Node, tween, UIOpacity, Vec3 } from "cc";
+const { ccclass, property } = _decorator;
+
+@ccclass("PopupUI")
+export class PopupUI extends Component {
+  @property({ type: UIOpacity })
+  private bgUIOpacity: UIOpacity | null = null;
+  @property({ type: Node })
+  private panel: Node | null = null;
+  private initialBgOpacity: number = 0;
+
+  onLoad() {
+    this.initialBgOpacity = this.bgUIOpacity.opacity;
+  }
+
+  protected onShow() {
+    this.node.active = true;
+    this.panel.setScale(new Vec3(0.1, 0.1, 0.1));
+    this.bgUIOpacity.opacity = 0;
+    tween(this.panel)
+      .to(0.3, { scale: new Vec3(1, 1, 1) }, { easing: "backOut" })
+      .start();
+    tween(this.bgUIOpacity)
+      .to(0.3, { opacity: this.initialBgOpacity }, { easing: "quadOut" })
+      .start();
+  }
+
+  protected onClose() {
+    tween(this.panel)
+      .to(0.2, { scale: new Vec3(0.1, 0.1, 0.1) }, { easing: "backIn" })
+      .call(() => {
+        this.node.active = false;
+      })
+      .start();
+
+    tween(this.bgUIOpacity)
+      .to(0.2, { opacity: 0 }, { easing: "quadIn" })
+      .start();
+  }
+}

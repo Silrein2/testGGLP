@@ -6,14 +6,17 @@ import {
   Label,
   Node,
   Prefab,
-  SpriteFrame,
+  tween,
+  UIOpacity,
+  Vec3,
 } from "cc";
 import { SelectUIButton } from "./SelectUIButton";
 import { ButtonStates } from "../Page/Enums";
+import { PopupUI } from "./PopupUI";
 const { ccclass, property } = _decorator;
 
 @ccclass("SelectUI")
-export class SelectUI extends Component {
+export class SelectUI extends PopupUI {
   @property({ type: Label })
   private headerLabel: Label | null = null;
 
@@ -35,7 +38,6 @@ export class SelectUI extends Component {
 
     this.optionsContainer.removeAllChildren();
     this.selectUIButtons = [];
-
     for (const option of options) {
       const optionNode = instantiate(this.selectOptionPrefab) as Node;
       this.optionsContainer.addChild(optionNode);
@@ -56,8 +58,8 @@ export class SelectUI extends Component {
         );
       }
     }
-    this.node.active = true;
     this.onOptionSelected(defaultValue);
+    this.onShow();
   }
 
   private onOptionSelected(value: any) {
@@ -71,6 +73,6 @@ export class SelectUI extends Component {
   }
 
   private onClickClose() {
-    this.node.active = false;
+    this.onClose();
   }
 }

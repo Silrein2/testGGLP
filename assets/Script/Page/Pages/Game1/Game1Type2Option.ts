@@ -21,12 +21,12 @@ export class Game1Type2Option extends Component {
   onLoad() {
     this.draggableObject = this.node.getComponent(DraggableObject);
     this.label = this.node.getComponentInChildren(Label);
-    this.game1Page = getComponentInParent(this.node, Game1Page);
     this.draggableObject.node.on(DRAG_END_EVENT, this.onDragEnd, this);
   }
 
-  public init(data: string, slots: Game1Type2Slot[]) {
+  public init(data: string, slots: Game1Type2Slot[], game1Page: Game1Page) {
     this.node.active = data !== null;
+    this.game1Page = game1Page;
     this.data = data;
     this.label.string = data;
     this.slots = slots.map((x) => x.slot);

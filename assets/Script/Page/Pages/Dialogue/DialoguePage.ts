@@ -16,20 +16,20 @@ const { ccclass, property } = _decorator;
 @ccclass("DialoguePage")
 export class DialoguePage extends Page {
   @property({ type: Label })
-  private dialogueLabel: Label;
+  private dialogueLabel: Label | null = null;
 
   @property({ type: Sprite })
-  private speakerSprite: Sprite;
+  private speakerSprite: Sprite | null = null;
 
   @property({ type: Label })
-  private speakerLabel: Label;
+  private speakerLabel: Label | null = null;
 
   @property({ type: Button })
-  private advanceButton: Button;
+  private advanceButton: Button | null = null;
 
   private currentLineIndex: number = 0;
   private isTyping: boolean = false;
-  private currentTypingJob: Function = null;
+  private currentTypingJob: Function | null = null;
   private textSpeed: number = 0.05;
   private speakerTween: Tween<Node> | null = null;
 
@@ -47,6 +47,12 @@ export class DialoguePage extends Page {
       .by(0.1, { scale: new Vec3(-scale, scale, 0) }, { easing: "backOut" })
       .by(0.3, { scale: new Vec3(scale, -scale, 0) }, { easing: "elasticOut" })
       .union();
+  }
+
+  public onEnter() {
+    super.onEnter();
+    this.dialogueLabel.string = "";
+    this.speakerLabel.string = "Bee Safe";
   }
 
   protected startDialogue() {

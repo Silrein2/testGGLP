@@ -2,7 +2,8 @@ import { _decorator, Component, Node } from "cc";
 import { StateMachine } from "./StateMachine";
 import { Page } from "./Page";
 import { PageStates } from "./Enums";
-import { Transition, TRANSITION_HIDDEN } from "../UI/Transition";
+import { Transition } from "../UI/Transition";
+import { delay } from "../Utils/Utils";
 const { ccclass, property } = _decorator;
 
 @ccclass("PageManager")
@@ -13,31 +14,31 @@ export class PageManager extends Component {
   @property({ type: Transition })
   private transition: Transition | null = null;
 
+  @property({ type: Node })
+  private blockInput: Node | null = null;
+
   private stateMachine: StateMachine;
-  private isTransition: boolean = false;
+
+  public _stateEnterTransitionDuration: number = 0;
+
+  public get stateEnterTransitionDuration(): number {
+    return this._stateEnterTransitionDuration;
+  }
 
   start() {
+    this._stateEnterTransitionDuration =
+      this.transition.moveDuration + this.transition.pauseDuration;
     for (const page of this.pages) {
       page.init(this);
       page.node.active = false;
     }
     this.stateMachine = this.node.getComponent(StateMachine);
     this.stateMachine.init(this.getPageByPageState(PageStates.Login));
-    this.transition.node.on(
-      TRANSITION_HIDDEN,
-      () => {
-        this.isTransition = false;
-      },
-      this,
-    );
   }
 
   public async transitionState(newPage: PageStates) {
-    this.isTransition = true;
     this.transition.play();
-    while (this.isTransition) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
+    await delay(this.transition.moveDuration * 1000);
     this.stateMachine.transitionState(this.getPageByPageState(newPage));
   }
 
@@ -48,5 +49,9 @@ export class PageManager extends Component {
       }
     }
     return null;
+  }
+
+  public enableBlockInput(enable: boolean) {
+    this.blockInput.active = enable;
   }
 }

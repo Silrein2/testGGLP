@@ -14,14 +14,13 @@ export class SelectUIButton extends Component {
   private label: Label | null = null;
   public data: any | null = null;
 
-  onLoad() {
-    this.sprite = this.node.getComponent(Sprite);
-  }
+  onLoad() {}
 
   public init(data: any) {
     this.data = data;
     this.label = this.node.getComponentInChildren(Label);
     this.label.string = data.text;
+    this.sprite = this.node.getComponent(Sprite);
   }
 
   public setState(state: ButtonStates) {

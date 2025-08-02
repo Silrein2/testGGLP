@@ -60,10 +60,15 @@ export class Game1Page extends Page {
 
   public onEnter() {
     super.onEnter();
-    this.setQuestion();
+    this.showType(-1);
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
+  }
+
+  public onPostEnterTransition(): void {
+    super.onPostEnterTransition();
     UIManager.instance.showScoreStartUI("QUESTION & ANSWER", () => {
+      this.setQuestion();
       GameManager.instance.timer.startTimer();
     });
   }
@@ -81,7 +86,7 @@ export class Game1Page extends Page {
 
   private endQuiz() {
     GameManager.instance.timer.stopTimer();
-    this.pageManager.transitionState(PageStates.Result);
+    this.transitionPage(PageStates.Result);
   }
 
   private setQuestion() {
@@ -97,7 +102,7 @@ export class Game1Page extends Page {
       this.questionLabel.string = this.question.text;
       this.type1Options.forEach(
         (type1Answer: Game1Type1Option, index: number) => {
-          type1Answer.init(this.question.mcq_options[index]);
+          type1Answer.init(this.question.mcq_options[index] ?? null, this);
         },
       );
     } else if (this.question.question_type === QuestionTypes.MATCH) {
@@ -107,6 +112,7 @@ export class Game1Page extends Page {
           type2Option.init(
             this.question.match_pairs.options_b[index] ?? null,
             this.type2Slots,
+            this,
           );
         },
       );

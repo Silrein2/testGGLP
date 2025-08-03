@@ -1,4 +1,5 @@
 import { _decorator, Component, Node } from "cc";
+import { QuestionTypes } from "../Page/Enums";
 const { ccclass, property } = _decorator;
 
 export interface AuthToken {
@@ -18,6 +19,7 @@ export interface BusinessUnit {
 
 export interface Quizzes {
   current_score_quizzes: number;
+  total_score_quizzes: number;
   total_questions_answered_this_session: number;
   highest_score_quizzes: number;
   total_seconds_at_highest_score_quizzes: number;
@@ -46,7 +48,7 @@ export interface MatchPair {
 
 export interface Question {
   id: number;
-  question_type: string;
+  question_type: QuestionTypes;
   text: string;
   mcq_options: MCQOption[];
   match_pairs: MatchPair;

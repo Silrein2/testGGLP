@@ -26,14 +26,17 @@ export class Game1Type2Option extends Component {
 
   public init(data: string, slots: Game1Type2Slot[], game1Page: Game1Page) {
     this.node.active = data !== null;
+    if (data === null) return;
     this.game1Page = game1Page;
     this.data = data;
     this.label.string = data;
     this.slots = slots.map((x) => x.slot);
+    this.setDisable(false);
     this.resetPosition();
   }
 
   private onDragEnd(draggedNode: Node, draggedWorldPosition: Vec3) {
+    if (this.draggableObject.disabled) return;
     const snappedSlot = DraggableSnappingUtils.snapToNearestSlot(
       draggedNode,
       draggedWorldPosition,
@@ -54,10 +57,14 @@ export class Game1Type2Option extends Component {
   }
 
   public resetPosition() {
-    this.draggableObject?.resetPosition();
+    this.draggableObject.resetPosition();
   }
 
   public moveResetPosition() {
-    this.draggableObject?.moveResetPosition();
+    this.draggableObject.moveResetPosition();
+  }
+
+  public setDisable(disable: boolean) {
+    this.draggableObject.setDisable(disable);
   }
 }

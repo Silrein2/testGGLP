@@ -22,6 +22,10 @@ export class Timer extends Component {
     this.isRunning = false;
   }
 
+  public toggleTimer() {
+    this.isRunning = !this.isRunning;
+  }
+
   public resetTimer() {
     this.isRunning = false;
     this.elapsedTime = 0;

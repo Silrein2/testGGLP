@@ -71,6 +71,7 @@ export class LoginPage extends Page {
       this.pageManager.transitionState(PageStates.DialogueIntro);
     } catch (error) {
       console.error(error);
+      UIManager.instance.showMessageUI("Oops!", error, "OK");
     }
     UIManager.instance.showLoading(false);
   }

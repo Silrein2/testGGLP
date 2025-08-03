@@ -127,7 +127,7 @@ export class DialoguePageTransition extends PageTransition {
     this.characterUIOpacity.opacity = 0;
     this.scheduleOnce(() => {
       this.enterTween.start();
-    }, this.stateEnterTransitionDuration * 0.6);
+    }, this.stateEnterTransitionDuration * 0.7);
   }
 
   public onExit() {

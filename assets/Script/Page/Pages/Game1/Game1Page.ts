@@ -13,7 +13,8 @@ import {
 } from "../../../Manager/DataManager";
 import { UIManager } from "../../../Manager/UIManager";
 import { GameManager } from "../../../Manager/GameManager";
-import { MatchAnswer, MCQAnswer } from "../../../Api/QuizService";
+import { MatchAnswer, MCQAnswer, YesNoAnswer } from "../../../Api/QuizService";
+import { Game1QuizTransition } from "./Game1QuizTransition";
 
 const { ccclass, property } = _decorator;
 
@@ -48,10 +49,19 @@ export class Game1Page extends Page {
 
   private question: Question | null = null;
   private wrongCount: number = 0;
-  private selectedAnswer: number | string[] | null = null;
+  private selectedAnswer: number | string[] | boolean | null = null;
+  private game1QuizTransition: Game1QuizTransition | null;
+  private currentQuestionType: QuestionTypes = QuestionTypes.NONE;
 
+  onLoad() {
+    this.game1QuizTransition = this.node.getComponent(Game1QuizTransition);
+  }
   start() {
-    DataManager.instance.node.on(QUESTION_CHANGED, this.setQuestion, this);
+    DataManager.instance.node.on(
+      QUESTION_CHANGED,
+      this.onQuestionChanged,
+      this,
+    );
   }
 
   protected setPageState() {
@@ -60,7 +70,9 @@ export class Game1Page extends Page {
 
   public onEnter() {
     super.onEnter();
+    this.setUI();
     this.showType(-1);
+    this.questionLabel.string = "";
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
   }
@@ -81,7 +93,7 @@ export class Game1Page extends Page {
   private setUI() {
     const quizzes: Quizzes = DataManager.instance.userState.quizzes;
     UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
-    UIManager.instance.gameUI.updateTotalScore(quizzes.highest_score_quizzes);
+    UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
   }
 
   private endQuiz() {
@@ -91,20 +103,22 @@ export class Game1Page extends Page {
 
   private setQuestion() {
     this.question = DataManager.instance.question;
+    this.currentQuestionType = this.question.question_type;
     if (this.question.question_type == null) {
       this.endQuiz();
       return;
     }
     this.setUI();
     this.wrongCount = 0;
+    this.questionLabel.string = this.question.text;
     if (this.question.question_type === QuestionTypes.MCQ) {
       this.showType(1);
-      this.questionLabel.string = this.question.text;
       this.type1Options.forEach(
         (type1Answer: Game1Type1Option, index: number) => {
           type1Answer.init(this.question.mcq_options[index] ?? null, this);
         },
       );
+      this.game1QuizTransition.showType1(true);
     } else if (this.question.question_type === QuestionTypes.MATCH) {
       this.showType(2);
       this.type2Options.forEach(
@@ -120,7 +134,30 @@ export class Game1Page extends Page {
       this.type2Slots.forEach((type2Slots: Game1Type2Slot, index: number) => {
         type2Slots.init(this.question.match_pairs.options_a[index] ?? null);
       });
+    } else if (this.question.question_type === QuestionTypes.YES_NO) {
+      this.showType(3);
+      const type3SlotData = ["Yes", "No"];
+      this.type3Options.forEach((type3Option: Game1Type2Option) => {
+        type3Option.init("", this.type3Slots, this);
+      });
+
+      this.type3Slots.forEach((type3Slots: Game1Type2Slot, index: number) => {
+        type3Slots.init(type3SlotData[index]);
+      });
     }
+
+    this.setBlockInput(true);
+    this.game1QuizTransition.playTransition(
+      this.currentQuestionType,
+      true,
+      () => {
+        this.setBlockInput(false);
+      },
+    );
+  }
+
+  private setBlockInput(enable: boolean) {
+    this.pageManager.enableBlockInput(enable);
   }
 
   private showType(type: number) {
@@ -154,25 +191,35 @@ export class Game1Page extends Page {
       type2Option.moveResetPosition();
       return;
     }
-    this.selectedAnswer = [slotData, optionData];
-    const matchPairs = this.question.match_pairs;
-    const optionIndex = matchPairs.options_b.indexOf(optionData);
-    const slotIndex = matchPairs.options_a.indexOf(slotData);
-
-    if (optionIndex !== slotIndex) {
-      type2Option.moveResetPosition();
+    let correct: boolean = false;
+    if (this.currentQuestionType === QuestionTypes.MATCH) {
+      this.selectedAnswer = [slotData, optionData];
+      const matchPairs = this.question.match_pairs;
+      const optionIndex = matchPairs.options_b.indexOf(optionData);
+      const slotIndex = matchPairs.options_a.indexOf(slotData);
+      correct = optionIndex === slotIndex;
+      if (!correct) {
+        type2Option.moveResetPosition();
+      } else {
+        type2Option.setDisable(true);
+      }
+    } else if (this.currentQuestionType === QuestionTypes.YES_NO) {
+      const type3Answers = { Yes: true, No: false };
+      this.selectedAnswer = type3Answers[slotData];
+      correct = true;
     }
 
     UIManager.instance.playFeedbackUI(
-      optionIndex === slotIndex,
+      correct,
       this.onFeedbackComplete.bind(this),
     );
   }
 
-  private onFeedbackComplete(correct: boolean) {
+  private async onFeedbackComplete(correct: boolean) {
     if (correct) {
+      this.setBlockInput(true);
       const questionType = this.question.question_type;
-      let answer: MCQAnswer | MatchAnswer | null = null;
+      let answer: MCQAnswer | MatchAnswer | YesNoAnswer | null = null;
       if (questionType === QuestionTypes.MCQ) {
         answer = {
           id: this.selectedAnswer as number,
@@ -182,15 +229,36 @@ export class Game1Page extends Page {
           option_a: this.selectedAnswer[0],
           option_b: this.selectedAnswer[1],
         };
+      } else if (questionType === QuestionTypes.YES_NO) {
+        answer = {
+          is_yes: this.selectedAnswer as boolean,
+        };
       }
-      GameManager.instance.quizService.submitQuestion(
-        this.question.id,
-        answer,
-        GameManager.instance.timer.getElapsedTime(),
-        this.wrongCount,
-      );
+      try {
+        const response = await GameManager.instance.quizService.submitQuestion(
+          this.question.id,
+          answer,
+          GameManager.instance.timer.getElapsedTime(),
+          this.wrongCount,
+        );
+        this.setBlockInput(response?.next_question != null);
+      } catch (error) {
+        this.setBlockInput(false);
+      }
     } else {
       this.wrongCount++;
     }
+  }
+
+  private onQuestionChanged() {
+    this.setBlockInput(true);
+    this.game1QuizTransition.playTransition(
+      this.currentQuestionType,
+      false,
+      () => {
+        this.setBlockInput(false);
+        this.setQuestion();
+      },
+    );
   }
 }

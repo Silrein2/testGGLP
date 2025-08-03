@@ -3,6 +3,7 @@ import { SelectUI } from "../UI/SelectUI";
 import { FeedbackUI } from "../UI/FeedbackUI";
 import { GameUI } from "../UI/GameUI";
 import { ScoreStartUI } from "../UI/ScoreStartUI";
+import { MessageUI } from "../UI/MessageUI";
 const { ccclass, property } = _decorator;
 
 @ccclass("UIManager")
@@ -14,6 +15,9 @@ export class UIManager extends Component {
 
   @property({ type: SelectUI })
   private selectUI: SelectUI | null = null;
+
+  @property({ type: MessageUI })
+  private messageUI: MessageUI | null = null;
 
   @property({ type: Node })
   private loading: Node | null = null;
@@ -45,6 +49,10 @@ export class UIManager extends Component {
 
   public showSelectUI(...args: Parameters<SelectUI["show"]>) {
     this.selectUI.show(...args);
+  }
+
+  public showMessageUI(...args: Parameters<MessageUI["show"]>) {
+    this.messageUI.show(...args);
   }
 
   public showLoading(show: boolean) {

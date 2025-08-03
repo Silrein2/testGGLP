@@ -17,6 +17,8 @@ export enum ButtonStates {
 }
 
 export enum QuestionTypes {
+  NONE = null,
   MCQ = "MCQ",
   MATCH = "MATCH",
+  YES_NO = "YES_NO",
 }

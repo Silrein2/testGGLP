@@ -67,7 +67,7 @@ export class Game1PageTransition extends PageTransition {
         200,
         "backOut",
       );
-      await delay(800);
+      await delay(700);
       this.onEnterComplete();
     }, this.stateEnterTransitionDuration * 0.8);
   }

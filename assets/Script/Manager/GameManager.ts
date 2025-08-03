@@ -6,11 +6,15 @@ import { QuizService } from "../Api/QuizService";
 import { DataManager } from "./DataManager";
 import { UIManager } from "./UIManager";
 import { Timer } from "../Utils/Timer";
+import { PageManager } from "../Page/PageManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
   private static _instance: GameManager | null = null;
+
+  @property({ type: PageManager })
+  private pageManager: PageManager | null = null;
 
   @property({ type: Timer })
   public timer: Timer | null = null;
@@ -70,5 +74,21 @@ export class GameManager extends Component {
 
   private onSelectLanguage(code: string) {
     //console.log(code);
+  }
+
+  private onClickPause() {
+    this.timer.stopTimer();
+    UIManager.instance.showMessageUI(
+      "Game Paused",
+      "The game is taking a little nap.\nWake it up when you're ready!",
+      "Resume",
+      () => {
+        this.timer.startTimer();
+      },
+    );
+  }
+
+  private onClickHome() {
+    this.pageManager.transitionToHomePage();
   }
 }

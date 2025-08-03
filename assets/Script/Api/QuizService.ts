@@ -11,9 +11,13 @@ export interface MatchAnswer {
   option_b: string;
 }
 
+export interface YesNoAnswer {
+  is_yes: boolean;
+}
+
 export interface QuestionRequest {
   id: number;
-  answer: MCQAnswer | MatchAnswer;
+  answer: MCQAnswer | MatchAnswer | YesNoAnswer;
   seconds_spent: number;
   wrong_count: number;
 }
@@ -41,7 +45,7 @@ export class QuizService {
 
   public async submitQuestion(
     id: number,
-    answer: MCQAnswer | MatchAnswer,
+    answer: MCQAnswer | MatchAnswer | YesNoAnswer,
     secondSpent: number,
     wrongCount: number,
   ): Promise<UserState> {

@@ -7,14 +7,14 @@ export class PopupUI extends Component {
   private bgUIOpacity: UIOpacity | null = null;
   @property({ type: Node })
   private panel: Node | null = null;
-  private initialBgOpacity: number = 0;
+  private initialBgOpacity: number = 205;
 
   onLoad() {
-    this.initialBgOpacity = this.bgUIOpacity.opacity;
+    //this.initialBgOpacity = this.bgUIOpacity.opacity;
   }
 
   protected onShow() {
-    this.node.active = true;
+    this.setActive(true);
     this.panel.setScale(new Vec3(0.1, 0.1, 0.1));
     this.bgUIOpacity.opacity = 0;
     tween(this.panel)
@@ -25,16 +25,22 @@ export class PopupUI extends Component {
       .start();
   }
 
-  protected onClose() {
+  protected onClose(callback: Function = () => {}) {
     tween(this.panel)
       .to(0.2, { scale: new Vec3(0.1, 0.1, 0.1) }, { easing: "backIn" })
       .call(() => {
-        this.node.active = false;
+        this.setActive(false);
+        callback();
       })
       .start();
 
     tween(this.bgUIOpacity)
       .to(0.2, { opacity: 0 }, { easing: "quadIn" })
       .start();
+  }
+
+  private setActive(active: boolean) {
+    this.bgUIOpacity.node.active = active;
+    this.node.active = active;
   }
 }

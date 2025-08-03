@@ -20,6 +20,7 @@ export class PageManager extends Component {
   private stateMachine: StateMachine;
 
   public _stateEnterTransitionDuration: number = 0;
+  public currentPageState: PageStates | null = null;
 
   public get stateEnterTransitionDuration(): number {
     return this._stateEnterTransitionDuration;
@@ -32,14 +33,16 @@ export class PageManager extends Component {
       page.init(this);
       page.node.active = false;
     }
+    this.currentPageState = PageStates.Login;
     this.stateMachine = this.node.getComponent(StateMachine);
-    this.stateMachine.init(this.getPageByPageState(PageStates.Login));
+    this.stateMachine.init(this.getPageByPageState(this.currentPageState));
   }
 
-  public async transitionState(newPage: PageStates) {
+  public async transitionState(newPageState: PageStates) {
     this.transition.play();
     await delay(this.transition.moveDuration * 1000);
-    this.stateMachine.transitionState(this.getPageByPageState(newPage));
+    this.stateMachine.transitionState(this.getPageByPageState(newPageState));
+    this.currentPageState = newPageState;
   }
 
   private getPageByPageState(pageState: PageStates): Page {
@@ -53,5 +56,11 @@ export class PageManager extends Component {
 
   public enableBlockInput(enable: boolean) {
     this.blockInput.active = enable;
+  }
+
+  public transitionToHomePage() {
+    this.getPageByPageState(this.currentPageState).transitionPage(
+      PageStates.GameSelection,
+    );
   }
 }

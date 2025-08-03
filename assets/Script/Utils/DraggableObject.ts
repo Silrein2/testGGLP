@@ -9,6 +9,7 @@ export class DraggableObject extends Component {
   private touchOffset: Vec3 = new Vec3();
   private initialPosition: Vec3 = new Vec3();
   private initialScale: Vec3 = new Vec3();
+  public disabled: boolean = false;
 
   onLoad() {
     this.initialPosition.set(this.node.position);
@@ -27,6 +28,7 @@ export class DraggableObject extends Component {
   }
 
   onTouchStart(event: EventTouch) {
+    if (this.disabled) return;
     this.isDragging = true;
     const touchLocation = event.getUILocation();
     const nodePosition = this.node.position;
@@ -68,5 +70,9 @@ export class DraggableObject extends Component {
     tween(this.node)
       .to(0.4, { position: this.initialPosition }, { easing: "backOut" })
       .start();
+  }
+
+  public setDisable(disable: boolean) {
+    this.disabled = disable;
   }
 }

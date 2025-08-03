@@ -59,7 +59,7 @@ export class FeedbackUI extends Component {
           this.startTypewriterEffect("Think twice!");
         }
       })
-      .delay(1)
+      .delay(0.8)
       .call(() => {
         this.speech.active = false;
       })

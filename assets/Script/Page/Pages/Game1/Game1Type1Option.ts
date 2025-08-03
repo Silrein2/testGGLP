@@ -27,6 +27,7 @@ export class Game1Type1Option extends Component {
 
   public init(data: MCQOption, game1Page: Game1Page) {
     this.node.active = data !== null;
+    if (data === null) return;
     this.game1Page = game1Page;
     this.data = data;
     this.label.string = data.text;

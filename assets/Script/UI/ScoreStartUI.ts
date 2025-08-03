@@ -29,7 +29,6 @@ export class ScoreStartUI extends PopupUI {
   }
 
   private onClickClose() {
-    this.onComplete();
-    this.onClose();
+    this.onClose(this.onComplete);
   }
 }

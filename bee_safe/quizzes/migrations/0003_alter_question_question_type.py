@@ -2,6 +2,11 @@
 
 from django.db import migrations, models
 
+def create_yes_no_texts(apps, schema_editor):
+    Text = apps.get_model('quizzes', 'Text')
+    Text.objects.get_or_create(key="yes", text="Yeah!")
+    Text.objects.get_or_create(key="no", text="Nope.")
+
 
 class Migration(migrations.Migration):
 
@@ -15,4 +20,5 @@ class Migration(migrations.Migration):
             name='question_type',
             field=models.CharField(choices=[('MCQ', 'MCQ'), ('MATCH', 'Match option pairs'), ('YES_NO', 'Yes or no')]),
         ),
+        migrations.RunPython(create_yes_no_texts),
     ]

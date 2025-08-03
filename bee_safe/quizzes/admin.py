@@ -73,7 +73,9 @@ class TextAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
     list_display = ("key", "text")
 
     def has_delete_permission(self, request, obj=None):
-        if obj and (obj.key in (Text.RIGHT_ANSWER, Text.WRONG_ANSWER)):
+        if obj and (
+            obj.key in (Text.RIGHT_ANSWER, Text.WRONG_ANSWER, Text.YES, Text.NO)
+        ):
             return False
         return super().has_delete_permission(request, obj)
 

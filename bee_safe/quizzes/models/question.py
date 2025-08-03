@@ -102,6 +102,8 @@ class YesNoAnswer(mixins.TimeStampedModel):
 class Text(mixins.TimeStampedModel):
     RIGHT_ANSWER = "right_answer"
     WRONG_ANSWER = "wrong_answer"
+    YES = "yes"
+    NO = "no"
 
     key = models.CharField(unique=True)
     text = models.TextField(default="", blank=True)
@@ -122,6 +124,12 @@ class Text(mixins.TimeStampedModel):
             if original.key == self.WRONG_ANSWER and self.key != self.WRONG_ANSWER:
                 msg = _("The 'wrong_answer' key cannot be changed.")
                 raise ValidationError(msg)
+            if original.key == self.YES and self.key != self.YES:
+                msg = _("The 'yes' key cannot be changed.")
+                raise ValidationError(msg)
+            if original.key == self.NO and self.key != self.NO:
+                msg = _("The 'no' key cannot be changed.")
+                raise ValidationError(msg)
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -132,6 +140,8 @@ class Text(mixins.TimeStampedModel):
             if original.key == self.WRONG_ANSWER and self.key != self.WRONG_ANSWER:
                 msg = _("The 'wrong_answer' key cannot be changed.")
                 raise ValidationError(msg)
+            if original.key == self.YES and self.key != self.YES:
+                msg = _("The 'yes' key cannot be changed.")
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -139,4 +149,8 @@ class Text(mixins.TimeStampedModel):
             raise ValidationError(_("The 'right_answer' Text cannot be deleted."))
         if self.key == self.WRONG_ANSWER:
             raise ValidationError(_("The 'wrong_answer' Text cannot be deleted."))
+        if self.key == self.YES:
+            raise ValidationError(_("The 'yes' Text cannot be deleted."))
+        if self.key == self.NO:
+            raise ValidationError(_("The 'no' Text cannot be deleted."))
         super().delete(*args, **kwargs)

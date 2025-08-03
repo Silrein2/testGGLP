@@ -89,6 +89,7 @@ class YesNoAnswer(mixins.TimeStampedModel):
         limit_choices_to={"question_type": Question.YES_NO},
         verbose_name=_("Question"),
     )
+    statement = models.TextField(verbose_name=_("Statement"), blank=True, default="")
     is_yes = models.BooleanField(verbose_name=_("Is 'Yes' the correct answer?"))
 
     class Meta(mixins.TimeStampedModel.Meta):

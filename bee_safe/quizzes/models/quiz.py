@@ -8,8 +8,6 @@ from .question import Question
 
 
 class QuizQuestion(mixins.TimeStampedModel):
-    PENALTY_POINTS = 20
-
     question = models.ForeignKey(
         "quizzes.Question",
         on_delete=models.CASCADE,
@@ -21,6 +19,7 @@ class QuizQuestion(mixins.TimeStampedModel):
         verbose_name=_("User"),
     )
     base_score = models.IntegerField(default=200, verbose_name=_("Base score"))
+    penalty_points = models.IntegerField(default=20, verbose_name=_("Penalty points"))
     seconds_spent = models.IntegerField(default=0, verbose_name=_("Seconds spent"))
     wrong_count = models.IntegerField(default=0, verbose_name=_("Wrong count"))
     is_correct = models.BooleanField(default=False, verbose_name=_("Is correct"))
@@ -37,7 +36,7 @@ class QuizQuestion(mixins.TimeStampedModel):
 
     def calculate_score(self):
         time_penalty = (self.seconds_spent // 10) * 10
-        correctness_penalty = self.wrong_count * self.PENALTY_POINTS
+        correctness_penalty = self.wrong_count * self.penalty_points
         raw_score = self.base_score - time_penalty - correctness_penalty
         return max(20, raw_score)
 

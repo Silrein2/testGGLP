@@ -35,11 +35,11 @@ class MatchOptionPairInline(StackedInline, TranslationStackedInline):
     fields = ["option_a", "option_b"]
 
 
-class YesNoAnswerInline(TabularInline):
+class YesNoAnswerInline(TabularInline, TranslationTabularInline):
     model = YesNoAnswer
     form = YesNoAnswerForm
     extra = 1
-    fields = ["is_yes"]
+    fields = ["statement", "is_yes"]
 
 
 @admin.register(Question)

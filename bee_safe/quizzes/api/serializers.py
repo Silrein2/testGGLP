@@ -29,13 +29,27 @@ class MatchPairSplitField(serializers.Field):
         }
 
 
+class YesNoStatementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YesNoAnswer
+        fields = ["statement"]
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     mcq_options = MCQOptionSerializer(many=True, read_only=True)
     match_pairs = serializers.SerializerMethodField()
+    yes_no_answer = YesNoStatementSerializer(read_only=True)
 
     class Meta:
         model = Question
-        fields = ["id", "question_type", "text", "mcq_options", "match_pairs"]
+        fields = [
+            "id",
+            "question_type",
+            "text",
+            "mcq_options",
+            "match_pairs",
+            "yes_no_answer",
+        ]
 
     @extend_schema_field(
         {

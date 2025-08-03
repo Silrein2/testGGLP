@@ -11,7 +11,7 @@ from bee_safe.quizzes.models import YesNoAnswer
 class MCQOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = MCQOption
-        fields = ["id", "text", "is_correct"]
+        fields = ["id", "text"]
 
 
 class MatchPairSplitField(serializers.Field):

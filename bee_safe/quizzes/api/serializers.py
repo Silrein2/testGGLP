@@ -1,3 +1,5 @@
+import random
+
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
@@ -22,6 +24,9 @@ class MatchPairSplitField(serializers.Field):
         for pair in value.all():
             options_a.append(pair.option_a)
             options_b.append(pair.option_b)
+
+        random.shuffle(options_a)
+        random.shuffle(options_b)
 
         return {
             "options_a": options_a,

@@ -81,7 +81,6 @@ class TextAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
 
 
 @admin.register(QuizQuestion)
-@admin.register(QuizQuestion, site=custom_admin)
 class QuizQuestionAdmin(ModelAdmin):
     def has_add_permission(self, request, obj=None):
         return False

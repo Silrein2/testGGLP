@@ -58,7 +58,7 @@ class MatchOptionPair(mixins.TimeStampedModel):
         Question,
         on_delete=models.CASCADE,
         related_name="match_pairs",
-        limit_choices_to={"question_type": "MATCH"},
+        limit_choices_to={"question_type": Question.MATCH},
     )
     option_a = models.CharField(verbose_name=_("Left side"))
     option_b = models.CharField(verbose_name=_("Right side"))

@@ -568,7 +568,7 @@
     "_string": "WELCOME!",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 80,
+    "_actualFontSize": 90.64864864864865,
     "_fontSize": 80,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -812,7 +812,7 @@
     "_string": "Key in your Amway email and respective \nlocation.",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 36,
+    "_actualFontSize": 40.791891891891886,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1198,7 +1198,7 @@
     "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 22.66216216216216,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1297,7 +1297,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 235.5839385986328,
+      "width": 235.57300983899822,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1330,7 +1330,7 @@
     "_string": "Email Address",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 40.791891891891886,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1671,7 +1671,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 223.91995239257812,
+      "width": 223.90956635267594,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1704,7 +1704,7 @@
     "_string": "Business Unit",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 40.791891891891886,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1839,7 +1839,7 @@
     "_string": "",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 40.791891891891886,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2285,8 +2285,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 107.01594543457031,
-      "height": 63
+      "width": 107.01477378340229,
+      "height": 63.00000000000001
     }
   },
   {
@@ -2580,8 +2580,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 317.85589599609375,
-      "height": 63
+      "width": 317.85234718572974,
+      "height": 63.00000000000001
     }
   },
   {
@@ -7307,7 +7307,7 @@
       "b": 39,
       "a": 255
     },
-    "_string": "Phishing Game",
+    "_string": "Deepfake Game",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 48,
@@ -10233,7 +10233,7 @@
       "b": 16,
       "a": 255
     },
-    "_string": "QUESTION 01",
+    "_string": "QUESTION 1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 36,
@@ -17399,6 +17399,9 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "questionTitleLabel": {
+      "__id__": 355
+    },
     "questionLabel": {
       "__id__": 358
     },

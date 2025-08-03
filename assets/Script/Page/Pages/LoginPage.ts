@@ -13,6 +13,7 @@ import { GameManager } from "../../Manager/GameManager";
 import { UIManager } from "../../Manager/UIManager";
 import { DataManager } from "../../Manager/DataManager";
 import { isNullOrEmpty } from "../../Utils/Utils";
+import { ValidationError } from "../../Api/ApiClient";
 const { ccclass, property } = _decorator;
 
 @ccclass("LoginPage")
@@ -52,7 +53,8 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
-    this.pageManager.transitionState(PageStates.DialogueIntro);
+    await GameManager.instance.quizService.getQuestion();
+    this.pageManager.transitionState(PageStates.Game1);
     UIManager.instance.showLoading(false);
   }
 
@@ -71,7 +73,11 @@ export class LoginPage extends Page {
       this.pageManager.transitionState(PageStates.DialogueIntro);
     } catch (error) {
       console.error(error);
-      UIManager.instance.showMessageUI("Oops!", error, "OK");
+      let errorMessage = error;
+      if (error instanceof ValidationError) {
+        errorMessage = error.printError();
+      }
+      UIManager.instance.showMessageUI("Oops!", errorMessage, "OK");
     }
     UIManager.instance.showLoading(false);
   }

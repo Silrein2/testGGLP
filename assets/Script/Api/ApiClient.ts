@@ -32,6 +32,14 @@ export class ApiClient {
         const errorData = await response
           .json()
           .catch(() => ({ message: response.statusText }));
+
+        if (
+          errorData.type === "validation_error" &&
+          Array.isArray(errorData.errors)
+        ) {
+          throw new ValidationError(errorData.errors, response.status);
+        }
+
         throw new Error(
           `HTTP error! Status: ${response.status}, Message: ${errorData.message || "Unknown error"}`,
         );
@@ -75,5 +83,24 @@ export class ApiClient {
 
   public delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: "DELETE" });
+  }
+}
+
+export class ValidationError extends Error {
+  public errors: { code: string; detail: string; attr: string }[];
+
+  constructor(
+    errors: any[],
+    public statusCode: number,
+  ) {
+    super("Validation failed");
+    this.name = "ValidationError";
+    this.errors = errors;
+  }
+
+  public printError(): string {
+    return this.errors
+      .map((e) => `An issue occurred: ${e.detail} (Code: ${e.code})`)
+      .join("\n");
   }
 }

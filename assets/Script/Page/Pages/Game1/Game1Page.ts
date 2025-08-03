@@ -21,6 +21,9 @@ const { ccclass, property } = _decorator;
 @ccclass("Game1Page")
 export class Game1Page extends Page {
   @property({ type: Label })
+  private questionTitleLabel: Label | null = null;
+
+  @property({ type: Label })
   private questionLabel: Label | null = null;
 
   @property({ type: Node })
@@ -52,6 +55,7 @@ export class Game1Page extends Page {
   private selectedAnswer: number | string[] | boolean | null = null;
   private game1QuizTransition: Game1QuizTransition | null;
   private currentQuestionType: QuestionTypes = QuestionTypes.NONE;
+  private questionCount: number = 0;
 
   onLoad() {
     this.game1QuizTransition = this.node.getComponent(Game1QuizTransition);
@@ -73,11 +77,12 @@ export class Game1Page extends Page {
     this.setUI();
     this.showType(-1);
     this.questionLabel.string = "";
+    this.questionCount = 0;
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
   }
 
-  public onPostEnterTransition(): void {
+  public onPostEnterTransition() {
     super.onPostEnterTransition();
     UIManager.instance.showScoreStartUI("QUESTION & ANSWER", () => {
       this.setQuestion();
@@ -88,12 +93,16 @@ export class Game1Page extends Page {
   public onExit() {
     super.onExit();
     UIManager.instance.showGameUI(false);
+    this.questionCount = 0;
   }
 
   private setUI() {
     const quizzes: Quizzes = DataManager.instance.userState.quizzes;
     UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
     UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
+
+    const displayCount = this.questionCount === 0 ? 1 : this.questionCount;
+    this.questionTitleLabel.string = "Question " + displayCount;
   }
 
   private endQuiz() {
@@ -108,6 +117,7 @@ export class Game1Page extends Page {
       this.endQuiz();
       return;
     }
+    this.questionCount++;
     this.setUI();
     this.wrongCount = 0;
     this.questionLabel.string = this.question.text;
@@ -138,7 +148,11 @@ export class Game1Page extends Page {
       this.showType(3);
       const type3SlotData = ["Yes", "No"];
       this.type3Options.forEach((type3Option: Game1Type2Option) => {
-        type3Option.init("", this.type3Slots, this);
+        type3Option.init(
+          this.question.yes_no_answer.statement,
+          this.type3Slots,
+          this,
+        );
       });
 
       this.type3Slots.forEach((type3Slots: Game1Type2Slot, index: number) => {
@@ -166,23 +180,20 @@ export class Game1Page extends Page {
     this.type3UI.active = type === 3;
   }
 
-  public onClickType1Button(data: MCQOption) {
+  public async onClickType1Button(data: MCQOption) {
     this.selectedAnswer = data.id;
     const type1Answer: Game1Type1Option = this.type1Options.find(
       (x) => x.data.id === data.id,
     );
-    UIManager.instance.playFeedbackUI(
-      data.is_correct,
-      this.onFeedbackComplete.bind(this),
-    );
-    if (data.is_correct) {
+    const correct = await this.onSubmitAnswer();
+    if (correct) {
       type1Answer.setState(ButtonStates.Correct);
     } else {
       type1Answer.setState(ButtonStates.Wrong);
     }
   }
 
-  public onDropType2Option(
+  public async onDropType2Option(
     optionData: string,
     slotData: string,
     type2Option: Game1Type2Option,
@@ -191,63 +202,61 @@ export class Game1Page extends Page {
       type2Option.moveResetPosition();
       return;
     }
-    let correct: boolean = false;
     if (this.currentQuestionType === QuestionTypes.MATCH) {
       this.selectedAnswer = [slotData, optionData];
-      const matchPairs = this.question.match_pairs;
-      const optionIndex = matchPairs.options_b.indexOf(optionData);
-      const slotIndex = matchPairs.options_a.indexOf(slotData);
-      correct = optionIndex === slotIndex;
-      if (!correct) {
-        type2Option.moveResetPosition();
-      } else {
-        type2Option.setDisable(true);
-      }
     } else if (this.currentQuestionType === QuestionTypes.YES_NO) {
       const type3Answers = { Yes: true, No: false };
       this.selectedAnswer = type3Answers[slotData];
-      correct = true;
     }
+    const correct = await this.onSubmitAnswer();
+    if (!correct) {
+      type2Option.moveResetPosition();
+    } else {
+      type2Option.setDisable(true);
+    }
+  }
 
+  private async onSubmitAnswer() {
+    this.setBlockInput(true);
+    let correct = false;
+    const questionType = this.question.question_type;
+    let answer: MCQAnswer | MatchAnswer | YesNoAnswer | null = null;
+    if (questionType === QuestionTypes.MCQ) {
+      answer = {
+        id: this.selectedAnswer as number,
+      };
+    } else if (questionType === QuestionTypes.MATCH) {
+      answer = {
+        option_a: this.selectedAnswer[0],
+        option_b: this.selectedAnswer[1],
+      };
+    } else if (questionType === QuestionTypes.YES_NO) {
+      answer = {
+        is_yes: this.selectedAnswer as boolean,
+      };
+    }
+    try {
+      const response = await GameManager.instance.quizService.submitQuestion(
+        this.question.id,
+        answer,
+        GameManager.instance.timer.getElapsedTime(),
+        this.wrongCount,
+      );
+      correct = true;
+    } catch (error) {
+      if (error.statusCode == 400) {
+        correct = false;
+      }
+    }
     UIManager.instance.playFeedbackUI(
       correct,
       this.onFeedbackComplete.bind(this),
     );
+    return correct;
   }
 
-  private async onFeedbackComplete(correct: boolean) {
-    if (correct) {
-      this.setBlockInput(true);
-      const questionType = this.question.question_type;
-      let answer: MCQAnswer | MatchAnswer | YesNoAnswer | null = null;
-      if (questionType === QuestionTypes.MCQ) {
-        answer = {
-          id: this.selectedAnswer as number,
-        };
-      } else if (questionType === QuestionTypes.MATCH) {
-        answer = {
-          option_a: this.selectedAnswer[0],
-          option_b: this.selectedAnswer[1],
-        };
-      } else if (questionType === QuestionTypes.YES_NO) {
-        answer = {
-          is_yes: this.selectedAnswer as boolean,
-        };
-      }
-      try {
-        const response = await GameManager.instance.quizService.submitQuestion(
-          this.question.id,
-          answer,
-          GameManager.instance.timer.getElapsedTime(),
-          this.wrongCount,
-        );
-        this.setBlockInput(response?.next_question != null);
-      } catch (error) {
-        this.setBlockInput(false);
-      }
-    } else {
-      this.wrongCount++;
-    }
+  private async onFeedbackComplete() {
+    this.setBlockInput(false);
   }
 
   private onQuestionChanged() {

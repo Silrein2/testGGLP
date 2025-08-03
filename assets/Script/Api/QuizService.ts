@@ -1,6 +1,6 @@
 import { DataManager, Question, UserState } from "../Manager/DataManager";
 import { QuestionTypes } from "../Page/Enums";
-import { ApiClient } from "./ApiClient";
+import { ApiClient, ValidationError } from "./ApiClient";
 
 export interface MCQAnswer {
   id: number;

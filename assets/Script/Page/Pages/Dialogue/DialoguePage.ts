@@ -133,5 +133,7 @@ export class DialoguePage extends Page {
     this.isTyping = false;
   }
 
-  protected endDialogue() {}
+  protected endDialogue() {
+    this.speakerTween.stop();
+  }
 }

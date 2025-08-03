@@ -67,6 +67,7 @@ export class DialogueIntroPage extends DialoguePage {
   }
 
   protected endDialogue() {
+    super.endDialogue();
     this.transitionPage(PageStates.GameSelection);
   }
 

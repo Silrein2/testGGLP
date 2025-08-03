@@ -39,6 +39,7 @@ export class DialogueGame1Page extends DialoguePage {
   }
   protected endDialogue() {
     if (!this.loadedQuestion) return;
+    super.endDialogue();
     this.transitionPage(PageStates.Game1);
   }
 

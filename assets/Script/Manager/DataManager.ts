@@ -46,12 +46,17 @@ export interface MatchPair {
   options_b: string[];
 }
 
+export interface YesNoAnswer {
+  statement: string;
+}
+
 export interface Question {
   id: number;
   question_type: QuestionTypes;
   text: string;
   mcq_options: MCQOption[];
   match_pairs: MatchPair;
+  yes_no_answer: YesNoAnswer;
 }
 
 export const QUESTION_CHANGED = "question-changed";

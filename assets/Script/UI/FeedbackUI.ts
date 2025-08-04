@@ -51,6 +51,8 @@ export class FeedbackUI extends Component {
       this.animation.stop();
       this.characterSprite.spriteFrame = this.wrongSpriteFrame;
     }
+
+    const stayDelay = correct ? 0.1 : 0.8;
     this.characterTween = tween(this.characterSprite.node)
       .to(0.5, { position: inPos }, { easing: "backOut" })
       .call(() => {
@@ -59,7 +61,7 @@ export class FeedbackUI extends Component {
           this.startTypewriterEffect("Think twice!");
         }
       })
-      .delay(0.8)
+      .delay(stayDelay)
       .call(() => {
         this.speech.active = false;
       })

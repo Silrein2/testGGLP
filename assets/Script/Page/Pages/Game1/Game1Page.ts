@@ -61,11 +61,11 @@ export class Game1Page extends Page {
     this.game1QuizTransition = this.node.getComponent(Game1QuizTransition);
   }
   start() {
-    DataManager.instance.node.on(
+    /*DataManager.instance.node.on(
       QUESTION_CHANGED,
       this.onQuestionChanged,
       this,
-    );
+    );*/
   }
 
   protected setPageState() {
@@ -101,8 +101,11 @@ export class Game1Page extends Page {
     UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
     UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
 
-    const displayCount = this.questionCount === 0 ? 1 : this.questionCount;
-    this.questionTitleLabel.string = "Question " + displayCount;
+    let titleString = "Question " + this.questionCount;
+    if (this.questionCount === 0) {
+      titleString = "Welcome!";
+    }
+    this.questionTitleLabel.string = titleString;
   }
 
   private endQuiz() {
@@ -219,6 +222,7 @@ export class Game1Page extends Page {
   private async onSubmitAnswer() {
     this.setBlockInput(true);
     let correct = false;
+    let haveNextQuestion = false;
     const questionType = this.question.question_type;
     let answer: MCQAnswer | MatchAnswer | YesNoAnswer | null = null;
     if (questionType === QuestionTypes.MCQ) {
@@ -243,15 +247,19 @@ export class Game1Page extends Page {
         this.wrongCount,
       );
       correct = true;
+      haveNextQuestion = response.next_question != null;
     } catch (error) {
       if (error.statusCode == 400) {
         correct = false;
+        this.wrongCount++;
       }
     }
-    UIManager.instance.playFeedbackUI(
-      correct,
-      this.onFeedbackComplete.bind(this),
-    );
+    UIManager.instance.playFeedbackUI(correct, () => {
+      this.setBlockInput(false);
+      if (haveNextQuestion) {
+        this.onQuestionChanged();
+      }
+    });
     return correct;
   }
 

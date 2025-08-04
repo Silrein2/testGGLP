@@ -187,7 +187,7 @@
 
             <div class="score-value-group">
               <span style="font-size: 1vw; font-weight: 700">{{ careScore }} </span>
-              <span style="font-size: 0.8vw; color: dimgray">/ {{ maxCareScore }} points</span>
+              <!-- <span style="font-size: 0.8vw; color: dimgray">/ {{ maxCareScore }} points</span> -->
             </div>
           </div>
 
@@ -228,8 +228,8 @@
             </div>
 
             <div class="score-value-group">
-              <span style="font-size: 1vw; font-weight: 700">{{ respectScore }} </span
-              ><span style="font-size: 0.8vw; color: dimgray">/ {{ maxRespectScore }} points</span>
+              <span style="font-size: 1vw; font-weight: 700">{{ respectScore }} </span>
+              <!-- <span style="font-size: 0.8vw; color: dimgray">/ {{ maxRespectScore }} points</span> -->
             </div>
           </div>
 
@@ -271,9 +271,9 @@
 
             <div class="score-value-group">
               <span style="font-size: 1vw; font-weight: 700">{{ understandingScore }}</span>
-              <span style="font-size: 0.8vw; color: dimgray"
+              <!-- <span style="font-size: 0.8vw; color: dimgray"
                 >/ {{ maxUnderstandingScore }} points</span
-              >
+              > -->
             </div>
           </div>
 
@@ -322,7 +322,7 @@
 
           <div class="score-value-group score-value-group-total">
             <span style="font-size: 1.5vw; font-weight: 700">{{ totalScore }} </span>
-            <span style="font-size: 1vw">/ {{ totalMaxScore }} points</span>
+            <!-- <span style="font-size: 1vw">/ {{ totalMaxScore }} points</span> -->
           </div>
         </div>
 
@@ -1089,11 +1089,20 @@ export default {
 
       const totalProgressBar = this.$refs.totalProgressBar
 
+      //temp fix
+      this.totalMaxScore = 100
+
       const carePercentage = (this.careScore / this.maxCareScore) * 100
       const respectPercentage = (this.respectScore / this.maxRespectScore) * 100
       const understandingPercentage = (this.understandingScore / this.maxUnderstandingScore) * 100
 
-      const totalPercentage = (this.totalScore / this.totalMaxScore) * 100
+      let totalPercentage = 0
+
+      if (this.totalScore >= 100) {
+        totalPercentage = 100
+      } else {
+        totalPercentage = (this.totalScore / this.totalMaxScore) * 100
+      }
 
       // care progress bar
       gsap.fromTo(careProgressBar, { width: '0%' }, { width: `${carePercentage}%`, duration: 2 })

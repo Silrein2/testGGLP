@@ -134,9 +134,12 @@ export default {
         this.questions = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           showDescriptions: false,
-          // LinearStory: doc.data().LinearStory, // Shouldn't be uncommented unless the variable is present in Firestore (currently it doesn't)
           ...doc.data()
         }))
+
+        // sort questions by numeric ID
+        this.questions.sort((a, b) => Number(a.id) - Number(b.id))
+
         this.originalQuestions = JSON.parse(JSON.stringify(this.questions))
       } catch (error) {
         console.error('Error fetching questions: ', error)

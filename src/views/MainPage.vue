@@ -529,11 +529,12 @@ export default {
       const initialStoryDoc = await getDoc(initialStoryDocRef)
 
       if (initialStoryDoc.exists()) {
-        ;(this.initialStory = initialStoryDoc.data().InitialStory),
-          (this.isLinear = initialStoryDoc.data().LinearStory)
+        this.initialStory = initialStoryDoc.data().InitialStory
+        this.isLinear = initialStoryDoc.data().LinearStory
       } else {
         console.error('Initial story document not found')
-        ;(this.initialStory = selectedStory), (this.isLinear = true)
+        this.initialStory = selectedStory
+        this.isLinear = true
       }
 
       await onSnapshot(collection(db, `${selectedStory}_Question_Bank`), (snapshot) => {
@@ -550,7 +551,23 @@ export default {
           }
         })
 
-        // console.log(this.responsePrompt)
+        //re-sort the order of numbers fetched from Firestore
+        this.responsePrompt.sort((a, b) => Number(a.questionNum) - Number(b.questionNum))
+
+        // adjust NextQuestion references
+        for (let i = 0; i < this.responsePrompt.length; i++) {
+          const question = this.responsePrompt[i]
+
+          if (question.leftAnswer && question.leftAnswer.NextQuestion) {
+            question.leftAnswer.NextQuestion = Number(question.leftAnswer.NextQuestion)
+          }
+          if (question.middleAnswer && question.middleAnswer.NextQuestion) {
+            question.middleAnswer.NextQuestion = Number(question.middleAnswer.NextQuestion)
+          }
+          if (question.rightAnswer && question.rightAnswer.NextQuestion) {
+            question.rightAnswer.NextQuestion = Number(question.rightAnswer.NextQuestion)
+          }
+        }
 
         if (this.responsePrompt.length === dbLength) {
           this.initTitle()

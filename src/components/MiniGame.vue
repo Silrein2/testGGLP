@@ -1,13 +1,36 @@
 <template>
-  <div class="mini-game-container">
-    <img :src="currentImage" alt="Mini Game Image" class="mini-game-image" />
-    <p class="question-text" v-if="showButtons">What emotion did he show?</p>
-    <div v-if="showButtons" class="button-container">
-      <button @click="handleEmotion(0)" class="button-emotion">Happy</button>
-      <button @click="handleEmotion(1)" class="button-emotion">Angry</button>
-      <button @click="handleEmotion(2)" class="button-emotion">Sad</button>
-      <button @click="handleEmotion(3)" class="button-emotion">Afraid</button>
-      <button @click="handleEmotion(4)" class="button-emotion">Disgust</button>
+  <div class="mini-game-wrapper">
+    <div
+      ref="instructionDiv"
+      class="instruction-div"
+      :style="{ visibility: instructionVisible ? 'visible' : 'hidden' }"
+    >
+      <h2 class="instruction-text">
+        A mini-game will now start. This mini-game helps you identify facial expressions better. A
+        picture of an emotion will flash out for 1 second. After that, you need to select the right
+        answer. Each correct answer will earn you 5 Empathy Points.
+      </h2>
+      <button class="ready-button" @click="runInitialProcess">Ready</button>
+    </div>
+
+    <div
+      ref="miniGameContainer"
+      class="mini-game-container"
+      :style="{ visibility: !instructionVisible ? 'visible' : 'hidden' }"
+    >
+      <div class="image-container">
+        <img :src="currentImage" alt="Mini Game Image" class="mini-game-image" />
+      </div>
+      <div class="interaction-container">
+        <p class="question-text" v-if="showButtons">What emotion did he show?</p>
+        <div v-if="showButtons" class="button-container">
+          <button @click="handleEmotion(0)" class="button-emotion">Happy</button>
+          <button @click="handleEmotion(1)" class="button-emotion">Angry</button>
+          <button @click="handleEmotion(2)" class="button-emotion">Sad</button>
+          <button @click="handleEmotion(3)" class="button-emotion">Afraid</button>
+          <button @click="handleEmotion(4)" class="button-emotion">Disgust</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,13 +47,12 @@ export default {
       showButtons: false,
       processCount: 0,
       maxProcesses: 5,
-      empathyScore: 0
+      empathyScore: 0,
+      instructionVisible: true
     }
   },
-  beforeCreate() {},
   mounted() {
     this.preloadImages()
-    this.startMiniGame()
   },
   methods: {
     preloadImages() {
@@ -43,45 +65,45 @@ export default {
           link.as = 'image'
           link.href = imageUrl
           document.head.appendChild(link)
-          console.log(`Preloading: ${imageUrl}`)
         }
       })
-    },
-    startMiniGame() {
-      this.currentImage = this.defaultImage
-      this.processCount = 0 // Reset the process count
-      this.showButtons = false // Hide buttons initially
-      this.runInitialProcess()
     },
     runInitialProcess() {
       this.currentImage = this.defaultImage
 
+      this.$refs.instructionDiv.style.transition = 'opacity 2s'
+      this.$refs.instructionDiv.style.opacity = 0
+
       setTimeout(() => {
-        this.showRandomImage()
-      }, 3000) // Show default image for 3 seconds
+        this.instructionVisible = false
+
+        this.$refs.miniGameContainer.style.transition = 'opacity 2s'
+        this.$refs.miniGameContainer.style.opacity = 1
+
+        setTimeout(() => {
+          this.showRandomImage()
+        }, 2000) // complete fade in
+      }, 2000) // complete fade out
     },
     showRandomImage() {
       const randomIndex = Math.floor(Math.random() * this.randomImages.length)
       this.currentImage = this.randomImages[randomIndex]
-      this.currentEmotionIndex = randomIndex // Store the index of current image
+      this.currentEmotionIndex = randomIndex
 
       setTimeout(() => {
         this.currentImage = this.defaultImage
-        this.showButtons = true // Show buttons after displaying the random image
-      }, 1000) // Show random image for 1 second
+        this.showButtons = true
+      }, 1000)
     },
     handleEmotion(selectedIndex) {
-      console.log(`Selected Emotion Index: ${selectedIndex}`)
-      this.showButtons = false // Hide buttons immediately after a click
+      this.showButtons = false
 
-      // Check if the selected index matches the current image index
       if (selectedIndex === this.currentEmotionIndex) {
         this.empathyScore = 5
       } else {
         this.empathyScore = 0
       }
 
-      // Emit the score immediately to MainPage
       this.$emit('updateScore', this.empathyScore)
 
       if (this.processCount < this.maxProcesses) {
@@ -100,7 +122,7 @@ export default {
 
         setTimeout(() => {
           this.showRandomImage()
-        }, 3000) // Show default image for 3 seconds
+        }, 3000)
       }
     }
   }
@@ -108,20 +130,97 @@ export default {
 </script>
 
 <style scoped>
-.mini-game-container {
+.mini-game-wrapper {
+  position: relative;
+}
+
+.instruction-div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 2s;
+}
 
+.instruction-text {
+  font-size: 1.5vw;
+  text-align: center;
+  margin: 20px;
+}
+
+.ready-button {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 10px 20px;
+  background-color: #4492f6;
+  color: white;
+
+  width: 10vw;
+  height: auto;
+
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  font-size: 1vw;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.ready-button:hover {
+  background-color: #144e98;
+}
+
+.mini-game-container {
+  opacity: 0;
+  transition: opacity 2s; /* Fade in transition */
+
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Center content vertically */
+}
+
+.image-container {
+  top: 25%;
 }
 
 .mini-game-image {
-  width: 15vw; /* Adjust size as needed */
+  width: 15vw;
   height: auto;
-  margin-bottom: 20px;
-  border: 15px;
+}
+
+.interaction-container {
+  position: absolute;
+  bottom: 20%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.question-text {
+  font-size: 1.25vw;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .button-container {
@@ -132,22 +231,12 @@ export default {
 .button-emotion {
   width: 12.5vw;
   height: 5vh;
-
   border-radius: 15px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-
   font-size: 1vw;
   font-weight: 700;
-
   background-color: #4492f6;
   color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.question-text {
-  font-size: 1.25vw;
-  font-weight: 700;
-
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>

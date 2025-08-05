@@ -63,4 +63,10 @@ export class PageManager extends Component {
       PageStates.GameSelection,
     );
   }
+
+  public resetPage() {
+    this.getPageByPageState(this.currentPageState).transitionPage(
+      this.currentPageState,
+    );
+  }
 }

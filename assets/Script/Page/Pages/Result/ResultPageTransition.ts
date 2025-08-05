@@ -189,8 +189,27 @@ export class ResultPageTransition extends PageTransition {
         );
 
       if (i === this.resultScores.length - 1) {
-        _tween.call(() => {
+        _tween.delay(0.1).call(() => {
           this.startParticleSystem(true);
+          tween(this.title)
+            .to(
+              0.15,
+              { scale: new Vec3(1.5, 1.5, 1.5) },
+              { easing: "cubicOut" },
+            )
+            .to(0.2, { scale: Vec3.ONE }, { easing: "cubicIn" })
+            .start();
+          for (let i = 0; i < this.resultScores.length; i++) {
+            const resultScore = this.resultScores[i];
+            tween(resultScore.scoreLabel.node)
+              .to(
+                0.15,
+                { scale: new Vec3(1.5, 1.5, 1.5) },
+                { easing: "cubicOut" },
+              )
+              .to(0.2, { scale: Vec3.ONE }, { easing: "cubicIn" })
+              .start();
+          }
           this.tweenList(
             this.bottomNodes,
             this.bottomInitialPos,

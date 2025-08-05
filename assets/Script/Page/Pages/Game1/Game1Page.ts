@@ -254,17 +254,12 @@ export class Game1Page extends Page {
         this.wrongCount++;
       }
     }
-    UIManager.instance.playFeedbackUI(correct, () => {
-      this.setBlockInput(false);
-      if (haveNextQuestion) {
-        this.onQuestionChanged();
-      }
-    });
-    return correct;
-  }
-
-  private async onFeedbackComplete() {
     this.setBlockInput(false);
+    if (haveNextQuestion) {
+      this.onQuestionChanged();
+    }
+    UIManager.instance.playFeedbackUI(correct, () => {});
+    return correct;
   }
 
   private onQuestionChanged() {

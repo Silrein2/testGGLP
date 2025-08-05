@@ -24,6 +24,8 @@ export class GameManager extends Component {
   public userService: UserService | null = null;
   public quizService: QuizService | null = null;
 
+  private languageCode: string = "en";
+
   public static get instance(): GameManager {
     if (this._instance) {
       return this._instance;
@@ -45,8 +47,11 @@ export class GameManager extends Component {
   }
 
   initializeApi() {
+    const defaultHeaders = {
+      "Accept-Language": this.languageCode,
+    };
     const BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
-    this.apiClient = new ApiClient(BASE_API_URL);
+    this.apiClient = new ApiClient(BASE_API_URL, defaultHeaders);
     this.authService = new AuthService(this.apiClient);
     this.userService = new UserService(this.apiClient);
     this.quizService = new QuizService(this.apiClient);
@@ -67,13 +72,15 @@ export class GameManager extends Component {
     UIManager.instance.showSelectUI(
       "Select Your Language",
       data,
-      null,
+      this.languageCode,
       this.onSelectLanguage.bind(this),
     );
   }
 
   private onSelectLanguage(code: string) {
-    //console.log(code);
+    this.languageCode = code;
+    this.apiClient.setLanguage(code);
+    //this.pageManager.resetPage();
   }
 
   private onClickPause() {

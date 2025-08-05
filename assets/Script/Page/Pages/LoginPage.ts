@@ -54,7 +54,7 @@ export class LoginPage extends Page {
     );
     await GameManager.instance.userService.fetchUserState();
     await GameManager.instance.quizService.getQuestion();
-    this.pageManager.transitionState(PageStates.Game1);
+    this.transitionPage(PageStates.Game1);
     UIManager.instance.showLoading(false);
   }
 
@@ -70,7 +70,7 @@ export class LoginPage extends Page {
       );
       GameManager.instance.setAuthToken(data.auth_token);
       await GameManager.instance.userService.fetchUserState();
-      this.pageManager.transitionState(PageStates.DialogueIntro);
+      this.transitionPage(PageStates.DialogueIntro);
     } catch (error) {
       console.error(error);
       let errorMessage = error;

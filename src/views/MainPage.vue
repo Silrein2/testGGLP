@@ -110,7 +110,11 @@
           v-if="responsePrompt[currentIndex].question === 'This is a Mini-Game'"
           class="mini-game-wrapper"
         >
-          <MiniGame @finishMiniGame="responseToResult" @updateScore="updateTotalScore" />
+          <MiniGame
+            @finishMiniGame="responseToResult"
+            @updateScore="updateTotalScore"
+            @startMiniGame="minigameBool = true"
+          />
         </div>
 
         <div v-else>
@@ -460,7 +464,9 @@ export default {
       isPlaying: false,
 
       clickSound: clickSound,
-      audioInstance: audioService
+      audioInstance: audioService,
+
+      minigameBool: false
     }
   },
   async beforeCreate() {
@@ -781,7 +787,10 @@ export default {
       }
 
       this.totalScore = this.careScore + this.respectScore + this.understandingScore
-      this.animateUnionIcon()
+
+      if (this.minigameBool == false) {
+        this.animateUnionIcon()
+      }
     },
     animateResponseExit() {
       gsap.to(this.$refs.responseDiv, {
@@ -820,7 +829,13 @@ export default {
     resultToResponse() {
       this.audioInstance.playSound(this.clickSound)
 
-      this.animateUnionIconExit()
+      //check if it's a current result for Mini-Game
+      if (this.minigameBool == false) {
+        this.animateUnionIconExit()
+      } else {
+        this.minigameBool = false
+      }
+
       const tl = gsap.timeline({
         onComplete: () => {
           this.nextStory()
@@ -1271,6 +1286,11 @@ export default {
       this.audioInstance.playSound(completeSound)
     }
   }
+  // setMiniGame() {
+  //   this.minigameBool = true
+
+  //   console.log('bool: ' + this.minigameBool)
+  // }
 }
 </script>
 

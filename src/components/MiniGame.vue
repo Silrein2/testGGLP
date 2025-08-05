@@ -71,6 +71,8 @@ export default {
     runInitialProcess() {
       this.currentImage = this.defaultImage
 
+      this.$emit('startMiniGame')
+
       this.$refs.instructionDiv.style.transition = 'opacity 2s'
       this.$refs.instructionDiv.style.opacity = 0
 

@@ -84,26 +84,47 @@ export default {
       this.$refs.instructionDiv.style.transition = 'opacity 2s'
       this.$refs.instructionDiv.style.opacity = 0
 
-      setTimeout(() => {
-        this.instructionVisible = false
+      let start = null
+      const duration = 2000 // = 2 seconds
 
-        this.$refs.miniGameContainer.style.transition = 'opacity 2s'
-        this.$refs.miniGameContainer.style.opacity = 1
+      const fadeOut = (timestamp) => {
+        if (!start) start = timestamp
+        const progress = timestamp - start
+        if (progress < duration) {
+          requestAnimationFrame(fadeOut)
+        } else {
+          this.instructionVisible = false
+          this.$refs.miniGameContainer.style.transition = 'opacity 2s'
+          this.$refs.miniGameContainer.style.opacity = 1
 
-        setTimeout(() => {
-          this.showRandomImage()
-        }, 2000) // complete fade in
-      }, 2000) // complete fade out
+          setTimeout(() => {
+            this.showRandomImage()
+          }, 2000)
+        }
+      }
+
+      requestAnimationFrame(fadeOut)
     },
     showRandomImage() {
       const randomIndex = Math.floor(Math.random() * this.randomImages.length)
       this.currentImage = this.randomImages[randomIndex]
       this.currentEmotionIndex = randomIndex
 
-      setTimeout(() => {
-        this.currentImage = this.defaultImage
-        this.showButtons = true
-      }, 1000)
+      let start = null
+      const duration = 1000 // 1 second
+
+      const fadeIn = (timestamp) => {
+        if (!start) start = timestamp
+        const progress = timestamp - start
+        if (progress < duration) {
+          requestAnimationFrame(fadeIn)
+        } else {
+          this.currentImage = this.defaultImage
+          this.showButtons = true
+        }
+      }
+
+      requestAnimationFrame(fadeIn)
     },
     handleEmotion(selectedIndex) {
       this.showButtons = false

@@ -502,6 +502,7 @@ export default {
     this.$updateBackgroundSize()
 
     this.playBGM()
+    this.preloadImages()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.$updateBackgroundSize)

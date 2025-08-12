@@ -114,6 +114,8 @@
             @finishMiniGame="responseToResult"
             @updateScore="updateTotalScore"
             @startMiniGame="minigameBool = true"
+            :randomImages="emotionImages"
+            :defaultImage="neutralImage"
           />
         </div>
 
@@ -353,7 +355,9 @@
 import { gsap } from 'gsap'
 import { db } from '@/firebase'
 import { collection, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore'
+
 import MiniGame from '@/components/MiniGame.vue'
+import { happy, angry, sad, afraid, disgust, neutral } from '@/assets/MiniGame/emotionImages.js'
 
 import { backArrowIcon } from '@/assets/GUI/icons/icons'
 import {
@@ -466,7 +470,9 @@ export default {
       clickSound: clickSound,
       audioInstance: audioService,
 
-      minigameBool: false
+      minigameBool: false,
+      emotionImages: [happy, angry, sad, afraid, disgust],
+      neutralImage: neutral
     }
   },
   async beforeCreate() {
@@ -1284,6 +1290,19 @@ export default {
       }, fadeOutInterval)
 
       this.audioInstance.playSound(completeSound)
+    },
+    preloadImages() {
+      const imagesToPreload = [neutral, ...this.emotionImages]
+
+      imagesToPreload.forEach((imageUrl) => {
+        if (!document.head.querySelector(`link[href="${imageUrl}"]`)) {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'image'
+          link.href = imageUrl
+          document.head.appendChild(link)
+        }
+      })
     }
   }
   // setMiniGame() {

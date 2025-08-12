@@ -36,13 +36,21 @@
 </template>
 
 <script>
-import { happy, angry, sad, afraid, disgust, neutral } from '@/assets/MiniGame/emotionImages.js'
-
 export default {
+  props: {
+    randomImages: {
+      type: Array,
+      required: true
+    },
+    defaultImage: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      defaultImage: neutral,
-      randomImages: [happy, angry, sad, afraid, disgust],
+      // defaultImage: neutral,
+      // randomImages: this.emotionImages,
       currentImage: '',
       showButtons: false,
       processCount: 0,
@@ -51,23 +59,23 @@ export default {
       instructionVisible: true
     }
   },
-  mounted() {
-    this.preloadImages()
-  },
+  // mounted() {
+  //   this.preloadImages()
+  // },
   methods: {
-    preloadImages() {
-      const imagesToPreload = [this.defaultImage, ...this.randomImages]
+    // preloadImages() {
+    //   const imagesToPreload = [this.defaultImage, ...this.randomImages]
 
-      imagesToPreload.forEach((imageUrl) => {
-        if (!document.head.querySelector(`link[href="${imageUrl}"]`)) {
-          const link = document.createElement('link')
-          link.rel = 'preload'
-          link.as = 'image'
-          link.href = imageUrl
-          document.head.appendChild(link)
-        }
-      })
-    },
+    //   imagesToPreload.forEach((imageUrl) => {
+    //     if (!document.head.querySelector(`link[href="${imageUrl}"]`)) {
+    //       const link = document.createElement('link')
+    //       link.rel = 'preload'
+    //       link.as = 'image'
+    //       link.href = imageUrl
+    //       document.head.appendChild(link)
+    //     }
+    //   })
+    // },
     runInitialProcess() {
       this.currentImage = this.defaultImage
 

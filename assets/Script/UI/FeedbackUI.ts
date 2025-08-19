@@ -11,6 +11,7 @@ import {
   Tween,
   UIOpacity,
 } from "cc";
+import { TypewriterEffect } from "../Utils/TypewriterEffect";
 const { ccclass, property } = _decorator;
 
 @ccclass("FeedbackUI")
@@ -34,12 +35,13 @@ export class FeedbackUI extends Component {
   private wrongSpriteFrame: SpriteFrame | null = null;
 
   private characterTween: Tween<Node> | null = null;
-  private currentTypingJob: Function | null = null;
   private characterUIOpacity: UIOpacity | null = null;
   private characterInitialPos = new Vec3(747, 328, 0);
   private characterFromPos = new Vec3(1170, 328, 0);
+  private typewriterEffect: TypewriterEffect | null = null;
 
   onLoad() {
+    this.typewriterEffect = new TypewriterEffect();
     this.characterUIOpacity = this.characterSprite.node.getComponent(UIOpacity);
   }
 
@@ -78,7 +80,7 @@ export class FeedbackUI extends Component {
       .call(() => {
         if (!correct) {
           this.speech.active = true;
-          this.startTypewriterEffect("Think twice!");
+          this.typewriterEffect.startEffect("Think twice!", this.speechLabel);
         }
       })
       .delay(stayDelay)
@@ -92,30 +94,5 @@ export class FeedbackUI extends Component {
         onComplete(correct);
       })
       .start();
-  }
-
-  private startTypewriterEffect(fullText: string) {
-    this.speechLabel.string = "";
-    let charIndex = 0;
-
-    if (this.currentTypingJob !== null) {
-      this.unschedule(this.currentTypingJob);
-    }
-    this.currentTypingJob = () => {
-      if (charIndex < fullText.length) {
-        this.speechLabel.string += fullText[charIndex];
-        charIndex++;
-      } else {
-        this.completeTypewriterEffect();
-      }
-    };
-    this.schedule(this.currentTypingJob, 0.025, fullText.length);
-  }
-
-  private completeTypewriterEffect() {
-    if (this.currentTypingJob !== null) {
-      this.unschedule(this.currentTypingJob);
-      this.currentTypingJob = null;
-    }
   }
 }

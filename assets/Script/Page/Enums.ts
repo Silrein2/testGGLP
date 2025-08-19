@@ -6,6 +6,7 @@ export enum PageStates {
   DialogueGame1,
   Game1,
   Game2,
+  Game3,
   Result,
 }
 

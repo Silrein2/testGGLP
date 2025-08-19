@@ -31,11 +31,11 @@ export class LoginPage extends Page {
 
   start() {
     this.getBusinessUnits();
+    this.getAuthToken();
   }
 
   private getBusinessUnits() {
     GameManager.instance.userService.getBusinessUnits();
-    this.getAuthToken();
   }
 
   protected setPageState() {
@@ -53,8 +53,7 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
-    await GameManager.instance.quizService.getQuestion();
-    this.transitionPage(PageStates.Game1);
+    this.transitionPage(PageStates.DialogueIntro);
     UIManager.instance.showLoading(false);
   }
 

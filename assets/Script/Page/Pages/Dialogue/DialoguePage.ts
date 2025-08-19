@@ -11,6 +11,7 @@ import {
 } from "cc";
 import { Page } from "../../Page";
 import { DialogueLine } from "./DialogueLine";
+import { TypewriterEffect } from "../../../Utils/TypewriterEffect";
 const { ccclass, property } = _decorator;
 
 @ccclass("DialoguePage")
@@ -28,14 +29,13 @@ export class DialoguePage extends Page {
   private advanceButton: Button | null = null;
 
   private currentLineIndex: number = 0;
-  private isTyping: boolean = false;
-  private currentTypingJob: Function | null = null;
-  private textSpeed: number = 0.05;
   private speakerTween: Tween<Node> | null = null;
+  private typewriterEffect: TypewriterEffect | null = null;
 
   protected dialogueScript: DialogueLine[] = [];
 
   onLoad() {
+    this.typewriterEffect = new TypewriterEffect();
     this.advanceButton.node.on(
       Button.EventType.CLICK,
       this.onAdvanceButtonClick,
@@ -61,8 +61,8 @@ export class DialoguePage extends Page {
   }
 
   private onAdvanceButtonClick() {
-    if (this.isTyping) {
-      this.completeTypewriterEffect();
+    if (this.typewriterEffect.isTyping) {
+      this.typewriterEffect.completeEffect();
     } else {
       this.currentLineIndex++;
       if (this.currentLineIndex < this.dialogueScript.length) {
@@ -97,40 +97,10 @@ export class DialoguePage extends Page {
     this.speakerTween.start();
 
     if (!line.skipTypewriterEffect) {
-      this.startTypewriterEffect(line.text);
+      this.typewriterEffect.startEffect(line.text, this.dialogueLabel);
     } else {
       this.dialogueLabel.string = line.text;
     }
-  }
-
-  private startTypewriterEffect(fullText: string) {
-    this.isTyping = true;
-    this.dialogueLabel.string = "";
-    let charIndex = 0;
-
-    if (this.currentTypingJob !== null) {
-      this.unschedule(this.currentTypingJob);
-    }
-
-    this.currentTypingJob = () => {
-      if (charIndex < fullText.length) {
-        this.dialogueLabel.string += fullText[charIndex];
-        charIndex++;
-      } else {
-        this.completeTypewriterEffect();
-      }
-    };
-
-    this.schedule(this.currentTypingJob, this.textSpeed, fullText.length);
-  }
-
-  private completeTypewriterEffect() {
-    if (this.currentTypingJob !== null) {
-      this.unschedule(this.currentTypingJob);
-      this.currentTypingJob = null;
-    }
-    this.dialogueLabel.string = this.dialogueScript[this.currentLineIndex].text;
-    this.isTyping = false;
   }
 
   protected endDialogue() {

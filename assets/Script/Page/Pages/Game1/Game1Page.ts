@@ -15,6 +15,7 @@ import { UIManager } from "../../../Manager/UIManager";
 import { GameManager } from "../../../Manager/GameManager";
 import { MatchAnswer, MCQAnswer, YesNoAnswer } from "../../../Api/QuizService";
 import { Game1QuizTransition } from "./Game1QuizTransition";
+import { waitForCondition } from "../../../Utils/Utils";
 
 const { ccclass, property } = _decorator;
 
@@ -56,6 +57,7 @@ export class Game1Page extends Page {
   private game1QuizTransition: Game1QuizTransition | null;
   private currentQuestionType: QuestionTypes = QuestionTypes.NONE;
   private questionCount: number = 0;
+  private loadedQuestion: boolean = false;
 
   onLoad() {
     this.game1QuizTransition = this.node.getComponent(Game1QuizTransition);
@@ -74,6 +76,7 @@ export class Game1Page extends Page {
 
   public onEnter() {
     super.onEnter();
+    this.getQuestion();
     this.setUI();
     this.showType(-1);
     this.questionLabel.string = "";
@@ -84,7 +87,8 @@ export class Game1Page extends Page {
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI("QUESTION & ANSWER", () => {
+    UIManager.instance.showScoreStartUI("QUESTION & ANSWER", async () => {
+      await waitForCondition(this.loadedQuestion);
       this.setQuestion();
       GameManager.instance.timer.startTimer();
     });
@@ -94,6 +98,12 @@ export class Game1Page extends Page {
     super.onExit();
     UIManager.instance.showGameUI(false);
     this.questionCount = 0;
+  }
+
+  private async getQuestion() {
+    this.loadedQuestion = false;
+    await GameManager.instance.quizService.getQuestion();
+    this.loadedQuestion = true;
   }
 
   private setUI() {
@@ -171,10 +181,6 @@ export class Game1Page extends Page {
         this.setBlockInput(false);
       },
     );
-  }
-
-  private setBlockInput(enable: boolean) {
-    this.pageManager.enableBlockInput(enable);
   }
 
   private showType(type: number) {

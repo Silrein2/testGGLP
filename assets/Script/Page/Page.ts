@@ -59,4 +59,8 @@ export class Page extends State {
       this.onPostExitTransition();
     }
   }
+
+  public setBlockInput(enable: boolean) {
+    this.pageManager.enableBlockInput(enable);
+  }
 }

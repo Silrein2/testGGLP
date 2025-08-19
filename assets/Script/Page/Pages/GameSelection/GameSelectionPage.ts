@@ -55,8 +55,8 @@ export class GameSelectionPage extends Page {
       case 0:
         this.transitionPage(PageStates.DialogueGame1);
         break;
-      case 1:
-        //this.pageManager.transitionState(PageStates.Game2);
+      case 2:
+        this.transitionPage(PageStates.Game3);
         break;
     }
   }

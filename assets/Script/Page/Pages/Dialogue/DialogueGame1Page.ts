@@ -9,8 +9,6 @@ export class DialogueGame1Page extends DialoguePage {
   @property({ type: SpriteFrame })
   beeSmileSprite: SpriteFrame | null = null;
 
-  private loadedQuestion: boolean = false;
-
   start() {
     this.dialogueScript = [
       {
@@ -29,16 +27,12 @@ export class DialogueGame1Page extends DialoguePage {
 
   public onEnter() {
     super.onEnter();
-    this.loadedQuestion = false;
-    GameManager.instance.quizService.getQuestion();
-    this.loadedQuestion = true;
   }
   public onPostEnterTransition() {
     super.onPostEnterTransition();
     this.startDialogue();
   }
   protected endDialogue() {
-    if (!this.loadedQuestion) return;
     super.endDialogue();
     this.transitionPage(PageStates.Game1);
   }

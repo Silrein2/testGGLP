@@ -47,6 +47,7 @@ export class Game3Option extends Component {
   }
 
   private onDragEnd() {
+    if (this.draggableObject.disabled) return;
     const pos = new Vec2(this.node.worldPositionX, this.node.worldPositionY);
     if (this.slotCollider.worldAABB.contains(pos)) {
       this.setState(

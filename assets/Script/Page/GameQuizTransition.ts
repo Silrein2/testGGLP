@@ -57,7 +57,8 @@ export class GameQuizTransition extends Component {
     const fromScale = !show ? this.showScale : this.hideScale;
     const fromOpacity = !show ? this.showOpacity : this.hideOpacity;
 
-    const _nodes = shuffle ? this.shuffleArray(nodes) : nodes;
+    const activeNodes = nodes.filter((x) => x.active);
+    const _nodes = shuffle ? this.shuffleArray(activeNodes) : activeNodes;
 
     _nodes.forEach((node, index) => {
       node.setScale(fromScale);

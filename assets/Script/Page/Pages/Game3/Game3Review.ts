@@ -8,6 +8,7 @@ import {
   Node,
   Sprite,
   tween,
+  UIOpacity,
   Vec3,
 } from "cc";
 import { TypewriterEffect } from "../../../Utils/TypewriterEffect";
@@ -34,8 +35,11 @@ export class Game3Review extends Component {
   private currentScript: string[] = [];
   private currentScriptIndex: number = 0;
 
+  private gameNextUIOpacity: UIOpacity | null = null;
+
   onLoad() {
     this.typewriterEffect = new TypewriterEffect();
+    this.gameNextUIOpacity = this.gameNextButton.node.getComponent(UIOpacity);
 
     this.currentScript = [
       "I am travelling soon and you need to send me an update on Project XYZ",
@@ -109,9 +113,16 @@ export class Game3Review extends Component {
   }
 
   private setGameNextButtonInteractable(interactable: boolean) {
-    this.gameNextButton.node.getComponent(Sprite).color = interactable
+    const opacity = interactable ? 255 : 0;
+    const easing = interactable ? "cubicOut" : "cubicIn";
+    /*this.gameNextButton.node.getComponent(Sprite).color = interactable
       ? new Color("#FFFFFF")
-      : new Color("#7C7C7C");
+      : new Color("#7C7C7C");*/
+    if (!this.gameNextUIOpacity)
+      this.gameNextUIOpacity = this.gameNextButton.node.getComponent(UIOpacity);
     this.gameNextButton.interactable = interactable;
+    tween(this.gameNextUIOpacity)
+      .to(0.2, { opacity: opacity }, { easing: easing })
+      .start();
   }
 }

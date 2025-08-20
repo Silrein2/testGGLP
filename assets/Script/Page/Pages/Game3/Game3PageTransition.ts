@@ -48,7 +48,7 @@ export class Game3PageTransition extends PageTransition {
           this.onEnterComplete();
         })
         .start();
-    }, 1);
+    }, 1.5);
   }
 
   public async onExit() {

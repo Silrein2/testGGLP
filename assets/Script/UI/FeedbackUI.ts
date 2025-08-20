@@ -64,6 +64,7 @@ export class FeedbackUI extends Component {
       this.characterTween.stop();
     }
     this.characterUIOpacity.opacity = 255;
+    this.node.active = true;
     this.speech.active = false;
     this.characterSprite.node.setPosition(this.characterFromPos);
     if (correct) {

@@ -15,6 +15,7 @@ import { Game3QuizTransition } from "./Game3QuizTransition";
 import { Game3Review } from "./Game3Review";
 import { Game3PageTransition } from "./Game3PageTransition";
 import { GameManager } from "../../../Manager/GameManager";
+import { Game3Message } from "./Game3Message";
 
 const { ccclass, property } = _decorator;
 
@@ -38,6 +39,9 @@ export class Game3Page extends Page {
   @property({ type: Game3Review })
   private game3Review: Game3Review | null = null;
 
+  @property({ type: Game3Message })
+  public game3Message: Game3Message | null = null;
+
   @property({ type: SpriteFrame })
   public optionNormalSpriteFrame: SpriteFrame | null = null;
 
@@ -52,10 +56,49 @@ export class Game3Page extends Page {
   private game3PageTransition: Game3PageTransition | null;
   private isIntro: boolean = false;
 
+  private currentQuestionIndex: number = 0;
+  private questions: any[] = [];
+
   onLoad() {
     this.game3Intro = this.node.getComponent(Game3Intro);
     this.game3QuizTransition = this.node.getComponent(Game3QuizTransition);
     this.game3PageTransition = this.node.getComponent(Game3PageTransition);
+
+    this.questions = [
+      {
+        title: "Behavioral Inconsistency",
+        options: [
+          { text: "Habits", correct: true },
+          { text: "Tone of voice", correct: false },
+          { text: "Expression", correct: true },
+          { text: "Name", correct: false },
+        ],
+      },
+      {
+        title: "Visual Inconsistency",
+        options: [
+          { text: "Resolution difference", correct: true },
+          { text: "Hairstyle", correct: true },
+          { text: "Background", correct: false },
+          { text: "Colors", correct: false },
+        ],
+      },
+      {
+        title: "Unusual Request",
+        options: [
+          { text: "Asking for money", correct: true },
+          { text: "Urgent payment", correct: true },
+        ],
+      },
+      {
+        title: "Emotional Manipulation",
+        options: [
+          { text: "Urgency", correct: true },
+          { text: "Secrecy", correct: true },
+          { text: "Embarrassment", correct: false },
+        ],
+      },
+    ];
   }
 
   protected setPageState() {
@@ -66,6 +109,7 @@ export class Game3Page extends Page {
     this.introScreen.active = true;
     this.gameScreen.active = false;
     this.sectionLabel.string = "Welcome!";
+    this.currentQuestionIndex = 0;
     UIManager.instance.showGameUI(true);
     GameManager.instance.timer.resetTimer();
     this.isIntro = true;
@@ -81,6 +125,7 @@ export class Game3Page extends Page {
     } else {
       UIManager.instance.showScoreStartUI("DEEPFAKE GAME", () => {
         this.setQuestion();
+        this.showGame(true);
         GameManager.instance.timer.startTimer();
       });
     }
@@ -91,7 +136,19 @@ export class Game3Page extends Page {
     UIManager.instance.showGameUI(false);
   }
 
-  public onClickTransfer(transfer: boolean) {}
+  public onClickTransfer(transfer: boolean) {
+    const text = transfer
+      ? "Well done~! This is a classic example of a Deepfake scam call.\n\nWhat gave it away?"
+      : "Oh no~! This is a classic example of a Deepfake scam call. In real life, you would have been scammed.\n\nHere's how you can tell...";
+    this.game3Message.show(
+      true,
+      text,
+      () => this.startGame(),
+      () => {
+        this.game3PageTransition.onEnter();
+      },
+    );
+  }
 
   public startGame() {
     this.isIntro = false;
@@ -99,23 +156,28 @@ export class Game3Page extends Page {
     this.gameScreen.active = true;
   }
 
-  public onClickIntroNext() {
-    this.game3PageTransition.onEnter();
+  private endQuiz() {
+    this.game3Message.show(
+      true,
+      "<size=60>Summary of Learning</size>\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ",
+      () => {},
+      () => {
+        GameManager.instance.timer.stopTimer();
+        this.transitionPage(PageStates.Result);
+      },
+    );
   }
 
   private setQuestion() {
-    this.sectionLabel.string = "Behavioral Inconsistency";
-
-    const data = [
-      { text: "Habits", correct: true },
-      { text: "Tone of Voice", correct: false },
-      { text: "Expressions", correct: true },
-      { text: "Names", correct: false },
-    ];
+    const question = this.questions[this.currentQuestionIndex];
+    if (question == null) {
+      this.endQuiz();
+      return;
+    }
+    this.sectionLabel.string = question.title;
     this.options.forEach((option: Game3Option, index: number) => {
-      option.init(data[index] ?? null, this.slotCollider, this);
+      option.init(question.options[index] ?? null, this.slotCollider, this);
     });
-    this.showGame(true);
     this.setBlockInput(true);
     this.game3QuizTransition.playTransition(true, () => {
       this.setBlockInput(false);
@@ -127,6 +189,7 @@ export class Game3Page extends Page {
   }
 
   private onClickNext() {
+    this.currentQuestionIndex++;
     this.setBlockInput(true);
     this.game3QuizTransition.playTransition(false, () => {
       this.setBlockInput(false);

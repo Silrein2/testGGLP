@@ -50,19 +50,12 @@ export class Game3Intro extends Component {
   @property({ type: GameUITransition })
   private gameUITransition: GameUITransition | null = null;
 
-  @property({ type: Node })
-  private transferResult: Node | null = null;
-
-  @property({ type: Label })
-  private transferResultLabel: Label | null = null;
-
   @property({ type: UIOpacity })
   private cursorOpacity: UIOpacity | null = null;
 
   private typewriterEffect: TypewriterEffect | null = null;
   private notificationUIOpacity: UIOpacity | null = null;
   private nextDayBgUIOpacity: UIOpacity | null = null;
-  private transferResultUIOpacity: UIOpacity | null = null;
   private callScreenSprite: Sprite | null = null;
   private nextDay: boolean = false;
   private game3Page: Game3Page | null = null;
@@ -78,7 +71,6 @@ export class Game3Intro extends Component {
     this.typewriterEffect = new TypewriterEffect();
     this.notificationUIOpacity = this.notification.getComponent(UIOpacity);
     this.nextDayBgUIOpacity = this.nextDayBg.getComponent(UIOpacity);
-    this.transferResultUIOpacity = this.transferResult.getComponent(UIOpacity);
     this.callScreenSprite = this.callScreen.getComponent(Sprite);
 
     this.realScript = [
@@ -96,7 +88,6 @@ export class Game3Intro extends Component {
     this.game3Page = game3Page;
     this.nextDay = false;
     this.nextDayBg.active = false;
-    this.transferResult.active = false;
     this.gameUITransition.init();
     this.resetEffect();
     this.unschedule(this.blinkCursor);
@@ -238,31 +229,6 @@ export class Game3Intro extends Component {
   private onClickTransfer(event: Event, transfer: string) {
     const isTransfer = transfer === "0";
     this.game3Page.onClickTransfer(isTransfer);
-    this.game3Page.setBlockInput(true);
-    this.transferResultUIOpacity.opacity = 0;
-    const text = isTransfer
-      ? "Well done~! This is a classic example of a Deepfake scam call.\n\nWhat gave it away?"
-      : "Oh no~! This is a classic example of a Deepfake scam call. In real life, you would have been scammed.\n\nHere's how you can tell...";
-    this.transferResult.active = true;
-    this.transferResultLabel.string = text;
-    tween(this.transferResultUIOpacity)
-      .to(0.4, { opacity: 255 }, { easing: "cubicOut" })
-      .call(() => {
-        this.game3Page.setBlockInput(false);
-        this.game3Page.startGame();
-      })
-      .start();
-  }
-
-  private onClickResultNext() {
-    this.game3Page.onClickIntroNext();
-    tween(this.transferResultUIOpacity)
-      .to(0.4, { opacity: 0 }, { easing: "cubicIn" })
-      .call(() => {
-        this.transferResult.active = false;
-        this.game3Page.setBlockInput(false);
-      })
-      .start();
   }
 
   private async onClickNotification() {

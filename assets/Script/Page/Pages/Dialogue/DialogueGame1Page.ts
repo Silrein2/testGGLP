@@ -34,7 +34,7 @@ export class DialogueGame1Page extends DialoguePage {
   }
   protected endDialogue() {
     super.endDialogue();
-    this.transitionPage(PageStates.Game1);
+    this.transitionPage(this.pageManager.targetGamePageState);
   }
 
   public onClickSkip() {

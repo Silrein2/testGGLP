@@ -1,5 +1,6 @@
 import {
   _decorator,
+  Button,
   Component,
   Node,
   RichText,
@@ -17,8 +18,8 @@ export class Game3Message extends Component {
   @property({ type: Node })
   private panel: Node | null = null;
 
-  @property({ type: Node })
-  private next: Node | null = null;
+  @property({ type: Button })
+  private nextButton: Button | null = null;
 
   @property({ type: RichText })
   private messageLabel: RichText | null = null;
@@ -36,6 +37,7 @@ export class Game3Message extends Component {
     showCallback: Function = () => {},
     nextCallback: Function = () => {},
   ) {
+    this.nextButton.interactable = false;
     this.nextCallback = nextCallback;
     const duration = 0.8;
     const initialOpacity = show ? 0 : 255;
@@ -66,6 +68,7 @@ export class Game3Message extends Component {
       .call(() => {
         if (show) showCallback();
         else this.node.active = false;
+        this.nextButton.interactable = true;
       })
       .start();
   }

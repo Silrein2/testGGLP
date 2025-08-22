@@ -13,7 +13,11 @@ export class TypewriterEffect extends Component {
     return this._isTyping;
   }
 
-  public startEffect(fullText: string, label: Label) {
+  public startEffect(
+    fullText: string,
+    label: Label,
+    onComplete: Function = () => {},
+  ) {
     this.fullText = fullText;
     this.label = label;
     this._isTyping = true;
@@ -30,6 +34,7 @@ export class TypewriterEffect extends Component {
         charIndex++;
       } else {
         this.completeEffect();
+        onComplete();
       }
     };
 

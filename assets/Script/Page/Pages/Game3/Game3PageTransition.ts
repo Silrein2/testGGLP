@@ -52,7 +52,12 @@ export class Game3PageTransition extends PageTransition {
   }
 
   public async onExit() {
-    await this.gameUITransition.playExit(this.bottomNodes, this.bottomFromPos);
+    await this.gameUITransition.playExit(
+      [],
+      [],
+      this.bottomNodes,
+      this.bottomFromPos,
+    );
     await delay(800);
     this.onExitComplete();
   }

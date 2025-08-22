@@ -1,18 +1,19 @@
 import { _decorator, Component, Node, EventTouch, Vec3, tween } from "cc";
 const { ccclass, property } = _decorator;
 
+export const DRAG_START_EVENT = "drag-start";
 export const DRAG_END_EVENT = "drag-end";
 
 @ccclass("DraggableObject")
 export class DraggableObject extends Component {
   private isDragging: boolean = false;
   private touchOffset: Vec3 = new Vec3();
-  private initialPosition: Vec3 = new Vec3();
   private initialScale: Vec3 = new Vec3();
+  public initialPosition: Vec3 = new Vec3();
   public disabled: boolean = false;
 
   onLoad() {
-    this.initialPosition.set(this.node.position);
+    this.setInitialPosition();
     this.initialScale.set(this.node.scale);
     this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -30,6 +31,7 @@ export class DraggableObject extends Component {
   onTouchStart(event: EventTouch) {
     if (this.disabled) return;
     this.isDragging = true;
+    this.node.emit(DRAG_START_EVENT, this.node, this.node.worldPosition);
     const touchLocation = event.getUILocation();
     const nodePosition = this.node.position;
 
@@ -60,6 +62,10 @@ export class DraggableObject extends Component {
     tween(this.node)
       .to(0.3, { scale: this.initialScale }, { easing: "backOut" })
       .start();
+  }
+
+  public setInitialPosition() {
+    this.initialPosition.set(this.node.position);
   }
 
   public resetPosition() {

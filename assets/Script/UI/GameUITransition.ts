@@ -52,9 +52,18 @@ export class GameUITransition extends PageTransition {
     this.setNodesPosition(this.bottomNodes, this.bottomFromPos);
   }
 
-  public async playEnter(callback: Function = () => {}) {
+  public async playEnter(
+    rightNodes: Node[] = [],
+    rightInitialPos: Vec3[] = [],
+    callback: Function = () => {},
+  ) {
     await this.tweenList(this.topNodes, this.topInitialPos, 200, "backOut");
-    await this.tweenList(this.rightNodes, this.rightInitialPos, 200, "backOut");
+    await this.tweenList(
+      [...this.rightNodes, ...rightNodes],
+      [...this.rightInitialPos, ...rightInitialPos],
+      200,
+      "backOut",
+    );
     await this.tweenList(
       this.bottomNodes,
       this.bottomInitialPos,
@@ -65,12 +74,19 @@ export class GameUITransition extends PageTransition {
   }
 
   public async playExit(
+    rightNodes: Node[] = [],
+    rightFromPos: Vec3[] = [],
     bottomNodes: Node[] = [],
     bottomFromPos: Vec3[] = [],
     callback: Function = () => {},
   ) {
     await this.tweenList(this.topNodes, this.topFromPos, 200, "backIn");
-    await this.tweenList(this.rightNodes, this.rightFromPos, 200, "backIn");
+    await this.tweenList(
+      [...this.rightNodes, ...rightNodes],
+      [...this.rightFromPos, ...rightFromPos],
+      200,
+      "backIn",
+    );
     await this.tweenList(
       [...bottomNodes, ...this.bottomNodes],
       [...bottomFromPos, ...this.bottomFromPos],

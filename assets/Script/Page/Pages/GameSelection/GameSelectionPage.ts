@@ -53,11 +53,15 @@ export class GameSelectionPage extends Page {
   private async onClickPlay() {
     switch (this.selectedGameIndex) {
       case 0:
-        this.transitionPage(PageStates.DialogueGame1);
+        this.pageManager.targetGamePageState = PageStates.Game1;
+        break;
+      case 1:
+        this.pageManager.targetGamePageState = PageStates.Game2;
         break;
       case 2:
-        this.transitionPage(PageStates.Game3);
+        this.pageManager.targetGamePageState = PageStates.Game3;
         break;
     }
+    this.transitionPage(PageStates.DialogueGame1);
   }
 }

@@ -21,6 +21,7 @@ export class PageManager extends Component {
 
   public _stateEnterTransitionDuration: number = 0;
   public currentPageState: PageStates | null = null;
+  public targetGamePageState: PageStates = PageStates.Game1;
 
   public get stateEnterTransitionDuration(): number {
     return this._stateEnterTransitionDuration;

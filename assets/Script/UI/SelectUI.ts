@@ -36,7 +36,9 @@ export class SelectUI extends PopupUI {
   ) {
     this.headerLabel.string = header;
 
-    this.optionsContainer.removeAllChildren();
+    for (const option of this.selectUIButtons) {
+      option.node.destroy();
+    }
     this.selectUIButtons = [];
     for (const option of options) {
       const optionNode = instantiate(this.selectOptionPrefab) as Node;

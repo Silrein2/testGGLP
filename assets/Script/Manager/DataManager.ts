@@ -101,4 +101,23 @@ export class DataManager extends Component {
     this.question = question;
     this.node.emit(QUESTION_CHANGED, question);
   }
+
+  public setDummyUserState() {
+    const dummy: UserState = {
+      email: "test@amway.com",
+      business_unit_id: 1,
+      business_unit: "HR",
+      is_first_login: false,
+      quizzes: {
+        current_score_quizzes: 0,
+        total_score_quizzes: 0,
+        total_questions_answered_this_session: 0,
+        highest_score_quizzes: 1150,
+        total_seconds_at_highest_score_quizzes: 75,
+        times_played_quizzes: 91,
+      },
+    };
+
+    this.setUserState(dummy);
+  }
 }

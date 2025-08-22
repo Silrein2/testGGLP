@@ -15,7 +15,6 @@ import { UIManager } from "../../../Manager/UIManager";
 import { GameManager } from "../../../Manager/GameManager";
 import { MatchAnswer, MCQAnswer, YesNoAnswer } from "../../../Api/QuizService";
 import { Game1QuizTransition } from "./Game1QuizTransition";
-import { waitForCondition } from "../../../Utils/Utils";
 
 const { ccclass, property } = _decorator;
 
@@ -88,7 +87,9 @@ export class Game1Page extends Page {
   public onPostEnterTransition() {
     super.onPostEnterTransition();
     UIManager.instance.showScoreStartUI("QUESTION & ANSWER", async () => {
-      await waitForCondition(this.loadedQuestion);
+      if (!this.loadedQuestion) {
+        UIManager.instance.showLoading(true);
+      }
       this.setQuestion();
       GameManager.instance.timer.startTimer();
     });
@@ -103,6 +104,7 @@ export class Game1Page extends Page {
   private async getQuestion() {
     this.loadedQuestion = false;
     await GameManager.instance.quizService.getQuestion();
+    UIManager.instance.showLoading(false);
     this.loadedQuestion = true;
   }
 

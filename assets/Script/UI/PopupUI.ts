@@ -15,10 +15,10 @@ export class PopupUI extends Component {
 
   protected onShow() {
     this.setActive(true);
-    this.panel.setScale(new Vec3(0.1, 0.1, 0.1));
+    this.panel.setScale(Vec3.ZERO);
     this.bgUIOpacity.opacity = 0;
     tween(this.panel)
-      .to(0.3, { scale: new Vec3(1, 1, 1) }, { easing: "backOut" })
+      .to(0.3, { scale: Vec3.ONE }, { easing: "backOut" })
       .start();
     tween(this.bgUIOpacity)
       .to(0.3, { opacity: this.initialBgOpacity }, { easing: "quadOut" })
@@ -27,7 +27,7 @@ export class PopupUI extends Component {
 
   protected onClose(callback: Function = () => {}) {
     tween(this.panel)
-      .to(0.2, { scale: new Vec3(0.1, 0.1, 0.1) }, { easing: "backIn" })
+      .to(0.2, { scale: Vec3.ZERO }, { easing: "backIn" })
       .call(() => {
         this.setActive(false);
         callback();

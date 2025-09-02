@@ -19,6 +19,9 @@ export class GameManager extends Component {
   @property({ type: Timer })
   public timer: Timer | null = null;
 
+  @property
+  public offlineLogin: boolean = false;
+
   private apiClient: ApiClient | null = null;
   public authService: AuthService | null = null;
   public userService: UserService | null = null;
@@ -43,7 +46,7 @@ export class GameManager extends Component {
   }
 
   start() {
-    this.getLangauges();
+    if (!this.offlineLogin) this.getLangauges();
   }
 
   initializeApi() {

@@ -32,9 +32,9 @@
     }
   },
   "splash-setting": {
+    "totalTime": 500,
     "logo": {
       "type": "none"
-    },
-    "totalTime": 500
+    }
   }
 }

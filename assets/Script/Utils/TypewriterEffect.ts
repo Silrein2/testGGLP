@@ -17,6 +17,7 @@ export class TypewriterEffect extends Component {
     fullText: string,
     label: Label,
     onComplete: Function = () => {},
+    speed: number = this.textSpeed,
   ) {
     this.fullText = fullText;
     this.label = label;
@@ -38,7 +39,7 @@ export class TypewriterEffect extends Component {
       }
     };
 
-    this.schedule(this.currentTypingJob, this.textSpeed, fullText.length);
+    this.schedule(this.currentTypingJob, speed, fullText.length);
   }
 
   public completeEffect() {

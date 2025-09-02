@@ -109,7 +109,7 @@ export class DataManager extends Component {
       business_unit: "HR",
       is_first_login: false,
       quizzes: {
-        current_score_quizzes: 0,
+        current_score_quizzes: 850,
         total_score_quizzes: 0,
         total_questions_answered_this_session: 0,
         highest_score_quizzes: 1150,

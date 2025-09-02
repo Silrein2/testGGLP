@@ -51,6 +51,7 @@ export class GameSelectionPage extends Page {
   }
 
   private async onClickPlay() {
+    if (this.selectedGameIndex < 0) return;
     switch (this.selectedGameIndex) {
       case 0:
         this.pageManager.targetGamePageState = PageStates.Game1;

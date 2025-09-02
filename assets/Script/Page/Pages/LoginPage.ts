@@ -29,8 +29,11 @@ export class LoginPage extends Page {
 
   private businessUnitId: number | null = null;
 
+  private offlineLogin: boolean = false;
+
   start() {
-    this.getBusinessUnits();
+    this.offlineLogin = GameManager.instance.offlineLogin;
+    if (!this.offlineLogin) this.getBusinessUnits();
     this.getAuthToken();
   }
 
@@ -53,11 +56,17 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
+    //this.transitionPage(PageStates.DialogueIntro);
     this.transitionPage(PageStates.DialogueIntro);
     UIManager.instance.showLoading(false);
   }
 
   private async onClickLogin() {
+    if (this.offlineLogin) {
+      DataManager.instance.setDummyUserState();
+      this.transitionPage(PageStates.DialogueIntro);
+      return;
+    }
     if (isNullOrEmpty(this.emailInput.string) || this.businessUnitId == null) {
       return;
     }

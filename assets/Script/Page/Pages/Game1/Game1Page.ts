@@ -58,8 +58,95 @@ export class Game1Page extends Page {
   private questionCount: number = 0;
   private loadedQuestion: boolean = false;
 
+  private offlineLogin: boolean = false;
+  private questions: any[] = [];
+  private answers: any[] = [];
+  private matchCount: number = 0;
+
   onLoad() {
     this.game1QuizTransition = this.node.getComponent(Game1QuizTransition);
+
+    this.questions = [
+      {
+        id: 1,
+        question_type: "MCQ",
+        text: "This is question 1 (MCQ) (Answer A)",
+        mcq_options: [
+          { id: 1, text: "Answer A" },
+          { id: 2, text: "Answer B" },
+          { id: 3, text: "Answer C" },
+          { id: 4, text: "Answer D" },
+          { id: 5, text: "Answer E" },
+          { id: 6, text: "Answer F" },
+        ],
+        match_pairs: [],
+        yes_no_answer: null,
+      },
+      {
+        id: 2,
+        question_type: "MATCH",
+        text: "This is question 2 (Match)",
+        mcq_options: [],
+        match_pairs: {
+          options_a: ["LEFT C", "LEFT B", "LEFT A", "LEFT D"],
+          options_b: ["RIGHT A", "RIGHT C", "RIGHT B", "RIGHT D"],
+        },
+        yes_no_answer: null,
+      },
+      {
+        id: 3,
+        question_type: "YES_NO",
+        text: "This is question 3 (Yes/No)",
+        mcq_options: [],
+        match_pairs: [],
+        yes_no_answer: { statement: "Statement (Yes)" },
+      },
+      {
+        id: 4,
+        question_type: "MCQ",
+        text: "This is Question 4 (CCC)",
+        mcq_options: [
+          { id: 13, text: "AAA" },
+          { id: 14, text: "BBB" },
+          { id: 15, text: "CCC" },
+          { id: 16, text: "DDD" },
+        ],
+        match_pairs: [],
+        yes_no_answer: null,
+      },
+      {
+        id: 5,
+        question_type: "MATCH",
+        text: "This is Question 5",
+        mcq_options: [],
+        match_pairs: {
+          options_a: ["Left 1", "Left 2", "Left 3", "Left 4"],
+          options_b: ["Right 2", "Right 4", "Right 3", "Right 1"],
+        },
+        yes_no_answer: null,
+      },
+      {
+        id: 6,
+        question_type: "YES_NO",
+        text: "This is Question 6",
+        mcq_options: [],
+        match_pairs: [],
+        yes_no_answer: { statement: "Statement (No)" },
+      },
+    ];
+
+    this.answers = [
+      {
+        id: 1,
+      },
+      {},
+      { is_yes: true },
+      {
+        id: 15,
+      },
+      {},
+      { is_yes: false },
+    ];
   }
   start() {
     /*DataManager.instance.node.on(
@@ -75,6 +162,7 @@ export class Game1Page extends Page {
 
   public onEnter() {
     super.onEnter();
+    this.offlineLogin = GameManager.instance.offlineLogin;
     this.getQuestion();
     this.setUI();
     this.showType(-1);
@@ -102,10 +190,15 @@ export class Game1Page extends Page {
   }
 
   private async getQuestion() {
-    this.loadedQuestion = false;
-    await GameManager.instance.quizService.getQuestion();
-    UIManager.instance.showLoading(false);
-    this.loadedQuestion = true;
+    if (!this.offlineLogin) {
+      this.loadedQuestion = false;
+      await GameManager.instance.quizService.getQuestion();
+      UIManager.instance.showLoading(false);
+      this.loadedQuestion = true;
+    } else {
+      UIManager.instance.showLoading(false);
+      this.loadedQuestion = true;
+    }
   }
 
   private setUI() {
@@ -126,9 +219,14 @@ export class Game1Page extends Page {
   }
 
   private setQuestion() {
-    this.question = DataManager.instance.question;
-    this.currentQuestionType = this.question.question_type;
-    if (this.question.question_type == null) {
+    if (!this.offlineLogin) {
+      this.question = DataManager.instance.question;
+    } else {
+      this.question = this.questions[this.questionCount];
+      this.matchCount = 0;
+    }
+    this.currentQuestionType = this.question?.question_type;
+    if (this.question?.question_type == null) {
       this.endQuiz();
       return;
     }
@@ -247,26 +345,53 @@ export class Game1Page extends Page {
         is_yes: this.selectedAnswer as boolean,
       };
     }
-    try {
-      const response = await GameManager.instance.quizService.submitQuestion(
-        this.question.id,
-        answer,
-        GameManager.instance.timer.getElapsedTime(),
-        this.wrongCount,
-      );
-      correct = true;
-      haveNextQuestion = response.next_question != null;
-    } catch (error) {
-      if (error.statusCode == 400) {
-        correct = false;
-        this.wrongCount++;
+    if (!this.offlineLogin) {
+      try {
+        const response = await GameManager.instance.quizService.submitQuestion(
+          this.question.id,
+          answer,
+          GameManager.instance.timer.getElapsedTime(),
+          this.wrongCount,
+        );
+        correct = true;
+        haveNextQuestion = response.next_question != null;
+      } catch (error) {
+        if (error.statusCode == 400) {
+          correct = false;
+          this.wrongCount++;
+        }
+      }
+    } else {
+      correct = this.checkOfflineAnswer(answer);
+      if (questionType === QuestionTypes.MATCH) {
+        if (correct) this.matchCount++;
+        if (this.matchCount >= 4) haveNextQuestion = true;
+      } else if (correct) {
+        haveNextQuestion = true;
       }
     }
     this.setBlockInput(false);
     if (haveNextQuestion) {
-      this.onQuestionChanged();
+      this.scheduleOnce(() => this.onQuestionChanged(), 0.4);
+      //this.onQuestionChanged();
     }
     UIManager.instance.playFeedbackUI(correct, () => {});
+    return correct;
+  }
+
+  private checkOfflineAnswer(
+    answer: MCQAnswer | MatchAnswer | YesNoAnswer,
+  ): boolean {
+    const questionType = this.question.question_type;
+    const correctAnswer = this.answers[this.questionCount - 1];
+    let correct = false;
+    if (questionType === QuestionTypes.MCQ) {
+      correct = answer.id === correctAnswer.id;
+    } else if (questionType === QuestionTypes.MATCH) {
+      correct = answer.option_a.slice(-1) === answer.option_b.slice(-1);
+    } else if (questionType === QuestionTypes.YES_NO) {
+      correct = answer.is_yes === correctAnswer.is_yes;
+    }
     return correct;
   }
 

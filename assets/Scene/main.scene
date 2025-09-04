@@ -23497,7 +23497,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -0.898,
+      "x": -103.383,
       "y": 19.469,
       "z": 0
     },
@@ -23536,12 +23536,12 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 300,
-      "height": 180
+      "width": 203.7368926662546,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": "afN+RFI29LjIIzxblgi/Ej"
@@ -23567,14 +23567,14 @@
       "a": 255
     },
     "_string": "Think twice!",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 38.274324324324326,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 1,
-    "_enableWrapText": true,
+    "_overflow": 0,
+    "_enableWrapText": false,
     "_font": {
       "__uuid__": "adc0fb9a-8294-47a9-9b63-d8ecae6e2eca",
       "__expectedType__": "cc.TTFFont"
@@ -25076,8 +25076,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 86.46996088534304,
-      "height": 63
+      "width": 86.4714348486654,
+      "height": 63.00000000000001
     }
   },
   {
@@ -25451,7 +25451,7 @@
     "_string": "Welcome!",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.71216216216216,
+    "_actualFontSize": 38.274324324324326,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -25936,8 +25936,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 86.46996088534304,
-      "height": 63
+      "width": 86.4714348486654,
+      "height": 63.00000000000001
     }
   },
   {
@@ -26080,8 +26080,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -0.898,
-      "y": 18.575,
+      "x": -150.809,
+      "y": 79.085,
       "z": 0
     },
     "_lrot": {
@@ -26119,13 +26119,13 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 308.659949,
-      "height": 200
+      "width": 308,
+      "height": 130.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0,
+      "y": 1
     },
     "_id": "89ZjK9L2FMooKGV2Ezduty"
   },
@@ -26151,12 +26151,12 @@
     },
     "_string": "If there is no issue with email, click safe button.",
     "_horizontalAlign": 0,
-    "_verticalAlign": 1,
-    "_actualFontSize": 38.71216216216216,
+    "_verticalAlign": 0,
+    "_actualFontSize": 38.274324324324326,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 1,
+    "_overflow": 3,
     "_enableWrapText": true,
     "_font": {
       "__uuid__": "adc0fb9a-8294-47a9-9b63-d8ecae6e2eca",
@@ -26806,7 +26806,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 743.3142712179911,
+      "x": 743.2717023618569,
       "y": 0,
       "z": 0
     },
@@ -26845,8 +26845,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 9.899445586784285,
-      "height": 75.6
+      "width": 9.898877915102677,
+      "height": 75.60000000000002
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -26878,7 +26878,7 @@
     "_string": "|",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.71216216216216,
+    "_actualFontSize": 38.274324324324326,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -26946,7 +26946,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": -9.99945169029991,
+    "_right": -9.998884018618302,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -26975,8 +26975,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 743.2142651144754,
-      "height": 75.6
+      "width": 743.1716962583413,
+      "height": 75.60000000000002
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -27008,7 +27008,7 @@
     "_string": "Defense against Deepfake meeting agenda...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.71216216216216,
+    "_actualFontSize": 38.274324324324326,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -32630,8 +32630,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 687.0999145507812,
-      "height": 126
+      "width": 687.05102,
+      "height": 126.00000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -32663,12 +32663,12 @@
     "_string": "The Next Day...",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 100,
+    "_actualFontSize": 106.31756756756756,
     "_fontSize": 100,
     "_fontFamily": "Arial",
     "_lineHeight": 100,
     "_overflow": 0,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_font": {
       "__uuid__": "adc0fb9a-8294-47a9-9b63-d8ecae6e2eca",
       "__expectedType__": "cc.TTFFont"

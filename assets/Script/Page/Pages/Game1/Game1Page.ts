@@ -370,10 +370,12 @@ export class Game1Page extends Page {
         haveNextQuestion = true;
       }
     }
-    this.setBlockInput(false);
     if (haveNextQuestion) {
-      this.scheduleOnce(() => this.onQuestionChanged(), 0.4);
-      //this.onQuestionChanged();
+      this.scheduleOnce(() => {
+        this.onQuestionChanged();
+      }, 0.4);
+    } else {
+      this.setBlockInput(false);
     }
     UIManager.instance.playFeedbackUI(correct, () => {});
     return correct;

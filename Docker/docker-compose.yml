@@ -1,0 +1,16 @@
+services:
+  nginx:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile
+    image: bee_safe_frontend
+    container_name: bee_safe_frontend
+    ports:
+      - "8080:80"
+    networks:
+      - bee_safe-backend_default
+    restart: always
+
+networks:
+  bee_safe-backend_default:
+    external: true

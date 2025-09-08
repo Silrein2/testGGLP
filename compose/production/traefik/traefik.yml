@@ -30,23 +30,23 @@ certificatesResolvers:
 
 http:
   routers:
-    web-unity-router:
-      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (Path(`/`) || PathPrefix(`/Build`) || Path(`/favicon.ico`) || Path(`/style.css`) || Path(`/Web.loader.js`) || Path(`/detector.js`))"
+    web-cocos-router:
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) && PathPrefix(`/`)"
       entryPoints:
         - web-secure
-      service: unity
-      priority: 100
+      service: cocos
+      priority: 1
       tls:
         certResolver: letsencrypt
 
     web-django-router:
-      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`))"
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
       service: django
-      priority: 1
+      priority: 100
       tls:
         certResolver: letsencrypt
 
@@ -75,10 +75,10 @@ http:
         servers:
           - url: http://flower:5555
 
-    unity:
+    cocos:
       loadBalancer:
         servers:
-          - url: http://bee_safe_unity:80
+          - url: http://bee_safe_frontend:80
 
 providers:
   # https://doc.traefik.io/traefik/master/providers/file/

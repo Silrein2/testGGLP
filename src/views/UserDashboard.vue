@@ -60,14 +60,55 @@
       </div>
       <div class="center-content">
         <!-- <h2 class="text-shadow text-tea-cream">Select a Story</h2> -->
-        <div class="story-button-container">
+        <!-- <div class="story-button-container">
           <div v-for="(story, index) in stories" :key="index" class="story-button-wrapper">
             <div class="story-box" @click="goToMainPage(story.Name)" v-if="shouldShowStory(story)">
               <div class="difficulty-box" :style="getDifficultyStyles(story.Difficulty)">
                 {{ story.Difficulty }}
               </div>
               <div class="character-selection">
-                <!-- <pre>{{ console.log('Image Head for', story.Name, ':', story.ImageHead) }}</pre> -->
+                <img
+                  :src="story.ImageHead || defaultAvatar"
+                  alt="Character Head"
+                  class="character-image"
+                />
+                <div class="story-info" style="font-size: 100%; font-weight: 700">
+                  {{ story.Name }}
+                  <span v-if="!story.ActiveStory" style="color: grey">(Inactive)</span>
+                </div>
+                <div
+                  class="story-info"
+                  style="
+                    font-size: 0.8vw;
+                    border: 1px solid black;
+                    margin-left: 15%;
+                    margin-right: 15%;
+                    border-radius: 15px;
+                  "
+                >
+                  {{ story.Place }}
+                </div>
+                <div class="story-info" style="font-size: 0.8vw; color: #5e5f60">
+                  {{ story.Description }}
+                </div>
+                <div class="story-info" style="font-size: 0.8vw; color: #5e5f60">
+                  <img :src="timerIcon" alt="timer" /> {{ story.ApproxTime.min }} -
+                  {{ story.ApproxTime.max }} minutes
+                </div>
+                <button class="select-button" @click="goToMainPage(story.Name)">
+                  Select {{ story.Name }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="story-button-container">
+          <div v-for="(story, index) in sortedStories" :key="index" class="story-button-wrapper">
+            <div class="story-box" @click="goToMainPage(story.Name)" v-if="shouldShowStory(story)">
+              <div class="difficulty-box" :style="getDifficultyStyles(story.Difficulty)">
+                {{ story.Difficulty }}
+              </div>
+              <div class="character-selection">
                 <img
                   :src="story.ImageHead || defaultAvatar"
                   alt="Character Head"
@@ -147,6 +188,13 @@ export default {
   computed: {
     isCustomDomain() {
       return window.location.hostname === 'play-ceria.com'
+    },
+    sortedStories() {
+      const difficultyOrder = ['Beginner', 'Intermediate', 'Advanced']
+
+      return this.stories.sort((a, b) => {
+        return difficultyOrder.indexOf(a.Difficulty) - difficultyOrder.indexOf(b.Difficulty)
+      })
     }
   },
   created() {
@@ -553,7 +601,7 @@ export default {
   color: white;
   border: 1px solid #4492f6;
 
-  font-weight: 400;
+  font-weight: 00;
 
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }

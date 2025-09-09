@@ -120,7 +120,11 @@
         </div>
 
         <div v-else>
-          <h1 class="font-size-title">{{ responsePrompt[currentIndex].question }}</h1>
+          <div
+            class="font-size-title response-prompt-container"
+            v-html="responsePrompt[currentIndex].question"
+          ></div>
+
           <div class="button-container">
             <div class="button-wrapper">
               <button
@@ -166,7 +170,11 @@
       class="result-div"
       :style="{ pointerEvents: resultVisible ? 'auto' : 'none' }"
     >
-      <h1 class="font-size-title response-result">{{ currentResult }}</h1>
+      <!-- <h1 class="font-size-title response-result">{{ currentResult }}</h1> -->
+      <div
+        class="font-size-title response-result response-prompt-container"
+        v-html="currentResult"
+      ></div>
       <button @click="resultToResponse()" class="continue-button" ref="resultContinueButton">
         Continue
       </button>
@@ -1500,7 +1508,7 @@ button {
 
   color: black;
   font-weight: 600;
-  padding: 10px 20px;
+  padding: 2.5% 7.5%;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -1511,6 +1519,8 @@ button {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 20px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  overflow: scroll;
 }
 
 .button-decision:hover {
@@ -2000,5 +2010,14 @@ button {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   font-weight: 600;
+}
+
+.response-prompt-container {
+  height: 100%;
+  width: 100%;
+
+  font-weight: 600;
+
+  overflow: scroll;
 }
 </style>

@@ -73,7 +73,7 @@
                   alt="Character Head"
                   class="character-image"
                 />
-                <div class="story-info" style="font-size: 1.1vw; font-weight: 700">
+                <div class="story-info" style="font-size: 100%; font-weight: 700">
                   {{ story.Name }}
                   <span v-if="!story.ActiveStory" style="color: grey">(Inactive)</span>
                 </div>
@@ -545,7 +545,7 @@ export default {
   display: block;
 
   font-weight: 300;
-  font-size: 1.1vw;
+  font-size: 100%;
 }
 
 .select-button:hover {

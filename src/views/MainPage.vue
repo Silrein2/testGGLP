@@ -96,7 +96,7 @@
       class="response-div title-div"
       :style="{ visibility: titleDivVisible ? 'visible' : 'hidden' }"
     >
-      <h1 class="title-text">{{ initialStory }}</h1>
+      <div class="title-text" v-html="formattedStory"></div>
       <button class="continue-button" @click="animateTitleExit">Continue</button>
     </div>
 
@@ -510,6 +510,11 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.stopBGM()
     next()
+  },
+  computed: {
+    formattedStory() {
+      return this.initialStory.replace(/\n/g, '</p><p>')
+    }
   },
   methods: {
     initFadeIn() {
@@ -1414,6 +1419,13 @@ export default {
 }
 
 .title-text {
+  height: 90%;
+  width: 90%;
+
+  overflow: scroll;
+
+  font-weight: 600;
+
   margin: 0;
 
   font-size: 2.5vw;

@@ -553,7 +553,7 @@ export default {
   color: white;
   border: 1px solid #4492f6;
 
-  font-weight: 600;
+  font-weight: 400;
 
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }

@@ -1,0 +1,69 @@
+{
+    "general.login": "Login",
+    "general.select_language": "Select Language",
+    "general.play": "Play",
+    "general.okay": "Okay",
+    "general.next": "Next",
+    "general.score": "Score",
+    "general.your_score": "Your Score",
+    "general.total_score": "Total Score",
+    "general.timer": "Timer",
+    "general.time_spent": "Time Spent",
+    "general.best_time_spent": "Best Time Spent",
+    "general.your_current_high_score": "Your Current High Score",
+    "general.your_current_time_spent": "Your Current Time Spent",
+    "general.select_your_business_unit": "Select Your Business Unit",
+    "general.select_your_language": "Select Your Language",
+    "general.bee_safe": "Bee Safe",
+    "general.skip": "SKIP",
+    "general.welcome": "Welcome!",
+    "general.question": "Question",
+    "general.congratulation": "CONGRATULATIONS!",
+    "general.pause": "Game Paused",
+    "general.pause_body": "The game is taking a little nap.\nWake it up when you're ready!",
+    "general.resume": "Resume",
+
+    "login.welcome": "WELCOME!",
+    "login.key_in": "Key in your Amway email and respective location.",
+    "login.email": "Email Address",
+    "login.business_unit": "Business Unit",
+
+    "intro.dialogue_line_1": "Hello, I'm Bee Safe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
+    "intro.dialogue_line_2": "Can you be my detective and help identify the pretenders? As a reward. I will give you some honey (points) from my BeeSafe Kingdom! But be careful to not get stung...",
+
+    "game_1.name": "Question & Answer",
+    "game_1.yes": "Yes",
+    "game_1.no": "No",
+    "game_1.think_twice": "Think twice!",
+
+    "game_2.name": "Phishing Game",
+    "game_2.safe": "Safe",
+    "game_2.tutorial_safe": "If there is no issue with email, click safe button.",
+
+    "game_3.name": "Deepfake Game",
+    "game_3.report_before": "Defense against Deepfake meeting agenda...",
+    "game_3.report_after": "Report on Deepfake Training...",
+    "game_3.notification_name": "Bee Boss",
+    "game_3.notification_number": "+90152558795",
+    "game_3.notification_calling": "Calling...",
+    "game_3.next_day": "The Next Day...",
+    "game_3.transfer":"Transfer",
+    "game_3.dont_transfer":"Don't Transfer",
+    "game_3.transfer_message": "Oh no~! This is a classic example of a Deepfake scam call. In real life, you would have been scammed.\n\nHere's how you can tell...",
+    "game_3.dont_transfer_message": "Well done~! This is a classic example of a Deepfake scam call.\n\nWhat gave it away?",
+    "game_3.summary_title": "Summary of Learning",
+    "game_3.summary_body": "Deepfakes are realistic, AI-generated synthetic media, highlighting how to spot telltale signs like unnatural facial movements and poor lip-syncing, and underscore their real-world dangers, such as spreading misinformation and eroding trust in media.",
+    "game_3.review_video":"Review 1st Video",
+
+    "dialogue.game_1.intro": ["People often ask me Bee Safe questions. How many can you answer?"],
+    "dialogue.game_2.intro": ["People often ask me Bee Safe questions. How many can you answer?"],
+    "dialogue.game_3.intro": ["People often ask me Bee Safe questions. How many can you answer?"],
+    "dialogue.game_3.real_bee_boss": [
+      "I am travelling soon and you need to send me an update on Project XYZ",
+      "Please send it to me by today because I need it for my discussions",
+      "If you have any questions, you know how to reach me at my mobile number."
+    ],
+    "dialogue.game_3.fake_bee_boss": [
+      "I lost my phone, wallet and credit card. I am borrowing my friend's phone"
+    ]
+}

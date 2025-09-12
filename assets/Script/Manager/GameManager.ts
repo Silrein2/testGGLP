@@ -7,6 +7,7 @@ import { DataManager } from "./DataManager";
 import { UIManager } from "./UIManager";
 import { Timer } from "../Utils/Timer";
 import { PageManager } from "../Page/PageManager";
+import { LocalizationManager } from "./LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
@@ -73,7 +74,9 @@ export class GameManager extends Component {
       return { text: x.name, value: x.code };
     });
     UIManager.instance.showSelectUI(
-      "Select Your Language",
+      LocalizationManager.instance.getLocalizedString(
+        "general.select_your_language",
+      ),
       data,
       this.languageCode,
       this.onSelectLanguage.bind(this),
@@ -89,9 +92,9 @@ export class GameManager extends Component {
   private onClickPause() {
     this.timer.stopTimer();
     UIManager.instance.showMessageUI(
-      "Game Paused",
-      "The game is taking a little nap.\nWake it up when you're ready!",
-      "Resume",
+      LocalizationManager.instance.getLocalizedString("general.pause"),
+      LocalizationManager.instance.getLocalizedString("general.pause_body"),
+      LocalizationManager.instance.getLocalizedString("general.resume"),
       () => {
         this.timer.startTimer();
       },

@@ -16,6 +16,7 @@ import { Game2Option } from "./Game2Option";
 import { Game2QuizTransition } from "./Game2QuizTransition";
 import { Game2Tutorial } from "./Game2Tutorial";
 import { Game2Bee } from "./Game2Bee";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Page")
@@ -70,11 +71,16 @@ export class Game2Page extends Page {
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI("PHISHING GAME", async () => {
-      this.game2Bee.setText("Q1", true);
-      this.setQuestion();
-      GameManager.instance.timer.startTimer();
-    });
+    UIManager.instance.showScoreStartUI(
+      LocalizationManager.instance
+        .getLocalizedString("game_2.name")
+        .toUpperCase(),
+      async () => {
+        this.game2Bee.setText("Q1", true);
+        this.setQuestion();
+        GameManager.instance.timer.startTimer();
+      },
+    );
   }
 
   public onExit() {

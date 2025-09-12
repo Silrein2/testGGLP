@@ -4,6 +4,7 @@ import { delay } from "../../../Utils/Utils";
 import { GameUITransition } from "../../../UI/GameUITransition";
 import { UIManager } from "../../../Manager/UIManager";
 import { Game2Bee } from "./Game2Bee";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2PageTransition")
@@ -42,10 +43,14 @@ export class Game2PageTransition extends PageTransition {
         this.rightInitialPos,
       );
       await delay(600);
-      this.game2Bee.enter("Welcome!", false, async () => {
-        await delay(800);
-        this.onEnterComplete();
-      });
+      this.game2Bee.enter(
+        LocalizationManager.instance.getLocalizedString("general.welcome"),
+        false,
+        async () => {
+          await delay(800);
+          this.onEnterComplete();
+        },
+      );
     }, this.stateEnterTransitionDuration * 0.8);
   }
 

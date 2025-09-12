@@ -12,6 +12,7 @@ import {
   UIOpacity,
 } from "cc";
 import { TypewriterEffect } from "../Utils/TypewriterEffect";
+import { LocalizationManager } from "../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("FeedbackUI")
@@ -82,7 +83,9 @@ export class FeedbackUI extends Component {
         if (!correct) {
           this.speech.active = true;
           this.typewriterEffect.startEffect(
-            "Think twice!",
+            LocalizationManager.instance.getLocalizedString(
+              "game_1.think_twice",
+            ),
             this.speechLabel,
             () => {},
             0.025,

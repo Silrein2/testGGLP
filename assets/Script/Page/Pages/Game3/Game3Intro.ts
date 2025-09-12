@@ -13,6 +13,7 @@ import { TypewriterEffect } from "../../../Utils/TypewriterEffect";
 import { delay } from "../../../Utils/Utils";
 import { GameUITransition } from "../../../UI/GameUITransition";
 import { Game3Page } from "./Game3Page";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game3Intro")
@@ -72,22 +73,18 @@ export class Game3Intro extends Component {
     this.notificationUIOpacity = this.notification.getComponent(UIOpacity);
     this.nextDayBgUIOpacity = this.nextDayBg.getComponent(UIOpacity);
     this.callScreenSprite = this.callScreen.getComponent(Sprite);
-
-    this.realScript = [
-      "I am travelling soon and you need to send me an update on Project XYZ",
-      "Please send it to me by today because I need it for my discussions",
-      "If you have any questions, you know how to reach me at my mobile number.",
-    ];
-
-    this.fakeScript = [
-      "I lost my phone, wallet and credit card. I am borrowing my friend's phone",
-    ];
   }
 
   public init(game3Page: Game3Page, stateEnterTransitionDuration: number) {
     this.game3Page = game3Page;
     this.nextDay = false;
     this.nextDayBg.active = false;
+    this.realScript = LocalizationManager.instance.getLocalizedStringArray(
+      "dialogue.game_3.real_bee_boss",
+    );
+    this.fakeScript = LocalizationManager.instance.getLocalizedStringArray(
+      "dialogue.game_3.fake_bee_boss",
+    );
     this.gameUITransition.init();
     this.resetEffect();
     this.unschedule(this.blinkCursor);
@@ -123,8 +120,8 @@ export class Game3Intro extends Component {
     this.resetEffect();
     this.game3Page.setBlockInput(true);
     const wordText = !this.nextDay
-      ? "Defense against Deepfake meeting agenda…"
-      : "Report on Deepfake Training…";
+      ? LocalizationManager.instance.getLocalizedString("game_3.report_before")
+      : LocalizationManager.instance.getLocalizedString("game_3.report_after");
     await delay(1000);
     this.typewriterEffect.startEffect(wordText, this.wordLabel);
     await delay(3000);
@@ -183,7 +180,10 @@ export class Game3Intro extends Component {
     tween(this.nextDayBgUIOpacity)
       .to(1.2, { opacity: 255 }, { easing: "sineOut" })
       .call(() => {
-        this.typewriterEffect.startEffect("The Next Day...", this.nextDayLabel);
+        this.typewriterEffect.startEffect(
+          LocalizationManager.instance.getLocalizedString("game_3.next_day"),
+          this.nextDayLabel,
+        );
       })
       .delay(2)
       .call(() => {

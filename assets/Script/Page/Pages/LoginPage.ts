@@ -14,6 +14,7 @@ import { UIManager } from "../../Manager/UIManager";
 import { DataManager } from "../../Manager/DataManager";
 import { isNullOrEmpty } from "../../Utils/Utils";
 import { ValidationError } from "../../Api/ApiClient";
+import { LocalizationManager } from "../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("LoginPage")
@@ -56,7 +57,6 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
-    //this.transitionPage(PageStates.DialogueIntro);
     this.transitionPage(PageStates.DialogueIntro);
     UIManager.instance.showLoading(false);
   }
@@ -85,7 +85,11 @@ export class LoginPage extends Page {
       if (error instanceof ValidationError) {
         errorMessage = error.printError();
       }
-      UIManager.instance.showMessageUI("Oops!", errorMessage, "OK");
+      UIManager.instance.showMessageUI(
+        "Oops!",
+        errorMessage,
+        LocalizationManager.instance.getLocalizedString("general.okay"),
+      );
     }
     UIManager.instance.showLoading(false);
   }
@@ -95,7 +99,9 @@ export class LoginPage extends Page {
       return { text: x.name, value: x.id };
     });
     UIManager.instance.showSelectUI(
-      "Select Your Business Unit",
+      LocalizationManager.instance.getLocalizedString(
+        "general.select_your_business_unit",
+      ),
       data,
       this.businessUnitId,
       this.onSelectBusinessUnit.bind(this),

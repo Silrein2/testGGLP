@@ -10,8 +10,8 @@ export class Game2Bee extends Component {
   @property({ type: Label })
   private speechLabel: Label | null = null;
 
-  @property({ type: Vec3 })
-  private fromPos: Vec3 = new Vec3();
+  @property
+  private fromPos: Vec3;
 
   private initialPos = new Vec3();
   private typewriterEffect: TypewriterEffect | null = null;

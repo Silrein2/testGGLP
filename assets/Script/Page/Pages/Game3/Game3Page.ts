@@ -16,6 +16,7 @@ import { Game3Review } from "./Game3Review";
 import { Game3PageTransition } from "./Game3PageTransition";
 import { GameManager } from "../../../Manager/GameManager";
 import { Game3Message } from "./Game3Message";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 
 const { ccclass, property } = _decorator;
 
@@ -108,7 +109,8 @@ export class Game3Page extends Page {
   public onEnter() {
     this.introScreen.active = true;
     this.gameScreen.active = false;
-    this.sectionLabel.string = "Welcome!";
+    this.sectionLabel.string =
+      LocalizationManager.instance.getLocalizedString("general.welcome");
     this.currentQuestionIndex = 0;
     UIManager.instance.showGameUI(true);
     GameManager.instance.timer.resetTimer();
@@ -123,11 +125,16 @@ export class Game3Page extends Page {
     if (this.isIntro) {
       this.game3Intro.init(this, this.pageManager.stateEnterTransitionDuration);
     } else {
-      UIManager.instance.showScoreStartUI("DEEPFAKE GAME", () => {
-        this.setQuestion();
-        this.showGame(true);
-        GameManager.instance.timer.startTimer();
-      });
+      UIManager.instance.showScoreStartUI(
+        LocalizationManager.instance
+          .getLocalizedString("game_3.name")
+          .toUpperCase(),
+        () => {
+          this.setQuestion();
+          this.showGame(true);
+          GameManager.instance.timer.startTimer();
+        },
+      );
     }
   }
 
@@ -138,8 +145,12 @@ export class Game3Page extends Page {
 
   public onClickTransfer(transfer: boolean) {
     const text = transfer
-      ? "Well done~! This is a classic example of a Deepfake scam call.\n\nWhat gave it away?"
-      : "Oh no~! This is a classic example of a Deepfake scam call. In real life, you would have been scammed.\n\nHere's how you can tell...";
+      ? LocalizationManager.instance.getLocalizedString(
+          "game_3.dont_transfer_message",
+        )
+      : LocalizationManager.instance.getLocalizedString(
+          "game_3.transfer_message",
+        );
     this.game3Message.show(
       true,
       text,
@@ -159,7 +170,12 @@ export class Game3Page extends Page {
   private endQuiz() {
     this.game3Message.show(
       true,
-      "<size=60>Summary of Learning</size>\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ",
+      "<size=60>" +
+        LocalizationManager.instance.getLocalizedString(
+          "game_3.summary_title",
+        ) +
+        "</size>\n\n" +
+        LocalizationManager.instance.getLocalizedString("game_3.summary_body"),
       () => {},
       () => {
         GameManager.instance.timer.stopTimer();

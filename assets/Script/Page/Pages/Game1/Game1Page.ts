@@ -15,6 +15,7 @@ import { UIManager } from "../../../Manager/UIManager";
 import { GameManager } from "../../../Manager/GameManager";
 import { MatchAnswer, MCQAnswer, YesNoAnswer } from "../../../Api/QuizService";
 import { Game1QuizTransition } from "./Game1QuizTransition";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 
 const { ccclass, property } = _decorator;
 
@@ -174,13 +175,18 @@ export class Game1Page extends Page {
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI("QUESTION & ANSWER", async () => {
-      if (!this.loadedQuestion) {
-        UIManager.instance.showLoading(true);
-      }
-      this.setQuestion();
-      GameManager.instance.timer.startTimer();
-    });
+    UIManager.instance.showScoreStartUI(
+      LocalizationManager.instance
+        .getLocalizedString("game_1.name")
+        .toUpperCase(),
+      async () => {
+        if (!this.loadedQuestion) {
+          UIManager.instance.showLoading(true);
+        }
+        this.setQuestion();
+        GameManager.instance.timer.startTimer();
+      },
+    );
   }
 
   public onExit() {
@@ -206,9 +212,13 @@ export class Game1Page extends Page {
     UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
     UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
 
-    let titleString = "Question " + this.questionCount;
+    let titleString =
+      LocalizationManager.instance.getLocalizedString("general.question") +
+      " " +
+      this.questionCount;
     if (this.questionCount === 0) {
-      titleString = "Welcome!";
+      titleString =
+        LocalizationManager.instance.getLocalizedString("general.welcome");
     }
     this.questionTitleLabel.string = titleString;
   }
@@ -259,7 +269,10 @@ export class Game1Page extends Page {
       });
     } else if (this.question.question_type === QuestionTypes.YES_NO) {
       this.showType(3);
-      const type3SlotData = ["Yes", "No"];
+      const type3SlotData = [
+        LocalizationManager.instance.getLocalizedString("game_1.yes"),
+        LocalizationManager.instance.getLocalizedString("game_1.no"),
+      ];
       this.type3Options.forEach((type3Option: Game1Type2Option) => {
         type3Option.init(
           this.question.yes_no_answer.statement,

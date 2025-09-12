@@ -54,13 +54,6 @@ export class GameSelectionPageTransition extends PageTransition {
     this.setNodesPosition(this.topNodes, this.topFromPos);
     this.setNodesPosition(this.bottomNodes, this.bottomFromPos);
     this.scheduleOnce(async () => {
-      await this.tweenList(
-        this.gameButtons,
-        this.gameInitialPos,
-        350,
-        "backOut",
-      );
-      await delay(100);
       await this.tweenList(this.topNodes, this.topInitialPos, 100, "backOut");
       await this.tweenList(
         this.bottomNodes,
@@ -68,8 +61,15 @@ export class GameSelectionPageTransition extends PageTransition {
         200,
         "backOut",
       );
+      await delay(200);
+      await this.tweenList(
+        this.gameButtons,
+        this.gameInitialPos,
+        350,
+        "backOut",
+      );
       this.onEnterComplete();
-    }, this.stateEnterTransitionDuration * 0.5);
+    }, this.stateEnterTransitionDuration * 0.6);
   }
 
   public async onExit() {

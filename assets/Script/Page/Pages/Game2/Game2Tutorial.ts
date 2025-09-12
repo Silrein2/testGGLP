@@ -1,5 +1,6 @@
 import { _decorator, Button, Component, Node, tween, UIOpacity } from "cc";
 import { Game2Bee } from "./Game2Bee";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Tutorial")
@@ -23,7 +24,9 @@ export class Game2Tutorial extends Component {
       .to(0.4, { opacity: 160 }, { easing: "sineOut" })
       .call(() => {
         this.game2Bee.enter(
-          "If there is no issue with email, click safe button.",
+          LocalizationManager.instance.getLocalizedString(
+            "game_2.tutorial_safe",
+          ),
           false,
           () => {
             this.closeButton.interactable = true;

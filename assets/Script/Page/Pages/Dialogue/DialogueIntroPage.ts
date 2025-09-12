@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, SpriteFrame } from "cc";
 import { DialoguePage } from "./DialoguePage";
 import { PageStates } from "../../Enums";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("DialogueIntroPage")
@@ -23,34 +24,44 @@ export class DialogueIntroPage extends DialoguePage {
   @property({ type: Node })
   honeycomb: Node | null = null;
 
-  start() {
+  protected setPageState() {
+    this.pageState = PageStates.DialogueIntro;
+  }
+
+  public onEnter() {
+    super.onEnter();
     this.dialogueScript = [
       {
-        speaker: "Bee Safe",
+        speaker:
+          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
         portrait: this.beeSmileSprite,
-        text: "Hello, I'm Bee Safe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
+        text: LocalizationManager.instance.getLocalizedString(
+          "intro.dialogue_line_1",
+        ),
         effects: [],
         skipTypewriterEffect: false,
       },
       {
-        speaker: "Bee Safe",
+        speaker:
+          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
         portrait: this.beeShockedSprite,
-        text: "Hello, I'm Bee Safe and being safe is always my priority. Welcome to my hive! I'm currently building my kingdom, but I need your help...",
+        text: LocalizationManager.instance.getLocalizedString(
+          "intro.dialogue_line_1",
+        ),
         effects: [this.beeBad1, this.beeBad2, this.beeBad3],
         skipTypewriterEffect: true,
       },
       {
-        speaker: "Bee Safe",
+        speaker:
+          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
         portrait: this.beeSmileSprite,
-        text: "Can you be my detective and help identify the pretenders? As a reward. I will give you some honey (points) from my BeeSafe Kingdom! But be careful to not get stung...",
+        text: LocalizationManager.instance.getLocalizedString(
+          "intro.dialogue_line_2",
+        ),
         effects: [this.honeycomb],
         skipTypewriterEffect: false,
       },
     ];
-  }
-
-  protected setPageState() {
-    this.pageState = PageStates.DialogueIntro;
   }
 
   public onExit() {

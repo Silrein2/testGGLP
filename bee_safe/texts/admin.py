@@ -22,3 +22,5 @@ class TextAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
     resource_class = TextResource
     list_display = ("key", "text", "order")
     ordering = ("key", "order")
+    search_fields = ("key__name", "text")
+    list_filter = ("key",)

@@ -113,6 +113,7 @@ LOCAL_APPS = [
     "bee_safe.users",
     "bee_safe.custom_admin",
     "bee_safe.quizzes",
+    "bee_safe.texts",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

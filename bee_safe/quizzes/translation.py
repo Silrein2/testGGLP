@@ -4,17 +4,11 @@ from modeltranslation.translator import register
 from bee_safe.quizzes.models import MatchOptionPair
 from bee_safe.quizzes.models import MCQOption
 from bee_safe.quizzes.models import Question
-from bee_safe.quizzes.models import Text
 from bee_safe.quizzes.models import YesNoAnswer
 
 
 @register(Question)
 class QuestionTranslationOptions(TranslationOptions):
-    fields = ("text",)
-
-
-@register(Text)
-class TextTranslationOptions(TranslationOptions):
     fields = ("text",)
 
 

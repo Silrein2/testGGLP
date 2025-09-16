@@ -1,11 +1,9 @@
 from allauth.account.decorators import secure_admin_login
 from django.conf import settings
 from django.contrib import admin
-from django.contrib import messages
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportModelAdmin
 from modeltranslation.admin import TabbedTranslationAdmin
@@ -19,10 +17,8 @@ from .forms import UserAdminChangeForm
 from .forms import UserAdminCreationForm
 from .models import BusinessUnit
 from .models import EmailDomain
-from .models import Text
 from .models import User
 from .resources import BusinessUnitResource
-from .resources import TextResource
 from .resources import UserResource
 
 if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
@@ -161,18 +157,6 @@ admin.site.unregister(Group)
 # @admin.register(Group, site=custom_admin)
 class GroupAdmin(BaseGroupAdmin, ModelAdmin):
     pass
-
-
-@admin.register(Text)
-@admin.register(Text, site=custom_admin)
-class TextAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
-    resource_class = TextResource
-    list_display = ("key", "text")
-
-    def has_delete_permission(self, request, obj=None):
-        if obj and obj.key == Text.WELCOME_KEY:
-            return False
-        return super().has_delete_permission(request, obj)
 
 
 @admin.register(BusinessUnit)

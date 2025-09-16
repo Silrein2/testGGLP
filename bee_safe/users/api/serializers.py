@@ -4,7 +4,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from bee_safe.users.models import BusinessUnit
-from bee_safe.users.models import Text
 from bee_safe.users.models import User
 
 
@@ -17,12 +16,6 @@ class BusinessUnitSerializer(serializers.ModelSerializer[BusinessUnit]):
 class LanguageSerializer(serializers.Serializer):
     code = serializers.CharField()
     name = serializers.CharField()
-
-
-class TextSerializer(serializers.ModelSerializer[Text]):
-    class Meta:
-        model = Text
-        fields = ["key", "text"]
 
 
 class UserStateQuizzesSerializer(serializers.Serializer):

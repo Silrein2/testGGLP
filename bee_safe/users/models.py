@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -7,40 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from bee_safe.contrib import mixins
 from bee_safe.users.managers import UserManager
 from bee_safe.users.services import UserStateService
-
-
-class Text(mixins.TimeStampedModel):
-    WELCOME_KEY = "welcome"
-
-    key = models.CharField(unique=True)
-    text = models.TextField(default="", blank=True)
-
-    def __str__(self):
-        return self.key
-
-    class Meta(mixins.TimeStampedModel.Meta):
-        verbose_name = _("Text")
-        verbose_name_plural = _("Texts")
-
-    def clean(self):
-        if self.pk:
-            original = Text.objects.get(pk=self.pk)
-            if original.key == self.WELCOME_KEY and self.key != self.WELCOME_KEY:
-                msg = _("The 'welcome' key cannot be changed.")
-                raise ValidationError(msg)
-
-    def save(self, *args, **kwargs):
-        if self.pk:
-            original = Text.objects.get(pk=self.pk)
-            if original.key == self.WELCOME_KEY and self.key != self.WELCOME_KEY:
-                msg = _("The 'welcome' key cannot be changed.")
-                raise ValidationError(msg)
-        super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        if self.key == self.WELCOME_KEY:
-            raise ValidationError(_("The 'welcome' Text cannot be deleted."))
-        super().delete(*args, **kwargs)
 
 
 class BusinessUnit(mixins.TimeStampedModel):

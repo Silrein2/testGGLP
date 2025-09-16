@@ -1,6 +1,5 @@
 import threading
 
-from django.apps import apps
 from djoser.views import TokenCreateView as DjoserTokenCreateView
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -20,10 +19,8 @@ from bee_safe.users.api.serializers import BusinessUnitSerializer
 from bee_safe.users.api.serializers import CustomTokenRequestSerializer
 from bee_safe.users.api.serializers import CustomTokenResponseSerializer
 from bee_safe.users.api.serializers import LanguageSerializer
-from bee_safe.users.api.serializers import TextSerializer
 from bee_safe.users.api.serializers import UserSerializer
 from bee_safe.users.models import EmailDomain
-from bee_safe.users.models import Text
 from bee_safe.users.models import User
 from config.settings.base import LANGUAGES
 
@@ -56,26 +53,6 @@ class LanguageListView(APIView):
     def get(self, request):
         languages = [{"code": code, "name": name} for code, name in LANGUAGES]
         return Response(languages)
-
-
-class TextView(
-    GenericViewSet,
-    RetrieveModelMixin,
-    ListModelMixin,
-):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    serializer_class = TextSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        return Text.objects.all()
-
-    @extend_schema(
-        responses=TextSerializer,
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):

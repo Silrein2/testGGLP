@@ -6,22 +6,17 @@ from drf_spectacular.utils import OpenApiResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.mixins import ListModelMixin
-from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import GenericViewSet
 
 from bee_safe.quizzes.api.serializers import AnswerSubmissionSerializer
 from bee_safe.quizzes.api.serializers import MatchAnswerSerializer
 from bee_safe.quizzes.api.serializers import MCQAnswerSerializer
 from bee_safe.quizzes.api.serializers import QuestionSerializer
-from bee_safe.quizzes.api.serializers import TextSerializer
 from bee_safe.quizzes.api.serializers import YesNoAnswerSerializer
 from bee_safe.quizzes.models import Question
 from bee_safe.quizzes.models import QuizQuestion
-from bee_safe.quizzes.models import Text
 
 mcq_example = OpenApiExample(
     "MCQ Answer",
@@ -301,23 +296,3 @@ class QuestionView(APIView):
             request.user.save()
 
         return end_of_questions_reached(request.user)
-
-
-class TextView(
-    GenericViewSet,
-    RetrieveModelMixin,
-    ListModelMixin,
-):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    serializer_class = TextSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        return Text.objects.all()
-
-    @extend_schema(
-        responses=TextSerializer,
-    )
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)

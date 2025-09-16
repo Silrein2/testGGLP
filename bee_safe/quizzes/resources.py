@@ -11,7 +11,6 @@ from config.settings.base import LANGUAGES
 from .models import MatchOptionPair
 from .models import MCQOption
 from .models import Question
-from .models import Text
 from .models import YesNoAnswer
 
 
@@ -144,7 +143,9 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
                     pair = MatchOptionPair(question=instance)
                     option_a_texts = pair_data.get("option_a", {})
                     option_b_texts = pair_data.get("option_b", {})
-                    for field_a, field_b in zip(option_a_fields, option_b_fields):
+                    for field_a, field_b in zip(
+                        option_a_fields, option_b_fields, strict=False
+                    ):
                         setattr(pair, field_a, option_a_texts.get(field_a, ""))
                         setattr(pair, field_b, option_b_texts.get(field_b, ""))
                     pair.save()
@@ -175,11 +176,3 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
         if hasattr(instance, "_import_yes_no_data"):
             delattr(instance, "_import_yes_no_data")
         return instance
-
-
-class TextResource(
-    mixins.TranslatedModelResourceMixin,
-    resources.ModelResource,
-):
-    class Meta:
-        model = Text

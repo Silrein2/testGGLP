@@ -3,7 +3,6 @@ from import_export import resources
 from bee_safe.contrib import mixins
 
 from .models import BusinessUnit
-from .models import Text
 from .models import User
 
 
@@ -25,11 +24,3 @@ class BusinessUnitResource(
             "created_at",
             "updated_at",
         )
-
-
-class TextResource(
-    mixins.TranslatedModelResourceMixin,
-    resources.ModelResource,
-):
-    class Meta:
-        model = Text

@@ -8,7 +8,6 @@ from unfold.admin import StackedInline
 from unfold.admin import TabularInline
 from unfold.contrib.import_export.forms import ExportForm
 from unfold.contrib.import_export.forms import ImportForm
-from unfold.contrib.import_export.forms import SelectableFieldsExportForm
 
 from bee_safe.custom_admin.admin import custom_admin
 
@@ -17,10 +16,8 @@ from .models import MatchOptionPair
 from .models import MCQOption
 from .models import Question
 from .models import QuizQuestion
-from .models import Text
 from .models import YesNoAnswer
 from .resources import QuestionResource
-from .resources import TextResource
 
 
 class MCQOptionInline(TabularInline, TranslationTabularInline):
@@ -64,20 +61,6 @@ class QuestionAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
         return [
             MCQOptionInline(self.model, self.admin_site),
         ]
-
-
-@admin.register(Text)
-@admin.register(Text, site=custom_admin)
-class TextAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
-    resource_class = TextResource
-    list_display = ("key", "text")
-
-    def has_delete_permission(self, request, obj=None):
-        if obj and (
-            obj.key in (Text.RIGHT_ANSWER, Text.WRONG_ANSWER, Text.YES, Text.NO)
-        ):
-            return False
-        return super().has_delete_permission(request, obj)
 
 
 @admin.register(QuizQuestion)

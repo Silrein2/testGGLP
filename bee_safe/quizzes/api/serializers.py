@@ -6,7 +6,6 @@ from rest_framework import serializers
 from bee_safe.quizzes.models import MCQOption
 from bee_safe.quizzes.models import Question
 from bee_safe.quizzes.models import QuizQuestion
-from bee_safe.quizzes.models import Text
 from bee_safe.quizzes.models import YesNoAnswer
 
 
@@ -75,12 +74,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         if obj.question_type == Question.MATCH:
             return MatchPairSplitField().to_representation(obj.match_pairs)
         return []
-
-
-class TextSerializer(serializers.ModelSerializer[Text]):
-    class Meta:
-        model = Text
-        fields = ["key", "text"]
 
 
 class AnswerSubmissionSerializer(serializers.Serializer):

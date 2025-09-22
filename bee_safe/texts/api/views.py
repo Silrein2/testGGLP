@@ -14,8 +14,8 @@ class TextView(
     RetrieveModelMixin,
     ListModelMixin,
 ):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
     serializer_class = TextSerializer
 
     def get_queryset(self):
@@ -29,8 +29,8 @@ class TextView(
 
 
 class TextByKeyView(GenericViewSet, ListModelMixin):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
     serializer_class = TextSerializer
 
     def get_queryset(self):

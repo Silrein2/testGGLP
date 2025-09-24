@@ -16,10 +16,10 @@ from .models import Question
 from .resources import QuestionResource
 
 
-class AnswerInline(TabularInline, TranslationTabularInline):
+class AnswerInline(StackedInline, TranslationTabularInline):
     model = Answer
     extra = 4
-    fields = ["text", "is_correct"]
+    fields = ["text", "bee_safe_text", "is_correct"]
 
 
 @admin.register(Question)
@@ -29,8 +29,8 @@ class QuestionAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
     import_form_class = ImportForm
     export_form_class = ExportForm
     inlines = [AnswerInline]
-    list_display = ["text"]
-    search_fields = ["text"]
+    list_display = ["title"]
+    search_fields = ["title"]
 
     def get_inline_instances(self, request, obj=None):
         return [

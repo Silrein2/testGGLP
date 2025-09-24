@@ -21,7 +21,7 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
 
     class Meta:
         model = Question
-        text_translation_fields = get_translation_fields("text")
+        text_translation_fields = get_translation_fields("title")
         fields = (
             "id",
             *tuple(text_translation_fields),
@@ -33,6 +33,7 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
 
     def dehydrate_answer(self, obj):
         text_translation_fields = get_translation_fields("text")
+        bee_safe_text_translation_fields = get_translation_fields("bee_safe_text")
 
         result = []
         for option in obj.answer.all():
@@ -41,6 +42,10 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
                 "texts": {
                     field: getattr(option, field, "") or ""
                     for field in text_translation_fields
+                },
+                "bee_safe_texts": {
+                    field: getattr(option, field, "") or ""
+                    for field in bee_safe_text_translation_fields
                 },
                 "is_correct": option.is_correct,
             }
@@ -60,6 +65,7 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
 
         # Translatable fields
         text_translation_fields = get_translation_fields("text")
+        bee_safe_text_translation_fields = get_translation_fields("bee_safe_text")
 
         # Import Answer
         if hasattr(instance, "_import_answer_data") and instance._import_answer_data:
@@ -70,6 +76,9 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
                     texts = option_data.get("texts", {})
                     for field_name in text_translation_fields:
                         setattr(option, field_name, texts.get(field_name, ""))
+                    bee_safe_texts = option_data.get("bee_safe_texts", {})
+                    for field_name in bee_safe_text_translation_fields:
+                        setattr(option, field_name, bee_safe_texts.get(field_name, ""))
                     option.is_correct = option_data.get("is_correct", False)
                     option.save()
             except json.JSONDecodeError:

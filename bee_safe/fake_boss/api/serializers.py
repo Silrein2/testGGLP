@@ -11,7 +11,7 @@ from bee_safe.fake_boss.models import QuizQuestion
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ["id", "text"]
+        fields = ["id", "text", "bee_safe_text", "is_correct"]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = [
             "id",
-            "text",
+            "title",
             "answer",
         ]
 

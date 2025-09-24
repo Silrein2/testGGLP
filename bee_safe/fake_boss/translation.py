@@ -7,9 +7,9 @@ from bee_safe.fake_boss.models import Question
 
 @register(Question)
 class QuestionTranslationOptions(TranslationOptions):
-    fields = ("text",)
+    fields = ("title",)
 
 
 @register(Answer)
-class MCQOptionTranslationOptions(TranslationOptions):
-    fields = ("text",)
+class AnswerTranslationOptions(TranslationOptions):
+    fields = ("text", "bee_safe_text")

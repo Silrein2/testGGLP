@@ -33,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer[User]):
     business_unit = serializers.CharField()
     is_first_login = serializers.BooleanField()
     quizzes = UserStateQuizzesSerializer()
+    total_score_all = serializers.IntegerField()
 
     class Meta:
         model = User
@@ -42,6 +43,7 @@ class UserSerializer(serializers.ModelSerializer[User]):
             "business_unit",
             "is_first_login",
             "quizzes",
+            "total_score_all",
         ]
         ref_name = "CustomUser"
 
@@ -64,3 +66,4 @@ class CustomTokenResponseSerializer(serializers.Serializer):
     business_unit = serializers.CharField()
     is_first_login = serializers.BooleanField()
     quizzes = UserStateQuizzesSerializer()
+    total_score_all = serializers.IntegerField()

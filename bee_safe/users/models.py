@@ -83,6 +83,10 @@ class User(AbstractUser):
     def state(self):
         return UserStateService(self).get_state()
 
+    @property
+    def total_score_all(self):
+        return self.total_score_quizzes
+
     def __str__(self):
         return self.email
 

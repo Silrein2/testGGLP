@@ -19,6 +19,7 @@ class UserStateService:
                 "total_seconds_at_highest_score_quizzes": self.user.total_seconds_at_highest_score_quizzes,
                 "times_played_quizzes": self.user.times_played_quizzes,
             },
+            "total_score_all": self.user.total_score_all,
         }
 
     def reset_quizzes(self):

@@ -11,6 +11,12 @@ export interface Language {
   name: string;
 }
 
+export interface Text {
+  key: string;
+  text: string;
+  order: number;
+}
+
 export interface BusinessUnit {
   id: number;
   name: string;
@@ -67,6 +73,7 @@ export class DataManager extends Component {
 
   public languages: Language[] = [];
   public businessUnits: BusinessUnit[] = [];
+  public texts: Text[] = [];
   public userState: UserState | null = null;
   public question: Question | null = null;
 
@@ -91,6 +98,10 @@ export class DataManager extends Component {
 
   public setBusinessUnits(businessUnits: BusinessUnit[]) {
     this.businessUnits = businessUnits;
+  }
+
+  public setTexts(texts: Text[]) {
+    this.texts = texts;
   }
 
   public setUserState(userState: UserState) {

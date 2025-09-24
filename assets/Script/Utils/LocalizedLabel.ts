@@ -7,10 +7,10 @@ export class LocalizedLabel extends Component {
   @property
   private key: string = "";
 
-  private labelComponent: Label = null;
+  private label: Label = null;
 
   onLoad() {
-    this.labelComponent = this.getComponent(Label);
+    this.label = this.getComponent(Label);
     this.updateLabel();
   }
 
@@ -19,13 +19,13 @@ export class LocalizedLabel extends Component {
   }
 
   public updateLabel() {
-    if (!this.labelComponent || !this.key) {
+    if (!this.label || !this.key) {
       return;
     }
 
     const localizedString = LocalizationManager.instance.getLocalizedString(
       this.key,
     );
-    this.labelComponent.string = localizedString;
+    this.label.string = localizedString;
   }
 }

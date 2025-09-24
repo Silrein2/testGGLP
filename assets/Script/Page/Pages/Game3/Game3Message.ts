@@ -50,7 +50,10 @@ export class Game3Message extends Component {
     this.uiOpacity.opacity = initialOpacity;
     this.panel.setScale(initialScale);
     this.node.active = true;
-    if (text !== "") this.messageLabel.string = text;
+    if (text !== "") {
+      const messageText = text.replace(/\\n|\n/g, "<br/>");
+      this.messageLabel.string = messageText;
+    }
 
     tween(this.node)
       .parallel(

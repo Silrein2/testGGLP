@@ -1,4 +1,5 @@
 import { _decorator, Component, JsonAsset, Node, resources } from "cc";
+import { DataManager } from "./DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("LocalizationManager")
@@ -41,7 +42,12 @@ export class LocalizationManager extends Component {
     key: string,
     replacements?: { [key: string]: string | number },
   ): string {
-    const localizedValue = this.languageData[key];
+    const texts = DataManager.instance.texts;
+    let localizedValue = this.languageData[key];
+    const text = texts.find((x) => x.key === key);
+    if (text) {
+      localizedValue = text.text;
+    }
     let localizedString =
       typeof localizedValue === "string" ? localizedValue : key;
 
@@ -62,7 +68,15 @@ export class LocalizationManager extends Component {
     key: string,
     replacements?: { [key: string]: string | number },
   ): string[] {
-    const localizedValue = this.languageData[key];
+    const texts = DataManager.instance.texts;
+    let localizedValue = this.languageData[key];
+    const textArr = texts.filter((x) => x.key === key);
+    if (textArr.length > 0) {
+      const sorted = textArr.sort((a, b) => {
+        return a.order - b.order;
+      });
+      localizedValue = sorted.map((x) => x.text);
+    }
 
     if (Array.isArray(localizedValue)) {
       return localizedValue.map((line) => {

@@ -3,6 +3,7 @@ import {
   BusinessUnit,
   DataManager,
   Language,
+  Text,
   UserState,
 } from "../Manager/DataManager";
 
@@ -11,6 +12,7 @@ export class UserService {
   private languageEndpoint: string = "api/users/languages/";
   private businessUnitEndpoint: string = "api/users/business-units/";
   private userStateEndpoint: string = "api/users/state/";
+  private textEndpoint: string = "api/texts/all/";
 
   constructor(apiClient: ApiClient) {
     this.apiClient = apiClient;
@@ -35,6 +37,17 @@ export class UserService {
         this.businessUnitEndpoint,
       );
       DataManager.instance.setBusinessUnits(responseData);
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async getTexts(): Promise<Text[]> {
+    try {
+      const responseData = await this.apiClient.get<Text[]>(this.textEndpoint);
+      DataManager.instance.setTexts(responseData);
       return responseData;
     } catch (error) {
       console.error(error);

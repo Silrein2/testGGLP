@@ -8,6 +8,7 @@ import { UIManager } from "./UIManager";
 import { Timer } from "../Utils/Timer";
 import { PageManager } from "../Page/PageManager";
 import { LocalizationManager } from "./LocalizationManager";
+import { LocalizedLabel } from "../Utils/LocalizedLabel";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
@@ -20,6 +21,9 @@ export class GameManager extends Component {
   @property({ type: Timer })
   public timer: Timer | null = null;
 
+  @property({ type: Node })
+  public canvas: Node | null = null;
+
   @property
   public offlineLogin: boolean = false;
 
@@ -29,6 +33,7 @@ export class GameManager extends Component {
   public quizService: QuizService | null = null;
 
   private languageCode: string = "en";
+  private localizedLabels: LocalizedLabel[] = [];
 
   public static get instance(): GameManager {
     if (this._instance) {
@@ -47,7 +52,10 @@ export class GameManager extends Component {
   }
 
   start() {
-    if (!this.offlineLogin) this.getLangauges();
+    if (this.offlineLogin) return;
+    this.localizedLabels = this.canvas.getComponentsInChildren(LocalizedLabel);
+    this.getLangauges();
+    this.getTexts();
   }
 
   initializeApi() {
@@ -69,6 +77,15 @@ export class GameManager extends Component {
     GameManager.instance.userService.getLanguages();
   }
 
+  private async getTexts() {
+    await GameManager.instance.userService.getTexts();
+    for (const localizedLabel of this.localizedLabels) {
+      if (localizedLabel.node.active) {
+        localizedLabel.updateLabel();
+      }
+    }
+  }
+
   public showLanguageSetting() {
     const data = DataManager.instance.languages.map((x) => {
       return { text: x.name, value: x.code };
@@ -86,6 +103,7 @@ export class GameManager extends Component {
   private onSelectLanguage(code: string) {
     this.languageCode = code;
     this.apiClient.setLanguage(code);
+    this.getTexts();
     //this.pageManager.resetPage();
   }
 

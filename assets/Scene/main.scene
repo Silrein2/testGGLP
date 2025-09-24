@@ -134,6 +134,9 @@
     "timer": {
       "__id__": 1258
     },
+    "canvas": {
+      "__id__": 6
+    },
     "offlineLogin": false,
     "_id": "fdFq9GakRHdIPmi8pvc9hq"
   },

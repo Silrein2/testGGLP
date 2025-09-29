@@ -1,8 +1,6 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.mixins import ListModelMixin
 from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from bee_safe.texts.api.serializers import TextSerializer

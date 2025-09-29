@@ -1,3 +1,4 @@
+from contrib.api.authentication import CsrfExemptSessionAuthentication
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -78,6 +79,7 @@ question_post_200_mcq = OpenApiExample(
             "total_seconds_at_highest_score_quizzes": 40,
             "times_played_quizzes": 5,
         },
+        "total_score_all": 540,
     },
     media_type="application/json",
 )
@@ -107,6 +109,7 @@ question_post_200_match = OpenApiExample(
             "total_seconds_at_highest_score_quizzes": 40,
             "times_played_quizzes": 5,
         },
+        "total_score_all": 540,
     },
     media_type="application/json",
 )
@@ -127,6 +130,7 @@ question_post_200_no_more_questions = OpenApiExample(
             "total_seconds_at_highest_score_quizzes": 40,
             "times_played_quizzes": 5,
         },
+        "total_score_all": 540,
     },
     media_type="application/json",
 )
@@ -159,14 +163,17 @@ question_post_200_no_more_questions = OpenApiExample(
     description="Submit a correct answer to a question. Only correct answers are accepted.",
 )
 class QuestionView(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         question = Question.objects.get_next_question(user=request.user)
 
         if not question:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            user = request.user
+            user.reset_state()
+            question = Question.objects.get_next_question(user=request.user)
+            # return Response(status=status.HTTP_204_NO_CONTENT)
 
         serializer = QuestionSerializer(question)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -193,7 +200,6 @@ class QuestionView(APIView):
             if not next_q:
                 user.times_played_quizzes += 1
                 user.save()
-                user.reset_quizzes()
             response.update(user.state)
             response["quizzes"]["current_score_quizzes"] = current_score_quizzes
             response["quizzes"]["total_score_quizzes"] = total_score_quizzes

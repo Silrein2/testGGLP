@@ -1,5 +1,6 @@
 import threading
 
+from contrib.api.authentication import CsrfExemptSessionAuthentication
 from djoser.views import TokenCreateView as DjoserTokenCreateView
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -56,7 +57,7 @@ class LanguageListView(APIView):
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [CsrfExemptSessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     serializer_class = UserSerializer
@@ -106,8 +107,6 @@ class CustomTokenCreateView(DjoserTokenCreateView):
 
         token, _ = Token.objects.get_or_create(user=user)
 
-        user.reset_quizzes()
-
         def mark_not_first_login():
             if user.is_first_login:
                 user.is_first_login = False
@@ -118,6 +117,7 @@ class CustomTokenCreateView(DjoserTokenCreateView):
         data = {
             "auth_token": token.key,
         }
-        data.update(user.state)
+        serializer = UserSerializer(request.user.state, context={"request": request})
+        data.update(serializer.data)
 
         return Response(data, status=200)

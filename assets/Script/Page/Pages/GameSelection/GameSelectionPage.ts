@@ -2,7 +2,6 @@ import { _decorator, Component, Label, Node, tween, Vec3 } from "cc";
 import { Page } from "../../Page";
 import { ButtonStates, PageStates } from "../../Enums";
 import { GameSelectionButton } from "./GameSelectionButton";
-import { GameManager } from "../../../Manager/GameManager";
 import { DataManager, Quizzes } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 

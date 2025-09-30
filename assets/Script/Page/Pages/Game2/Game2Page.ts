@@ -1,11 +1,11 @@
 import {
   _decorator,
-  Collider2D,
   Component,
   instantiate,
   Layout,
   Node,
   Prefab,
+  ScrollView,
   SpriteFrame,
 } from "cc";
 import { PageStates } from "../../Enums";
@@ -17,6 +17,7 @@ import { Game2QuizTransition } from "./Game2QuizTransition";
 import { Game2Tutorial } from "./Game2Tutorial";
 import { Game2Bee } from "./Game2Bee";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
+import { Game2Question } from "./Game2Question";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Page")
@@ -27,14 +28,17 @@ export class Game2Page extends Page {
   @property({ type: Prefab })
   private optionPrefab: Prefab | null = null;
 
-  @property({ type: Collider2D })
-  private slotCollider: Collider2D | null = null;
-
   @property({ type: Game2Tutorial })
   private tutorial: Game2Tutorial | null = null;
 
   @property({ type: Game2Bee })
   private game2Bee: Game2Bee | null = null;
+
+  @property({ type: [Game2Question] })
+  public game2Questions: Game2Question[] = [];
+
+  @property({ type: [ScrollView] })
+  public scrollViews: ScrollView[] = [];
 
   @property({ type: SpriteFrame })
   public optionNormalSpriteFrame: SpriteFrame | null = null;
@@ -51,9 +55,63 @@ export class Game2Page extends Page {
 
   private currentQuestionIndex: number = 0;
 
+  private questions: any[] = [];
+
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
     this.tutorial.node.active = false;
+
+    this.questions = [
+      {
+        question: this.game2Questions[0],
+        options: [
+          { id: 1, text: "Too Good To Be True" },
+          { id: 2, text: "Suspicious Attachment" },
+          { id: 3, text: "Curiosity-piquing Subject" },
+          { id: 4, text: "Suspicious Email Address" },
+          { id: 5, text: "External Email Warning" },
+          { id: 6, text: "Triggered strong emotion" },
+          { id: 7, text: "Generic Greeting" },
+          { id: 8, text: "Unusual Request" },
+          { id: 9, text: "Sense of Urgency" },
+          { id: 10, text: "Unexpected Email" },
+          { id: 11, text: "Suspicious Link" },
+        ],
+      },
+      {
+        question: this.game2Questions[1],
+        options: [
+          { id: 1, text: "Too Good To Be True" },
+          { id: 2, text: "Suspicious Attachment" },
+          { id: 3, text: "Curiosity-piquing Subject" },
+          { id: 4, text: "Suspicious Email Address" },
+          { id: 5, text: "External Email Warning" },
+          { id: 6, text: "Pretend to be Amway" },
+          { id: 7, text: "Generic Greeting" },
+          { id: 8, text: "Unusual Request" },
+          { id: 9, text: "Sense of Urgency" },
+          { id: 10, text: "Unexpected Email" },
+          { id: 11, text: "Suspicious Link" },
+        ],
+      },
+      {
+        question: this.game2Questions[2],
+        options: [
+          { id: 1, text: "Too Good To Be True" },
+          { id: 2, text: "Suspicious Attachment" },
+          { id: 3, text: "Curiosity-piquing Subject" },
+          { id: 4, text: "Suspicious Email Address" },
+          { id: 5, text: "External Email Warning" },
+          { id: 6, text: "Pretend to be Amway" },
+          { id: 7, text: "Generic Greeting" },
+          { id: 8, text: "Unusual Request" },
+          { id: 9, text: "Sense of Urgency" },
+          { id: 10, text: "Unexpected Email" },
+          { id: 11, text: "Suspicious Link" },
+          { id: 12, text: "Trigger Fear Emotion" },
+        ],
+      },
+    ];
   }
 
   protected setPageState() {
@@ -94,25 +152,31 @@ export class Game2Page extends Page {
   }
 
   private setQuestion() {
-    if (this.currentQuestionIndex >= 3) {
+    if (this.currentQuestionIndex >= this.questions.length) {
       this.endQuiz();
       return;
     }
+    const question = this.questions[this.currentQuestionIndex];
     this.showGame(true);
     for (const option of this.options) {
       option.node.destroy();
     }
     this.options = [];
     this.optionLayout.enabled = true;
-    for (let i = 0; i < 10; i++) {
+
+    for (let i = 0; i < this.questions.length; i++) {
+      this.questions[i].question.node.active = i === this.currentQuestionIndex;
+    }
+
+    for (const scrollView of this.scrollViews) {
+      scrollView.scrollToTop(0);
+    }
+
+    for (let i = 0; i < question.options.length; i++) {
       const optionNode = instantiate(this.optionPrefab) as Node;
       this.optionLayout.node.addChild(optionNode);
       const game2Option = optionNode.getComponent(Game2Option);
-      game2Option.init(
-        "Suspicious Attachment " + (i + 1).toString(),
-        this.slotCollider,
-        this,
-      );
+      game2Option.init(question.options[i], question.question.slots, this);
       this.options.push(game2Option);
     }
     this.scheduleOnce(() => {

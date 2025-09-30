@@ -1,6 +1,5 @@
 import {
   _decorator,
-  Collider2D,
   Component,
   Label,
   Node,
@@ -18,6 +17,7 @@ import {
   DraggableObject,
 } from "../../../Utils/DraggableObject";
 import { ButtonStates } from "../../Enums";
+import { Game2Slot } from "./Game2Slot";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Option")
@@ -26,11 +26,11 @@ export class Game2Option extends Component {
   private label: Label | null = null;
   private game2Page: Game2Page | null = null;
   private container: Node | null = null;
-  private slotCollider: Collider2D | null = null;
+  private slots: Game2Slot[] = [];
   private resetTween: Tween<Node> | null = null;
 
   public draggableObject: DraggableObject | null = null;
-  public data: string | null = null;
+  public data: any | null = null;
 
   onLoad() {
     this.sprite = this.node.getComponent(Sprite);
@@ -45,11 +45,12 @@ export class Game2Option extends Component {
     this.draggableObject.node.off(DRAG_END_EVENT, this.onDragEnd, this);
   }
 
-  public init(data: string, slotCollider: Collider2D, game2Page: Game2Page) {
+  public init(data: any, slots: Game2Slot[], game2Page: Game2Page) {
     this.game2Page = game2Page;
     this.container = game2Page.optionLayout.node;
-    this.label.string = data;
-    this.slotCollider = slotCollider;
+    this.data = data;
+    this.label.string = data.text;
+    this.slots = slots;
   }
 
   public setInitialPosition() {
@@ -66,15 +67,30 @@ export class Game2Option extends Component {
   private onDragEnd() {
     if (this.draggableObject.disabled) return;
     const pos = new Vec2(this.node.worldPositionX, this.node.worldPositionY);
-    if (this.slotCollider.worldAABB.contains(pos)) {
-      const correct = Math.random() > 0.5;
+    let collided = false;
+    let correct = false;
+    this.slots.forEach((slot) => {
+      if (!slot.node.activeInHierarchy) return;
+      slot.collider.apply();
+      if (slot.collider.worldAABB.contains(pos)) {
+        collided = true;
+        this.setParent(slot.node.parent);
+        if (slot.data == (this.data.id as number)) {
+          correct = true;
+        }
+      }
+    });
+    if (collided) {
       this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
       this.setDisable(true);
-      this.node.setParent(this.slotCollider.node, true);
       this.game2Page.onDropOption(correct);
     } else {
       this.moveResetPosition();
     }
+  }
+
+  public setParent(parentNode: Node) {
+    this.draggableObject.setParent(parentNode);
   }
 
   public setDisable(disable: boolean) {

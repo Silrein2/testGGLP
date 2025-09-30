@@ -61,7 +61,9 @@ export class GameQuizTransition extends Component {
     const _nodes = shuffle ? this.shuffleArray(activeNodes) : activeNodes;
 
     _nodes.forEach((node, index) => {
-      node.setScale(fromScale);
+      if (show) {
+        node.setScale(fromScale);
+      }
       const opacityComponent = node.getComponent(UIOpacity);
       opacityComponent.opacity = fromOpacity;
       const delay = this.optionsDelay + 0.1 * index;

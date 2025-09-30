@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, UIOpacity } from "cc";
 import { GameQuizTransition } from "../../GameQuizTransition";
 import { Game2Bee } from "./Game2Bee";
+import { Game2Option } from "./Game2Option";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2QuizTransition")
@@ -22,8 +23,8 @@ export class Game2QuizTransition extends GameQuizTransition {
   ) {
     this.options = options;
     this.onComplete = onComplete;
-    //this.showQuestion(this.question, show);
     if (show) {
+      this.showQuestion(this.question, show);
       for (const option of options) {
         option.getComponent(UIOpacity).opacity = 0;
       }
@@ -37,6 +38,7 @@ export class Game2QuizTransition extends GameQuizTransition {
     } else {
       this.game2Bee.exit(() => {
         this.showOptions(this.options, show, false);
+        this.showQuestion(this.question, show);
       });
     }
   }

@@ -8,12 +8,14 @@ export const DRAG_END_EVENT = "drag-end";
 export class DraggableObject extends Component {
   private isDragging: boolean = false;
   private touchOffset: Vec3 = new Vec3();
+  private originalScale: Vec3 = new Vec3();
   private initialScale: Vec3 = new Vec3();
   public initialPosition: Vec3 = new Vec3();
   public disabled: boolean = false;
 
   onLoad() {
     this.setInitialPosition();
+    this.originalScale.set(this.node.scale);
     this.initialScale.set(this.node.scale);
     this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -76,6 +78,11 @@ export class DraggableObject extends Component {
     tween(this.node)
       .to(0.4, { position: this.initialPosition }, { easing: "backOut" })
       .start();
+  }
+
+  public setParent(parentNode: Node) {
+    this.node.setParent(parentNode, true);
+    Vec3.divide(this.initialScale, this.originalScale, parentNode.scale);
   }
 
   public setDisable(disable: boolean) {

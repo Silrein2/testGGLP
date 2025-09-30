@@ -39,6 +39,7 @@ export interface UserState {
   is_first_login: boolean;
   quizzes: Quizzes;
   next_question: Question;
+  total_score_all: number;
 }
 
 export interface MCQOption {

@@ -1,18 +1,13 @@
 import threading
 
-from contrib.api.authentication import CsrfExemptSessionAuthentication
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from djoser.views import TokenCreateView as DjoserTokenCreateView
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.mixins import UpdateModelMixin
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
@@ -58,11 +53,7 @@ class LanguageListView(APIView):
         return Response(languages)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    authentication_classes = [CsrfExemptSessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
     serializer_class = UserSerializer
     queryset = User.objects.all()
     lookup_field = "username"
@@ -77,7 +68,6 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
 class CustomTokenCreateView(DjoserTokenCreateView):
     @extend_schema(
         request=CustomTokenRequestSerializer,

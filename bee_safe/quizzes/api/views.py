@@ -1,4 +1,3 @@
-from contrib.api.authentication import CsrfExemptSessionAuthentication
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -163,9 +162,6 @@ question_post_200_no_more_questions = OpenApiExample(
     description="Submit a correct answer to a question. Only correct answers are accepted.",
 )
 class QuestionView(APIView):
-    authentication_classes = [CsrfExemptSessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):
         question = Question.objects.get_next_question(user=request.user)
 

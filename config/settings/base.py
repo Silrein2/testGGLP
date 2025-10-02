@@ -366,8 +366,8 @@ SOCIALACCOUNT_FORMS = {"signup": "bee_safe.users.forms.UserSocialSignupForm"}
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "contrib.auth.SwaggerSessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -389,6 +389,22 @@ SPECTACULAR_SETTINGS = {
     "POSTPROCESSING_HOOKS": [
         "bee_safe.contrib.schema_hooks.add_accept_language_postprocessing",
     ],
+    "SECURITY": [
+        {"TokenAuth": []},
+        {"cookieAuth": []},
+    ],
+    "SECURITY_SCHEMES": {
+        "TokenAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+        },
+        "cookieAuth": {
+            "type": "apiKey",
+            "in": "cookie",
+            "name": "sessionid",
+        },
+    },
 }
 
 DJOSER = {

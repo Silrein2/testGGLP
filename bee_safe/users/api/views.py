@@ -111,7 +111,7 @@ class CustomTokenCreateView(DjoserTokenCreateView):
         data = {
             "auth_token": token.key,
         }
-        serializer = UserSerializer(request.user.state, context={"request": request})
+        serializer = UserSerializer(user.state, context={"request": request})
         data.update(serializer.data)
 
         return Response(data, status=200)

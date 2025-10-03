@@ -18,6 +18,7 @@ import { Game2Tutorial } from "./Game2Tutorial";
 import { Game2Bee } from "./Game2Bee";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
 import { Game2Question } from "./Game2Question";
+import { shuffleArray } from "../../../Utils/Utils";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Page")
@@ -111,6 +112,38 @@ export class Game2Page extends Page {
           { id: 12, text: "Trigger Fear Emotion" },
         ],
       },
+      {
+        question: this.game2Questions[3],
+        options: [
+          { id: 1, text: "Too Good To Be True" },
+          { id: 2, text: "Suspicious Attachment" },
+          { id: 3, text: "Suspicious Email Address" },
+          { id: 4, text: "External Email Warning" },
+          { id: 5, text: "Pretend to be Amway" },
+          { id: 6, text: "Generic Greeting" },
+          { id: 7, text: "Unusual Request" },
+          { id: 8, text: "Sense of Urgency" },
+          { id: 9, text: "Unexpected Email" },
+          { id: 10, text: "Suspicious Link" },
+          { id: 11, text: "Trigger Nervous Emotion" },
+        ],
+      },
+      {
+        question: this.game2Questions[4],
+        options: [
+          { id: 1, text: "Too Good To Be True" },
+          { id: 2, text: "Suspicious Attachment" },
+          { id: 3, text: "Suspicious Email Address" },
+          { id: 4, text: "External Email Warning" },
+          { id: 5, text: "Asking for sensitive information" },
+          { id: 6, text: "Generic Greeting" },
+          { id: 7, text: "Unusual Request" },
+          { id: 8, text: "Sense of Urgency" },
+          { id: 9, text: "Unexpected Email" },
+          { id: 10, text: "Suspicious Link" },
+          { id: 11, text: "Trigger strong emotion" },
+        ],
+      },
     ];
   }
 
@@ -168,17 +201,19 @@ export class Game2Page extends Page {
       this.questions[i].question.node.active = i === this.currentQuestionIndex;
     }
 
-    for (const scrollView of this.scrollViews) {
-      scrollView.scrollToTop(0);
-    }
-
-    for (let i = 0; i < question.options.length; i++) {
+    const shuffledOptions = shuffleArray(question.options);
+    for (let i = 0; i < shuffledOptions.length; i++) {
       const optionNode = instantiate(this.optionPrefab) as Node;
       this.optionLayout.node.addChild(optionNode);
       const game2Option = optionNode.getComponent(Game2Option);
-      game2Option.init(question.options[i], question.question.slots, this);
+      game2Option.init(shuffledOptions[i], question.question.slots, this);
       this.options.push(game2Option);
     }
+
+    for (const scrollView of this.scrollViews) {
+      scrollView.scrollToTop(0.01);
+    }
+
     this.scheduleOnce(() => {
       this.optionLayout.enabled = false;
       for (const game2Option of this.options) {

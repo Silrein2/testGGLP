@@ -7,6 +7,7 @@ import {
   UIOpacity,
   Vec3,
 } from "cc";
+import { shuffleArray } from "../Utils/Utils";
 
 const { ccclass, property } = _decorator;
 
@@ -58,7 +59,7 @@ export class GameQuizTransition extends Component {
     const fromOpacity = !show ? this.showOpacity : this.hideOpacity;
 
     const activeNodes = nodes.filter((x) => x.active);
-    const _nodes = shuffle ? this.shuffleArray(activeNodes) : activeNodes;
+    const _nodes = shuffle ? shuffleArray(activeNodes) : activeNodes;
 
     _nodes.forEach((node, index) => {
       if (show) {
@@ -92,14 +93,5 @@ export class GameQuizTransition extends Component {
       .by(0.3, { scale: new Vec3(-0.2, -0.2, 0) }, { easing: "elasticOut" })
       .union()
       .start();
-  }
-
-  private shuffleArray<T>(array: T[]): T[] {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
   }
 }

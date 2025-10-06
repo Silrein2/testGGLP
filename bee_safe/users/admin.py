@@ -88,6 +88,16 @@ class UserAdmin(
                 ),
             },
         ),
+        (
+            _("Scores (Fake Boss)"),
+            {
+                "fields": (
+                    "total_score_fake_boss",
+                    "total_seconds_fake_boss",
+                    "best_total_seconds_fake_boss",
+                ),
+            },
+        ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
@@ -124,18 +134,29 @@ class UserAdmin(
         "highest_score_quizzes",
         "total_seconds_at_highest_score_quizzes",
         "times_played_quizzes",
+        "total_score_fake_boss",
+        "total_seconds_fake_boss",
+        "best_total_seconds_fake_boss",
     ]
     actions = [
         "run_reset_quizzes_scores",
+        "run_reset_fake_boss_scores",
         "run_reset_user_states",
     ]
 
     @action(
-        description="Reset quizzes scores",
+        description="Reset Quizzes scores",
     )
     def run_reset_quizzes_scores(self, request, queryset):
         for user in queryset:
             user.reset_quizzes()
+
+    @action(
+        description="Reset Fake Boss scores",
+    )
+    def run_reset_fake_boss_scores(self, request, queryset):
+        for user in queryset:
+            user.reset_fake_boss()
 
     @action(description="Reset user states")
     def run_reset_user_states(self, request, queryset):

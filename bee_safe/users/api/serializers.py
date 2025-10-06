@@ -27,12 +27,19 @@ class UserStateQuizzesSerializer(serializers.Serializer):
     times_played_quizzes = serializers.IntegerField()
 
 
+class UserStateFakeBossSerializer(serializers.Serializer):
+    total_score_fake_boss = serializers.IntegerField()
+    total_seconds_fake_boss = serializers.IntegerField()
+    best_total_seconds_fake_boss = serializers.IntegerField()
+
+
 class UserSerializer(serializers.ModelSerializer[User]):
     email = serializers.EmailField()
     business_unit_id = serializers.IntegerField()
     business_unit = serializers.CharField()
     is_first_login = serializers.BooleanField()
     quizzes = UserStateQuizzesSerializer()
+    fake_boss = UserStateFakeBossSerializer()
     total_score_all = serializers.IntegerField()
 
     class Meta:
@@ -43,6 +50,7 @@ class UserSerializer(serializers.ModelSerializer[User]):
             "business_unit",
             "is_first_login",
             "quizzes",
+            "fake_boss",
             "total_score_all",
         ]
         ref_name = "CustomUser"

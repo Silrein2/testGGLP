@@ -19,6 +19,11 @@ class UserStateService:
                 "total_seconds_at_highest_score_quizzes": self.user.total_seconds_at_highest_score_quizzes,
                 "times_played_quizzes": self.user.times_played_quizzes,
             },
+            "fake_boss": {
+                "total_score_fake_boss": self.user.total_score_fake_boss,
+                "total_seconds_fake_boss": self.user.total_seconds_fake_boss,
+                "best_total_seconds_fake_boss": self.user.best_total_seconds_fake_boss,
+            },
             "total_score_all": self.user.total_score_all,
         }
 
@@ -35,6 +40,12 @@ class UserStateService:
 
         self.user.save()
 
+    def reset_fake_boss(self):
+        self.user.total_score_fake_boss = 0
+        self.user.total_seconds_fake_boss = 0
+
+        self.user.save()
+
     def reset_state(self):
         self.reset_quizzes()
 
@@ -42,6 +53,10 @@ class UserStateService:
 
         self.user.highest_score_quizzes = 0
         self.user.total_seconds_at_highest_score_quizzes = 0
+
+        self.reset_fake_boss()
+
+        self.user.best_total_seconds_fake_boss = 0
 
         self.user.save()
 
@@ -51,4 +66,13 @@ class UserStateService:
         if total_score > self.user.highest_score_quizzes:
             self.user.highest_score_quizzes = total_score
             self.user.total_seconds_at_highest_score_quizzes = seconds
+        self.user.save()
+
+    def update_score_fake_boss(self, score, seconds):
+        self.user.total_score_fake_boss = score
+        self.user.total_seconds_fake_boss = seconds
+        self.user.best_total_seconds_fake_boss = min(
+            [s for s in (seconds, self.user.best_total_seconds_fake_boss) if s != 0],
+            default=self.user.best_total_seconds_fake_boss,
+        )
         self.user.save()

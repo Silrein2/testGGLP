@@ -28,3 +28,8 @@ class QuestionSerializer(serializers.ModelSerializer):
             "title",
             "answer_options",
         ]
+
+
+class ScoreSerializer(serializers.Serializer):
+    score = serializers.IntegerField()
+    seconds = serializers.IntegerField()

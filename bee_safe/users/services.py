@@ -19,6 +19,13 @@ class UserStateService:
                 "total_seconds_at_highest_score_quizzes": self.user.total_seconds_at_highest_score_quizzes,
                 "times_played_quizzes": self.user.times_played_quizzes,
             },
+            "phishing": {
+                "current_score_phishing": self.user.current_score_phishing,
+                "total_score_phishing": self.user.total_score_phishing,
+                "highest_score_phishing": self.user.highest_score_phishing,
+                "total_seconds_at_highest_score_phishing": self.user.total_seconds_at_highest_score_phishing,
+                "times_played_phishing": self.user.times_played_phishing,
+            },
             "fake_boss": {
                 "total_score_fake_boss": self.user.total_score_fake_boss,
                 "total_seconds_fake_boss": self.user.total_seconds_fake_boss,
@@ -70,6 +77,14 @@ class UserStateService:
         if total_score > self.user.highest_score_quizzes:
             self.user.highest_score_quizzes = total_score
             self.user.total_seconds_at_highest_score_quizzes = seconds
+        self.user.save()
+
+    def update_score_phishing(self, score, seconds, total_score):
+        self.user.current_score_phishing = score
+        self.user.total_score_phishing = total_score
+        if total_score > self.user.highest_score_phishing:
+            self.user.highest_score_phishing = total_score
+            self.user.total_seconds_at_highest_score_phishing = seconds
         self.user.save()
 
     def update_score_fake_boss(self, score, seconds):

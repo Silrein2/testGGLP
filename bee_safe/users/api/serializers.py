@@ -27,6 +27,14 @@ class UserStateQuizzesSerializer(serializers.Serializer):
     times_played_quizzes = serializers.IntegerField()
 
 
+class UserStatePhishingSerializer(serializers.Serializer):
+    current_score_phishing = serializers.IntegerField()
+    total_score_phishing = serializers.IntegerField()
+    highest_score_phishing = serializers.IntegerField()
+    total_seconds_at_highest_score_phishing = serializers.IntegerField()
+    times_played_phishing = serializers.IntegerField()
+
+
 class UserStateFakeBossSerializer(serializers.Serializer):
     total_score_fake_boss = serializers.IntegerField()
     total_seconds_fake_boss = serializers.IntegerField()
@@ -39,6 +47,7 @@ class UserSerializer(serializers.ModelSerializer[User]):
     business_unit = serializers.CharField()
     is_first_login = serializers.BooleanField()
     quizzes = UserStateQuizzesSerializer()
+    phishing = UserStatePhishingSerializer()
     fake_boss = UserStateFakeBossSerializer()
     total_score_all = serializers.IntegerField()
 
@@ -50,6 +59,7 @@ class UserSerializer(serializers.ModelSerializer[User]):
             "business_unit",
             "is_first_login",
             "quizzes",
+            "phishing",
             "fake_boss",
             "total_score_all",
         ]
@@ -74,4 +84,6 @@ class CustomTokenResponseSerializer(serializers.Serializer):
     business_unit = serializers.CharField()
     is_first_login = serializers.BooleanField()
     quizzes = UserStateQuizzesSerializer()
+    phishing = UserStatePhishingSerializer()
+    fake_boss = UserStateFakeBossSerializer()
     total_score_all = serializers.IntegerField()

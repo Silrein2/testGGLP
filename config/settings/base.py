@@ -114,6 +114,7 @@ LOCAL_APPS = [
     "bee_safe.custom_admin",
     "bee_safe.quizzes",
     "bee_safe.texts",
+    "bee_safe.phishing",
     "bee_safe.fake_boss",
     # Your stuff: custom apps go here
 ]

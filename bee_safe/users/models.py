@@ -68,6 +68,12 @@ class User(AbstractUser):
     total_seconds_at_highest_score_quizzes = models.PositiveIntegerField(default=0)
     times_played_quizzes = models.PositiveIntegerField(default=0)
 
+    current_score_phishing = models.PositiveIntegerField(default=0)
+    total_score_phishing = models.PositiveIntegerField(default=0)
+    highest_score_phishing = models.PositiveIntegerField(default=0)
+    total_seconds_at_highest_score_phishing = models.PositiveIntegerField(default=0)
+    times_played_phishing = models.PositiveIntegerField(default=0)
+
     total_score_fake_boss = models.PositiveIntegerField(default=0)
     total_seconds_fake_boss = models.PositiveIntegerField(default=0)
     best_total_seconds_fake_boss = models.PositiveIntegerField(default=0)
@@ -89,7 +95,11 @@ class User(AbstractUser):
 
     @property
     def total_score_all(self):
-        return self.total_score_quizzes + self.total_score_fake_boss
+        return (
+            self.total_score_quizzes
+            + self.total_score_phishing
+            + self.total_score_fake_boss
+        )
 
     def __str__(self):
         return self.email
@@ -116,6 +126,9 @@ class User(AbstractUser):
 
     def update_score_quizzes(self, score, seconds, total_score):
         return UserStateService(self).update_score_quizzes(score, seconds, total_score)
+
+    def update_score_phishing(self, score, seconds, total_score):
+        return UserStateService(self).update_score_phishing(score, seconds, total_score)
 
     def update_score_fake_boss(self, score, seconds):
         return UserStateService(self).update_score_fake_boss(score, seconds)

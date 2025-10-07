@@ -30,6 +30,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         ]
 
 
-class ScoreSerializer(serializers.Serializer):
+class ScoreFakeBossSerializer(serializers.Serializer):
     score = serializers.IntegerField()
     seconds = serializers.IntegerField()

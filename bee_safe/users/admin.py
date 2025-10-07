@@ -89,6 +89,18 @@ class UserAdmin(
             },
         ),
         (
+            _("Scores (Phishing)"),
+            {
+                "fields": (
+                    "current_score_phishing",
+                    "total_score_phishing",
+                    "highest_score_phishing",
+                    "total_seconds_at_highest_score_phishing",
+                    "times_played_phishing",
+                ),
+            },
+        ),
+        (
             _("Scores (Fake Boss)"),
             {
                 "fields": (
@@ -134,6 +146,11 @@ class UserAdmin(
         "highest_score_quizzes",
         "total_seconds_at_highest_score_quizzes",
         "times_played_quizzes",
+        "current_score_phishing",
+        "total_score_phishing",
+        "highest_score_phishing",
+        "total_seconds_at_highest_score_phishing",
+        "times_played_phishing",
         "total_score_fake_boss",
         "total_seconds_fake_boss",
         "best_total_seconds_fake_boss",

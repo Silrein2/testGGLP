@@ -20,6 +20,7 @@ class ScoreView(APIView):
             serializer.validated_data["score"],
             serializer.validated_data["seconds"],
             serializer.validated_data["total_score"],
+            serializer.validated_data["times_played"],
         )
         user_serializer = UserSerializer(user.state, context={"request": request})
 

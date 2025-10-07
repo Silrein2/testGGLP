@@ -127,8 +127,13 @@ class User(AbstractUser):
     def update_score_quizzes(self, score, seconds, total_score):
         return UserStateService(self).update_score_quizzes(score, seconds, total_score)
 
-    def update_score_phishing(self, score, seconds, total_score):
-        return UserStateService(self).update_score_phishing(score, seconds, total_score)
+    def update_score_phishing(self, score, seconds, total_score, times_played):
+        return UserStateService(self).update_score_phishing(
+            score,
+            seconds,
+            total_score,
+            times_played,
+        )
 
     def update_score_fake_boss(self, score, seconds):
         return UserStateService(self).update_score_fake_boss(score, seconds)

@@ -5,3 +5,4 @@ class ScorePhishingSerializer(serializers.Serializer):
     score = serializers.IntegerField()
     seconds = serializers.IntegerField()
     total_score = serializers.IntegerField()
+    times_played = serializers.IntegerField()

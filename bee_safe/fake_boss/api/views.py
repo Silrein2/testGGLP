@@ -13,6 +13,7 @@ from .serializers import ScoreFakeBossSerializer
 
 
 class QuestionViewset(viewsets.ViewSet):
+    @extend_schema(responses=QuestionSerializer)
     def list(self, request):
         queryset = Question.objects.all()
         serializer = QuestionSerializer(queryset, many=True)

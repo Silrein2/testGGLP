@@ -111,6 +111,9 @@ class User(AbstractUser):
     def reset_state(self):
         return UserStateService(self).reset_state()
 
+    def reset_session(self):
+        return UserStateService(self).reset_session()
+
     def update_score_quizzes(self, score, seconds, total_score):
         return UserStateService(self).update_score_quizzes(score, seconds, total_score)
 

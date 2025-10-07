@@ -46,6 +46,10 @@ class UserStateService:
 
         self.user.save()
 
+    def reset_session(self):
+        self.reset_quizzes()
+        self.reset_fake_boss()
+
     def reset_state(self):
         self.reset_quizzes()
 

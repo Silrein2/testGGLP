@@ -32,14 +32,30 @@ export interface Quizzes {
   times_played_quizzes: number;
 }
 
+export interface Phishing {
+  current_score_phishing: number;
+  total_score_phishing: number;
+  highest_score_phishing: number;
+  total_seconds_at_highest_score_phishing: number;
+  times_played_phishing: number;
+}
+
+export interface FakeBoss {
+  total_score_fake_boss: number;
+  total_seconds_fake_boss: number;
+  best_total_seconds_fake_boss: number;
+}
+
 export interface UserState {
   email: string;
   business_unit_id: number;
   business_unit: string;
   is_first_login: boolean;
   quizzes: Quizzes;
-  next_question: Question;
+  phishing: Phishing;
+  fake_boss: FakeBoss;
   total_score_all: number;
+  next_question: Question;
 }
 
 export interface MCQOption {
@@ -66,6 +82,19 @@ export interface Question {
   yes_no_answer: YesNoAnswer;
 }
 
+export interface FakeBossQuestion {
+  id: number;
+  title: string;
+  answer_options: FakeBossAnswerOption[];
+}
+
+export interface FakeBossAnswerOption {
+  id: number;
+  text: string;
+  bee_safe_text: string;
+  is_correct: boolean;
+}
+
 export const QUESTION_CHANGED = "question-changed";
 
 @ccclass("DataManager")
@@ -77,6 +106,7 @@ export class DataManager extends Component {
   public texts: Text[] = [];
   public userState: UserState | null = null;
   public question: Question | null = null;
+  public fakeBossQuestions: FakeBossQuestion[] = [];
 
   public static get instance(): DataManager {
     if (this._instance) {
@@ -114,6 +144,10 @@ export class DataManager extends Component {
     this.node.emit(QUESTION_CHANGED, question);
   }
 
+  public setFakeBossQuestions(fakeBossQuestions: FakeBossQuestion[]) {
+    this.fakeBossQuestions = fakeBossQuestions;
+  }
+
   public setDummyUserState() {
     const dummy: UserState = {
       email: "test@amway.com",
@@ -128,6 +162,20 @@ export class DataManager extends Component {
         total_seconds_at_highest_score_quizzes: 75,
         times_played_quizzes: 91,
       },
+      phishing: {
+        current_score_phishing: 0,
+        total_score_phishing: 0,
+        highest_score_phishing: 0,
+        total_seconds_at_highest_score_phishing: 0,
+        times_played_phishing: 0,
+      },
+      fake_boss: {
+        total_score_fake_boss: 0,
+        total_seconds_fake_boss: 0,
+        best_total_seconds_fake_boss: 0,
+      },
+      total_score_all: 0,
+      next_question: null,
     };
 
     this.setUserState(dummy);

@@ -17,6 +17,12 @@ import { Game3PageTransition } from "./Game3PageTransition";
 import { GameManager } from "../../../Manager/GameManager";
 import { Game3Message } from "./Game3Message";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
+import {
+  DataManager,
+  FakeBossQuestion,
+  UserState,
+} from "../../../Manager/DataManager";
+import { waitForCondition } from "../../../Utils/Utils";
 
 const { ccclass, property } = _decorator;
 
@@ -57,15 +63,18 @@ export class Game3Page extends Page {
   private game3PageTransition: Game3PageTransition | null;
   private isIntro: boolean = false;
 
+  private question: FakeBossQuestion | null = null;
   private currentQuestionIndex: number = 0;
-  private questions: any[] = [];
+  private questions: FakeBossQuestion[] = [];
+  private loadedQuestion: boolean = false;
+  private currentScore: number = 0;
 
   onLoad() {
     this.game3Intro = this.node.getComponent(Game3Intro);
     this.game3QuizTransition = this.node.getComponent(Game3QuizTransition);
     this.game3PageTransition = this.node.getComponent(Game3PageTransition);
 
-    this.questions = [
+    /*this.questions = [
       {
         title: "Behavioral Inconsistency",
         options: [
@@ -99,7 +108,7 @@ export class Game3Page extends Page {
           { text: "Embarrassment", correct: false },
         ],
       },
-    ];
+    ];*/
   }
 
   protected setPageState() {
@@ -107,16 +116,20 @@ export class Game3Page extends Page {
   }
 
   public onEnter() {
+    this.pageManager.targetGamePageState = this.pageState;
     this.introScreen.active = true;
     this.gameScreen.active = false;
     this.sectionLabel.string =
       LocalizationManager.instance.getLocalizedString("general.welcome");
     this.currentQuestionIndex = 0;
+    this.currentScore = 0;
     UIManager.instance.showGameUI(true);
     GameManager.instance.timer.resetTimer();
     this.isIntro = true;
+    this.setUI();
     this.showGame(false);
     this.game3Review.init(this);
+    this.getQuestion();
     super.onEnter();
   }
 
@@ -125,16 +138,15 @@ export class Game3Page extends Page {
     if (this.isIntro) {
       this.game3Intro.init(this, this.pageManager.stateEnterTransitionDuration);
     } else {
-      UIManager.instance.showScoreStartUI(
-        LocalizationManager.instance
-          .getLocalizedString("game_3.name")
-          .toUpperCase(),
-        () => {
-          this.setQuestion();
-          this.showGame(true);
-          GameManager.instance.timer.startTimer();
-        },
-      );
+      UIManager.instance.showScoreStartUI(this.pageState, async () => {
+        if (!this.loadedQuestion) {
+          UIManager.instance.showLoading(true);
+          await waitForCondition(this.loadedQuestion);
+        }
+        this.setQuestion();
+        this.showGame(true);
+        GameManager.instance.timer.startTimer();
+      });
     }
   }
 
@@ -143,7 +155,18 @@ export class Game3Page extends Page {
     UIManager.instance.showGameUI(false);
   }
 
+  private async getQuestion() {
+    this.loadedQuestion = false;
+    await GameManager.instance.quizService.getFakeBossQuestion();
+    UIManager.instance.showLoading(false);
+    this.loadedQuestion = true;
+  }
+
   public onClickTransfer(transfer: boolean) {
+    if (transfer) {
+      this.currentScore += 100;
+    }
+    this.setUI();
     const text = transfer
       ? LocalizationManager.instance.getLocalizedString(
           "game_3.dont_transfer_message",
@@ -167,7 +190,18 @@ export class Game3Page extends Page {
     this.gameScreen.active = true;
   }
 
-  private endQuiz() {
+  private setUI() {
+    const userState: UserState = DataManager.instance.userState;
+    UIManager.instance.gameUI.updateScore(this.currentScore);
+    UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
+  }
+
+  private async endQuiz() {
+    GameManager.instance.timer.stopTimer();
+    await GameManager.instance.quizService.submitFakeBossScore(
+      this.currentScore,
+      GameManager.instance.timer.getElapsedTime(),
+    );
     this.game3Message.show(
       true,
       "<size=60>" +
@@ -178,21 +212,27 @@ export class Game3Page extends Page {
         LocalizationManager.instance.getLocalizedString("game_3.summary_body"),
       () => {},
       () => {
-        GameManager.instance.timer.stopTimer();
         this.transitionPage(PageStates.Result);
       },
     );
   }
 
   private setQuestion() {
-    const question = this.questions[this.currentQuestionIndex];
-    if (question == null) {
+    this.questions = DataManager.instance.fakeBossQuestions;
+    this.question = this.questions[this.currentQuestionIndex];
+    this.currentScore = Math.max(0, this.currentScore);
+    this.setUI();
+    if (this.question == null) {
       this.endQuiz();
       return;
     }
-    this.sectionLabel.string = question.title;
+    this.sectionLabel.string = this.question.title;
     this.options.forEach((option: Game3Option, index: number) => {
-      option.init(question.options[index] ?? null, this.slotCollider, this);
+      option.init(
+        this.question.answer_options[index] ?? null,
+        this.slotCollider,
+        this,
+      );
     });
     this.setBlockInput(true);
     this.game3QuizTransition.playTransition(true, () => {
@@ -200,8 +240,12 @@ export class Game3Page extends Page {
     });
   }
 
-  public onDropOption(correct: boolean) {
-    UIManager.instance.playFeedbackUI(correct, () => {});
+  public onDropOption(correct: boolean, feedbackText: string) {
+    UIManager.instance.playFeedbackUI(correct, feedbackText, () => {});
+
+    const correctScore = 100;
+    const wrongScore = -50;
+    this.currentScore += correct ? correctScore : wrongScore;
   }
 
   private onClickNext() {

@@ -2,7 +2,7 @@ import { _decorator, Component, Node } from "cc";
 import { GameManager } from "../../../Manager/GameManager";
 import { Page } from "../../Page";
 import { PageStates } from "../../Enums";
-import { DataManager, Quizzes } from "../../../Manager/DataManager";
+import { DataManager, Quizzes, UserState } from "../../../Manager/DataManager";
 import { ResultScore } from "./ResultScore";
 const { ccclass, property } = _decorator;
 
@@ -23,16 +23,30 @@ export class ResultPage extends Page {
 
   public onEnter() {
     super.onEnter();
-    const quizzes: Quizzes = DataManager.instance.userState.quizzes;
-    this.scoreResultScore.init(quizzes.current_score_quizzes, false);
+    const userState: UserState = DataManager.instance.userState;
+    let currentScore = 0;
+    let bestTime = 0;
+    switch (this.pageManager.targetGamePageState) {
+      case PageStates.Game1:
+        currentScore = userState.quizzes.current_score_quizzes;
+        bestTime = userState.quizzes.total_seconds_at_highest_score_quizzes;
+        break;
+      case PageStates.Game2:
+        currentScore = userState.phishing.current_score_phishing;
+        bestTime = userState.phishing.total_seconds_at_highest_score_phishing;
+        break;
+      case PageStates.Game3:
+        currentScore = userState.fake_boss.total_score_fake_boss;
+        bestTime = userState.fake_boss.best_total_seconds_fake_boss;
+        break;
+    }
+
+    this.scoreResultScore.init(currentScore, false);
     this.timeResultScore.init(
       GameManager.instance.timer.getElapsedTime(),
       true,
     );
-    this.bestTimeResultScore.init(
-      quizzes.total_seconds_at_highest_score_quizzes,
-      true,
-    );
+    this.bestTimeResultScore.init(bestTime, true);
   }
 
   private onClickClose() {

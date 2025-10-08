@@ -19,6 +19,7 @@ import { Game2Bee } from "./Game2Bee";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
 import { Game2Question } from "./Game2Question";
 import { shuffleArray } from "../../../Utils/Utils";
+import { DataManager, UserState } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Page")
@@ -57,6 +58,7 @@ export class Game2Page extends Page {
   private currentQuestionIndex: number = 0;
 
   private questions: any[] = [];
+  private currentScore: number = 0;
 
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
@@ -153,25 +155,23 @@ export class Game2Page extends Page {
 
   public onEnter() {
     super.onEnter();
+    this.pageManager.targetGamePageState = this.pageState;
+    this.currentScore = 0;
     this.showGame(false);
     this.firstQuestion = true;
     this.currentQuestionIndex = 0;
+    this.setUI();
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
   }
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI(
-      LocalizationManager.instance
-        .getLocalizedString("game_2.name")
-        .toUpperCase(),
-      async () => {
-        this.game2Bee.setText("Q1", true);
-        this.setQuestion();
-        GameManager.instance.timer.startTimer();
-      },
-    );
+    UIManager.instance.showScoreStartUI(this.pageState, async () => {
+      this.game2Bee.setText("Q1", true);
+      this.setQuestion();
+      GameManager.instance.timer.startTimer();
+    });
   }
 
   public onExit() {
@@ -179,12 +179,27 @@ export class Game2Page extends Page {
     UIManager.instance.showGameUI(false);
   }
 
-  private endQuiz() {
+  private setUI() {
+    const userState: UserState = DataManager.instance.userState;
+    UIManager.instance.gameUI.updateScore(this.currentScore);
+    UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
+  }
+
+  private async endQuiz() {
     GameManager.instance.timer.stopTimer();
+    const userState: UserState = DataManager.instance.userState;
+    await GameManager.instance.quizService.submitPhishingScore(
+      this.currentScore,
+      GameManager.instance.timer.getElapsedTime(),
+      this.currentScore,
+      userState.phishing.times_played_phishing++,
+    );
     this.transitionPage(PageStates.Result);
   }
 
   private setQuestion() {
+    this.currentScore = Math.max(0, this.currentScore);
+    this.setUI();
     if (this.currentQuestionIndex >= this.questions.length) {
       this.endQuiz();
       return;
@@ -235,7 +250,14 @@ export class Game2Page extends Page {
   }
 
   public onDropOption(correct: boolean) {
-    UIManager.instance.playFeedbackUI(correct, () => {});
+    const feedbackText = correct
+      ? ""
+      : LocalizationManager.instance.getLocalizedString("game_1.think_twice");
+    UIManager.instance.playFeedbackUI(correct, feedbackText, () => {});
+
+    const correctScore = 100;
+    const wrongScore = -25;
+    this.currentScore += correct ? correctScore : wrongScore;
   }
 
   private onClickSafe() {

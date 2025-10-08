@@ -10,12 +10,14 @@ import {
   Question,
   QUESTION_CHANGED,
   Quizzes,
+  UserState,
 } from "../../../Manager/DataManager";
 import { UIManager } from "../../../Manager/UIManager";
 import { GameManager } from "../../../Manager/GameManager";
 import { MatchAnswer, MCQAnswer, YesNoAnswer } from "../../../Api/QuizService";
 import { Game1QuizTransition } from "./Game1QuizTransition";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
+import { waitForCondition } from "../../../Utils/Utils";
 
 const { ccclass, property } = _decorator;
 
@@ -163,6 +165,7 @@ export class Game1Page extends Page {
 
   public onEnter() {
     super.onEnter();
+    this.pageManager.targetGamePageState = this.pageState;
     this.offlineLogin = GameManager.instance.offlineLogin;
     this.getQuestion();
     this.setUI();
@@ -175,18 +178,14 @@ export class Game1Page extends Page {
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI(
-      LocalizationManager.instance
-        .getLocalizedString("game_1.name")
-        .toUpperCase(),
-      async () => {
-        if (!this.loadedQuestion) {
-          UIManager.instance.showLoading(true);
-        }
-        this.setQuestion();
-        GameManager.instance.timer.startTimer();
-      },
-    );
+    UIManager.instance.showScoreStartUI(this.pageState, async () => {
+      if (!this.loadedQuestion) {
+        UIManager.instance.showLoading(true);
+        await waitForCondition(this.loadedQuestion);
+      }
+      this.setQuestion();
+      GameManager.instance.timer.startTimer();
+    });
   }
 
   public onExit() {
@@ -208,9 +207,10 @@ export class Game1Page extends Page {
   }
 
   private setUI() {
-    const quizzes: Quizzes = DataManager.instance.userState.quizzes;
+    const userState: UserState = DataManager.instance.userState;
+    const quizzes: Quizzes = userState.quizzes;
     UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
-    UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
+    UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
 
     let titleString =
       LocalizationManager.instance.getLocalizedString("general.question") +
@@ -236,12 +236,12 @@ export class Game1Page extends Page {
       this.matchCount = 0;
     }
     this.currentQuestionType = this.question?.question_type;
+    this.setUI();
     if (this.question?.question_type == null) {
       this.endQuiz();
       return;
     }
     this.questionCount++;
-    this.setUI();
     this.wrongCount = 0;
     this.questionLabel.string = this.question.text;
     if (this.question.question_type === QuestionTypes.MCQ) {
@@ -390,7 +390,10 @@ export class Game1Page extends Page {
     } else {
       this.setBlockInput(false);
     }
-    UIManager.instance.playFeedbackUI(correct, () => {});
+    const feedbackText = correct
+      ? ""
+      : LocalizationManager.instance.getLocalizedString("game_1.think_twice");
+    UIManager.instance.playFeedbackUI(correct, feedbackText, () => {});
     return correct;
   }
 

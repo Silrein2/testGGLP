@@ -2,7 +2,7 @@ import { _decorator, Component, Label, Node, tween, Vec3 } from "cc";
 import { Page } from "../../Page";
 import { ButtonStates, PageStates } from "../../Enums";
 import { GameSelectionButton } from "./GameSelectionButton";
-import { DataManager, Quizzes } from "../../../Manager/DataManager";
+import { DataManager, Quizzes, UserState } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("GameSelectionPage")
@@ -20,17 +20,19 @@ export class GameSelectionPage extends Page {
   }
   public onEnter() {
     super.onEnter();
-    const quizzes: Quizzes = DataManager.instance.userState.quizzes;
+    const userState: UserState = DataManager.instance.userState;
     this.selectedGameIndex = -1;
     this.onClickGame(null, -1);
-    this.totalScoreLabel.string = quizzes.total_score_quizzes.toString();
+    this.totalScoreLabel.string = userState.total_score_all.toString();
 
+    const gameTotalScores = [
+      userState.quizzes.total_score_quizzes,
+      userState.phishing.total_score_phishing,
+      userState.fake_boss.total_score_fake_boss,
+    ];
     this.gameSelectionButtons.forEach(
       (gameSelectionButton: GameSelectionButton, index: number) => {
-        let score = 0;
-        if (index === 0) {
-          score = quizzes.highest_score_quizzes;
-        }
+        const score = gameTotalScores[index];
         gameSelectionButton.init(score);
       },
     );

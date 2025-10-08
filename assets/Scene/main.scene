@@ -22349,7 +22349,7 @@
     "_string": "Score",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 37,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -22751,7 +22751,7 @@
     "_string": "Timer",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 37,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -23153,7 +23153,7 @@
     "_string": "Total Score",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 37,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -24007,7 +24007,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -103.383,
+      "x": 0,
       "y": 19.469,
       "z": 0
     },
@@ -24046,12 +24046,12 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 203.7368926662546,
-      "height": 50.4
+      "width": 300,
+      "height": 160
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 0.5,
       "y": 0.5
     },
     "_id": "afN+RFI29LjIIzxblgi/Ej"
@@ -24077,14 +24077,14 @@
       "a": 255
     },
     "_string": "Think twice!",
-    "_horizontalAlign": 0,
+    "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.274324324324326,
+    "_actualFontSize": 37,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 0,
-    "_enableWrapText": false,
+    "_overflow": 2,
+    "_enableWrapText": true,
     "_font": {
       "__uuid__": "adc0fb9a-8294-47a9-9b63-d8ecae6e2eca",
       "__expectedType__": "cc.TTFFont"

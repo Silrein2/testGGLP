@@ -14,6 +14,7 @@ import {
 } from "../../../Utils/DraggableObject";
 import { Game3Page } from "./Game3Page";
 import { ButtonStates } from "../../Enums";
+import { FakeBossAnswerOption } from "../../../Manager/DataManager";
 
 @ccclass("Game3Option")
 export class Game3Option extends Component {
@@ -24,7 +25,7 @@ export class Game3Option extends Component {
   private slotCollider: Collider2D | null = null;
 
   public draggableObject: DraggableObject | null = null;
-  public data: any | null = null;
+  public data: FakeBossAnswerOption | null = null;
 
   onLoad() {
     this.sprite = this.node.getComponent(Sprite);
@@ -34,7 +35,11 @@ export class Game3Option extends Component {
     this.label = this.node.getComponentInChildren(Label);
   }
 
-  public init(data: any, slotCollider: Collider2D, game3Page: Game3Page) {
+  public init(
+    data: FakeBossAnswerOption,
+    slotCollider: Collider2D,
+    game3Page: Game3Page,
+  ) {
     this.node.active = data !== null;
     if (data === null) return;
     this.game3Page = game3Page;
@@ -51,10 +56,13 @@ export class Game3Option extends Component {
     const pos = new Vec2(this.node.worldPositionX, this.node.worldPositionY);
     if (this.slotCollider.worldAABB.contains(pos)) {
       this.setState(
-        this.data.correct ? ButtonStates.Correct : ButtonStates.Wrong,
+        this.data.is_correct ? ButtonStates.Correct : ButtonStates.Wrong,
       );
       this.setDisable(true);
-      this.game3Page.onDropOption(this.data.correct);
+      this.game3Page.onDropOption(
+        this.data.is_correct,
+        this.data.bee_safe_text,
+      );
     } else {
       this.moveResetPosition();
     }

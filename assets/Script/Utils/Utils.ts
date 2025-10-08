@@ -48,7 +48,7 @@ export function waitForCondition(condition: boolean): Promise<void> {
         clearInterval(interval);
         resolve();
       }
-    }, 100);
+    }, 200);
   });
 }
 

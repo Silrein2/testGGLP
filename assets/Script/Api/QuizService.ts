@@ -1,4 +1,9 @@
-import { DataManager, Question, UserState } from "../Manager/DataManager";
+import {
+  DataManager,
+  FakeBossQuestion,
+  Question,
+  UserState,
+} from "../Manager/DataManager";
 import { QuestionTypes } from "../Page/Enums";
 import { ApiClient, ValidationError } from "./ApiClient";
 
@@ -22,9 +27,24 @@ export interface QuestionRequest {
   wrong_count: number;
 }
 
+export interface PhisingScoreRequest {
+  score: number;
+  seconds: number;
+  total_score: number;
+  times_played: number;
+}
+
+export interface FakeBossScoreRequest {
+  score: number;
+  seconds: number;
+}
+
 export class QuizService {
   private apiClient: ApiClient;
   private questionEndpoint: string = "api/quizzes/question/";
+  private phishingScoreEndpoint: string = "api/phishing/score/";
+  private fakeBossQuestionEndpoint: string = "api/fake-boss/question/";
+  private fakeBossScoreEndpoint: string = "api/fake-boss/score/";
 
   constructor(apiClient: ApiClient) {
     this.apiClient = apiClient;
@@ -65,6 +85,67 @@ export class QuizService {
       if (responseData.next_question != null) {
         DataManager.instance.setQuestion(responseData.next_question);
       }
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async submitPhishingScore(
+    score: number,
+    seconds: number,
+    total_score: number,
+    times_played: number,
+  ): Promise<UserState> {
+    try {
+      const requestData: PhisingScoreRequest = {
+        score: score,
+        seconds: seconds,
+        total_score: total_score,
+        times_played: times_played,
+      };
+
+      const responseData = await this.apiClient.post<UserState>(
+        this.phishingScoreEndpoint,
+        requestData,
+      );
+      DataManager.instance.setUserState(responseData);
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async getFakeBossQuestion(): Promise<FakeBossQuestion[]> {
+    try {
+      const responseData = await this.apiClient.get<FakeBossQuestion[]>(
+        this.fakeBossQuestionEndpoint,
+      );
+      DataManager.instance.setFakeBossQuestions(responseData);
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async submitFakeBossScore(
+    score: number,
+    seconds: number,
+  ): Promise<UserState> {
+    try {
+      const requestData: FakeBossScoreRequest = {
+        score: score,
+        seconds: seconds,
+      };
+
+      const responseData = await this.apiClient.post<UserState>(
+        this.fakeBossScoreEndpoint,
+        requestData,
+      );
+      DataManager.instance.setUserState(responseData);
       return responseData;
     } catch (error) {
       console.error(error);

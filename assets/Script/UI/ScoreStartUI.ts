@@ -1,7 +1,9 @@
-import { _decorator, Component, Label, Node } from "cc";
-import { DataManager, Quizzes } from "../Manager/DataManager";
+import { _decorator, Component, game, Label, Node } from "cc";
+import { DataManager, Quizzes, UserState } from "../Manager/DataManager";
 import { timeString } from "../Utils/Utils";
 import { PopupUI } from "./PopupUI";
+import { PageStates } from "../Page/Enums";
+import { LocalizationManager } from "../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("ScoreStartUI")
@@ -17,13 +19,36 @@ export class ScoreStartUI extends PopupUI {
 
   private onComplete: Function | null = null;
 
-  public show(game: string, onComplete: Function) {
-    const quizzes: Quizzes = DataManager.instance.userState.quizzes;
-    this.gameLabel.string = game;
-    this.highScoreLabel.string = quizzes.highest_score_quizzes.toString();
-    this.timeLabel.string = timeString(
-      quizzes.total_seconds_at_highest_score_quizzes,
-    );
+  public show(gamePageState: PageStates, onComplete: Function) {
+    const userState: UserState = DataManager.instance.userState;
+
+    let gameName = "";
+    let currentScore = 0;
+    let bestTime = 0;
+    switch (gamePageState) {
+      case PageStates.Game1:
+        gameName =
+          LocalizationManager.instance.getLocalizedString("game_1.name");
+        currentScore = userState.quizzes.highest_score_quizzes;
+        bestTime = userState.quizzes.total_seconds_at_highest_score_quizzes;
+        break;
+      case PageStates.Game2:
+        gameName =
+          LocalizationManager.instance.getLocalizedString("game_2.name");
+        currentScore = userState.phishing.highest_score_phishing;
+        bestTime = userState.phishing.total_seconds_at_highest_score_phishing;
+        break;
+      case PageStates.Game3:
+        gameName =
+          LocalizationManager.instance.getLocalizedString("game_3.name");
+        currentScore = userState.fake_boss.total_score_fake_boss;
+        bestTime = userState.fake_boss.best_total_seconds_fake_boss;
+        break;
+    }
+
+    this.gameLabel.string = gameName.toUpperCase();
+    this.highScoreLabel.string = currentScore.toString();
+    this.timeLabel.string = timeString(bestTime);
     this.onComplete = onComplete;
     this.onShow();
   }

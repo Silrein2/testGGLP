@@ -74,7 +74,6 @@ export class Game2Option extends Component {
       slot.collider.apply();
       if (slot.collider.worldAABB.contains(pos)) {
         collided = true;
-        this.setParent(slot.node.parent);
         if (slot.data == (this.data.id as number)) {
           correct = true;
         }
@@ -82,8 +81,13 @@ export class Game2Option extends Component {
     });
     if (collided) {
       this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
-      this.setDisable(true);
       this.game2Page.onDropOption(correct);
+      if (!correct) {
+        this.moveResetPosition();
+      } else {
+        this.setParent(this.slots[0].node.parent);
+        this.setDisable(true);
+      }
     } else {
       this.moveResetPosition();
     }
@@ -103,6 +107,7 @@ export class Game2Option extends Component {
       .call(() => {
         this.node.setParent(this.container, true);
         this.draggableObject.resetPosition();
+        this.setState(ButtonStates.Normal);
       })
       .start();
   }

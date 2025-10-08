@@ -13,6 +13,7 @@ import {
 } from "cc";
 import { TypewriterEffect } from "../Utils/TypewriterEffect";
 import { LocalizationManager } from "../Manager/LocalizationManager";
+import { isNullOrEmpty } from "../Utils/Utils";
 const { ccclass, property } = _decorator;
 
 @ccclass("FeedbackUI")
@@ -46,21 +47,21 @@ export class FeedbackUI extends Component {
     this.characterUIOpacity = this.characterSprite.node.getComponent(UIOpacity);
   }
 
-  public play(correct: boolean, onComplete: Function) {
+  public play(correct: boolean, text: string, onComplete: Function) {
     this.node.active = true;
     if (this.characterTween != null) {
       tween(this.characterUIOpacity)
         .to(0.1, { opacity: 0 }, { easing: "cubicIn" })
         .call(() => {
-          this.playFeedback(correct, onComplete);
+          this.playFeedback(correct, text, onComplete);
         })
         .start();
     } else {
-      this.playFeedback(correct, onComplete);
+      this.playFeedback(correct, text, onComplete);
     }
   }
 
-  private playFeedback(correct: boolean, onComplete: Function) {
+  private playFeedback(correct: boolean, text: string, onComplete: Function) {
     if (this.characterTween != null) {
       this.characterTween.stop();
     }
@@ -80,12 +81,10 @@ export class FeedbackUI extends Component {
     this.characterTween = tween(this.characterSprite.node)
       .to(0.5, { position: this.characterInitialPos }, { easing: "backOut" })
       .call(() => {
-        if (!correct) {
+        if (!isNullOrEmpty(text)) {
           this.speech.active = true;
           this.typewriterEffect.startEffect(
-            LocalizationManager.instance.getLocalizedString(
-              "game_1.think_twice",
-            ),
+            text,
             this.speechLabel,
             () => {},
             0.025,

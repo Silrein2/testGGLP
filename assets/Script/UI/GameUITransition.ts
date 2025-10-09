@@ -55,6 +55,8 @@ export class GameUITransition extends PageTransition {
   public async playEnter(
     rightNodes: Node[] = [],
     rightInitialPos: Vec3[] = [],
+    bottomNodes: Node[] = [],
+    bottomInitialPos: Vec3[] = [],
     callback: Function = () => {},
   ) {
     await this.tweenList(this.topNodes, this.topInitialPos, 200, "backOut");
@@ -65,8 +67,8 @@ export class GameUITransition extends PageTransition {
       "backOut",
     );
     await this.tweenList(
-      this.bottomNodes,
-      this.bottomInitialPos,
+      [...bottomNodes, ...this.bottomNodes],
+      [...bottomInitialPos, ...this.bottomInitialPos],
       200,
       "backOut",
     );

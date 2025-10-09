@@ -1,5 +1,7 @@
 import { _decorator, Component, JsonAsset, Node, resources } from "cc";
 import { DataManager } from "./DataManager";
+import en from "../Utils/i18n_en";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("LocalizationManager")
@@ -28,14 +30,15 @@ export class LocalizationManager extends Component {
   }
 
   public async loadLanguage() {
-    const localPath = `i18n/en`;
+    /*const localPath = `i18n/en`;
 
     resources.load(localPath, JsonAsset, (err, jsonAsset) => {
       if (err) {
         return;
       }
       this.languageData = jsonAsset.json;
-    });
+    });*/
+    this.languageData = en;
   }
 
   public getLocalizedString(

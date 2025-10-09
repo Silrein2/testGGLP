@@ -15,11 +15,17 @@ export class Game2PageTransition extends PageTransition {
   @property({ type: [Node] })
   private rightNodes: Node[] = [];
 
+  @property({ type: [Node] })
+  private bottomNodes: Node[] = [];
+
   @property({ type: Game2Bee })
   private game2Bee: Game2Bee | null = null;
 
   private rightInitialPos: Vec3[] = [];
   private rightFromPos: Vec3[] = [];
+
+  private bottomInitialPos: Vec3[] = [];
+  private bottomFromPos: Vec3[] = [];
 
   onLoad() {
     this.enterTransitionEnabled = true;
@@ -32,6 +38,14 @@ export class Game2PageTransition extends PageTransition {
       "x",
       1260,
     );
+
+    this.recordPos(
+      this.bottomNodes,
+      this.bottomInitialPos,
+      this.bottomFromPos,
+      "y",
+      -820,
+    );
   }
 
   public onEnter() {
@@ -41,6 +55,8 @@ export class Game2PageTransition extends PageTransition {
       await this.gameUITransition.playEnter(
         this.rightNodes,
         this.rightInitialPos,
+        this.bottomNodes,
+        this.bottomInitialPos,
       );
       await delay(600);
       this.game2Bee.enter(
@@ -55,7 +71,12 @@ export class Game2PageTransition extends PageTransition {
   }
 
   public async onExit() {
-    await this.gameUITransition.playExit(this.rightNodes, this.rightFromPos);
+    await this.gameUITransition.playExit(
+      this.rightNodes,
+      this.rightFromPos,
+      this.bottomNodes,
+      this.bottomFromPos,
+    );
     await delay(800);
     this.onExitComplete();
   }

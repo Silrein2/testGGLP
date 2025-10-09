@@ -1,20 +1,24 @@
 import {
   _decorator,
   Button,
-  CCBoolean,
+  Color,
   Component,
   EditBox,
+  instantiate,
   Label,
   Node,
+  Prefab,
+  Sprite,
 } from "cc";
-import { Page } from "../Page";
-import { PageStates } from "../Enums";
-import { GameManager } from "../../Manager/GameManager";
-import { UIManager } from "../../Manager/UIManager";
-import { DataManager } from "../../Manager/DataManager";
-import { isNullOrEmpty } from "../../Utils/Utils";
-import { ValidationError } from "../../Api/ApiClient";
-import { LocalizationManager } from "../../Manager/LocalizationManager";
+import { Page } from "../../Page";
+import { PageStates } from "../../Enums";
+import { GameManager } from "../../../Manager/GameManager";
+import { UIManager } from "../../../Manager/UIManager";
+import { DataManager } from "../../../Manager/DataManager";
+import { isNullOrEmpty } from "../../../Utils/Utils";
+import { ValidationError } from "../../../Api/ApiClient";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
+import { SelectUIButton } from "../../../UI/SelectUIButton";
 const { ccclass, property } = _decorator;
 
 @ccclass("LoginPage")
@@ -25,12 +29,26 @@ export class LoginPage extends Page {
   @property({ type: Label })
   private businessUnitLabel: Label | null = null;
 
+  @property({ type: Node })
+  private locationScrollView: Node | null = null;
+
+  @property({ type: Sprite })
+  private handleSprite: Sprite | null = null;
+
+  @property({ type: Node })
+  private locationContainer: Node | null = null;
+
+  @property({ type: Prefab })
+  private locationOptionPrefab: Prefab | null = null;
+
   @property
   private quickLogin: boolean = false;
 
   private businessUnitId: number | null = null;
 
   private offlineLogin: boolean = false;
+
+  private selectUIButtons: SelectUIButton[] = [];
 
   start() {
     this.offlineLogin = GameManager.instance.offlineLogin;
@@ -57,7 +75,7 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
-    this.transitionPage(PageStates.DialogueIntro);
+    this.transitionPage(PageStates.DialogueGame1);
     UIManager.instance.showLoading(false);
   }
 
@@ -94,18 +112,42 @@ export class LoginPage extends Page {
     UIManager.instance.showLoading(false);
   }
 
-  private onClickBusinessUnit() {
-    const data = DataManager.instance.businessUnits.map((x) => {
+  private populateLocation() {
+    const options = DataManager.instance.businessUnits.map((x) => {
       return { text: x.name, value: x.id };
     });
-    UIManager.instance.showSelectUI(
-      LocalizationManager.instance.getLocalizedString(
-        "general.select_your_business_unit",
-      ),
-      data,
-      this.businessUnitId,
-      this.onSelectBusinessUnit.bind(this),
-    );
+
+    for (const option of this.selectUIButtons) {
+      option.node.destroy();
+    }
+    this.selectUIButtons = [];
+
+    for (const option of options) {
+      const optionNode = instantiate(this.locationOptionPrefab) as Node;
+      this.locationContainer.addChild(optionNode);
+
+      const optionButton = optionNode.getComponent(Button);
+      const selectUIButton = optionNode.getComponent(SelectUIButton);
+      selectUIButton.init(option);
+      this.selectUIButtons.push(selectUIButton);
+
+      if (optionButton) {
+        optionButton.node.on(
+          Button.EventType.CLICK,
+          () => {
+            this.onSelectBusinessUnit(option.value);
+          },
+          this,
+        );
+      }
+    }
+
+    this.scrollBarOpacity();
+  }
+
+  private onClickBusinessUnit() {
+    this.populateLocation();
+    this.locationScrollView.active = !this.locationScrollView.active;
   }
 
   private onSelectBusinessUnit(value: number) {
@@ -113,5 +155,19 @@ export class LoginPage extends Page {
     this.businessUnitLabel.string = DataManager.instance.businessUnits.find(
       (x) => x.id == value,
     ).name;
+    this.locationScrollView.active = false;
+  }
+
+  private scrollBarOpacity() {
+    this.scheduleOnce(() => {
+      const spriteComp = this.handleSprite;
+      const currentColor = spriteComp.color;
+      spriteComp.color = new Color(
+        currentColor.r,
+        currentColor.g,
+        currentColor.b,
+        255,
+      );
+    }, 0.1);
   }
 }

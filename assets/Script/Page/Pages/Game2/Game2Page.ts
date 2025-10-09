@@ -25,6 +25,9 @@ const { ccclass, property } = _decorator;
 @ccclass("Game2Page")
 export class Game2Page extends Page {
   @property({ type: Layout })
+  public questionLayout: Layout | null = null;
+
+  @property({ type: Layout })
   public optionLayout: Layout | null = null;
 
   @property({ type: Prefab })
@@ -59,6 +62,7 @@ export class Game2Page extends Page {
 
   private questions: any[] = [];
   private currentScore: number = 0;
+  private enableTutorial: boolean = false;
 
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
@@ -157,6 +161,8 @@ export class Game2Page extends Page {
     super.onEnter();
     this.pageManager.targetGamePageState = this.pageState;
     this.currentScore = 0;
+    this.enableTutorial = false;
+    this.game2Bee.node.active = false;
     this.showGame(false);
     this.firstQuestion = true;
     this.currentQuestionIndex = 0;
@@ -167,11 +173,19 @@ export class Game2Page extends Page {
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
-    UIManager.instance.showScoreStartUI(this.pageState, async () => {
-      this.game2Bee.setText("Q1", true);
-      this.setQuestion();
-      GameManager.instance.timer.startTimer();
-    });
+    UIManager.instance.showScoreStartUI(
+      this.pageState,
+      async () => {
+        this.game2Bee.setText("Q1", true);
+        this.setQuestion();
+        GameManager.instance.timer.startTimer();
+      },
+      () => {
+        this.game2Bee.setText("Q1", true);
+        this.setQuestion();
+        this.enableTutorial = true;
+      },
+    );
   }
 
   public onExit() {
@@ -245,6 +259,7 @@ export class Game2Page extends Page {
       () => {
         this.setBlockInput(false);
         this.showTutorial();
+        this.firstQuestion = false;
       },
     );
   }
@@ -276,13 +291,15 @@ export class Game2Page extends Page {
   }
 
   private showGame(show: boolean) {
+    this.questionLayout.node.active = show;
     this.optionLayout.node.active = show;
   }
 
   private showTutorial() {
-    if (this.firstQuestion) {
-      this.firstQuestion = false;
-      this.tutorial.show();
+    if (this.firstQuestion && this.enableTutorial) {
+      this.tutorial.show(() => {
+        GameManager.instance.timer.startTimer();
+      });
     }
   }
 

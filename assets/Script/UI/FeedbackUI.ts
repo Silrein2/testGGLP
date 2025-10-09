@@ -76,8 +76,8 @@ export class FeedbackUI extends Component {
       this.animation.stop();
       this.characterSprite.spriteFrame = this.wrongSpriteFrame;
     }
-
-    const stayDelay = 1;
+    const textSpeed = 0.025;
+    const stayDelay = textSpeed * text.length + 1;
     this.characterTween = tween(this.characterSprite.node)
       .to(0.5, { position: this.characterInitialPos }, { easing: "backOut" })
       .call(() => {
@@ -87,7 +87,7 @@ export class FeedbackUI extends Component {
             text,
             this.speechLabel,
             () => {},
-            0.025,
+            textSpeed,
           );
         }
       })

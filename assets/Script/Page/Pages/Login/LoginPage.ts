@@ -8,7 +8,10 @@ import {
   Label,
   Node,
   Prefab,
+  ScrollView,
   Sprite,
+  tween,
+  UIOpacity,
 } from "cc";
 import { Page } from "../../Page";
 import { PageStates } from "../../Enums";
@@ -29,8 +32,8 @@ export class LoginPage extends Page {
   @property({ type: Label })
   private businessUnitLabel: Label | null = null;
 
-  @property({ type: Node })
-  private locationScrollView: Node | null = null;
+  @property({ type: ScrollView })
+  private locationScrollView: ScrollView | null = null;
 
   @property({ type: Sprite })
   private handleSprite: Sprite | null = null;
@@ -45,10 +48,14 @@ export class LoginPage extends Page {
   private quickLogin: boolean = false;
 
   private businessUnitId: number | null = null;
-
   private offlineLogin: boolean = false;
-
   private selectUIButtons: SelectUIButton[] = [];
+  private locationUiOpacity: UIOpacity | null = null;
+  private lockLocation: boolean = false;
+
+  onLoad() {
+    this.locationUiOpacity = this.locationScrollView.getComponent(UIOpacity);
+  }
 
   start() {
     this.offlineLogin = GameManager.instance.offlineLogin;
@@ -146,8 +153,28 @@ export class LoginPage extends Page {
   }
 
   private onClickBusinessUnit() {
-    this.populateLocation();
-    this.locationScrollView.active = !this.locationScrollView.active;
+    if (this.lockLocation) return;
+    this.lockLocation = true;
+    const show = !this.locationScrollView.node.active;
+    const from = show ? 0 : 255;
+    const to = show ? 255 : 0;
+    const easing = show ? "sineOut" : "sineIn";
+    const duration = show ? 0.2 : 0.15;
+
+    this.locationUiOpacity.opacity = from;
+
+    if (show) {
+      this.populateLocation();
+      this.locationScrollView.scrollToTop(0.01);
+      this.locationScrollView.node.active = true;
+    }
+    tween(this.locationUiOpacity)
+      .to(duration, { opacity: to }, { easing: easing })
+      .call(() => {
+        if (!show) this.locationScrollView.node.active = false;
+        this.lockLocation = false;
+      })
+      .start();
   }
 
   private onSelectBusinessUnit(value: number) {
@@ -155,7 +182,7 @@ export class LoginPage extends Page {
     this.businessUnitLabel.string = DataManager.instance.businessUnits.find(
       (x) => x.id == value,
     ).name;
-    this.locationScrollView.active = false;
+    this.onClickBusinessUnit();
   }
 
   private scrollBarOpacity() {

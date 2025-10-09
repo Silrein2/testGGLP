@@ -87,7 +87,7 @@ export class DialogueGame1Page extends DialoguePage {
       uiOpacity.opacity = 0;
       this.clipBg.active = true;
       tween(uiOpacity)
-        .to(0.4, { opacity: 255 }, { easing: "cubicOut" })
+        .to(0.4, { opacity: 255 }, { easing: "sineOut" })
         .call(() => {
           this.videoPlayer.node.active = true;
           this.videoPlayer.play();
@@ -100,7 +100,7 @@ export class DialogueGame1Page extends DialoguePage {
       this.videoPlayer.node.active = false;
       uiOpacity.opacity = 255;
       tween(uiOpacity)
-        .to(0.4, { opacity: 0 }, { easing: "cubicIn" })
+        .to(0.4, { opacity: 0 }, { easing: "sineIn" })
         .call(() => {
           this.clipBg.active = false;
         })

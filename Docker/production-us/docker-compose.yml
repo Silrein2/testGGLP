@@ -1,0 +1,16 @@
+name: amway-bee-safe-us
+
+services:
+  frontend:
+    build:
+      context: ../..
+      dockerfile: Docker/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - amway-bee-safe-us_default
+    restart: always
+
+networks:
+  amway-bee-safe-us_default:
+    external: true

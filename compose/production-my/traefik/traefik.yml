@@ -1,0 +1,87 @@
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    # http
+    address: ":80"
+  #    http:
+  #      # https://doc.traefik.io/traefik/routing/entrypoints/#entrypoint
+  #      redirections:
+  #        entryPoint:
+  #          to: web-secure
+
+  web-secure:
+    # https
+    address: ":443"
+
+  flower:
+    address: ":5555"
+
+#certificatesResolvers:
+#  letsencrypt:
+#    # https://doc.traefik.io/traefik/https/acme/#lets-encrypt
+#    acme:
+#      email: "randy@gameka.my"
+#      storage: /etc/traefik/acme/acme.json
+#      # https://doc.traefik.io/traefik/https/acme/#httpchallenge
+#      httpChallenge:
+#        entryPoint: web
+
+http:
+  routers:
+    web-cocos-router:
+      rule: "Host(`BeeSafeV3-my.intranet.local`) && PathPrefix(`/`)"
+      entryPoints:
+        - web
+      service: cocos
+      priority: 1
+    #      tls:
+    #        certResolver: letsencrypt
+
+    web-django-router:
+      rule: "Host(`BeeSafeV3-my.intranet.local`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
+      entryPoints:
+        - web
+      middlewares:
+        - csrf
+      service: django
+      priority: 100
+    #      tls:
+    #        certResolver: letsencrypt
+
+    flower-secure-router:
+      rule: "Host(`BeeSafeV3-my.intranet.local`)"
+      entryPoints:
+        - flower
+      service: flower
+  #      tls:
+  #        # https://doc.traefik.io/traefik/master/routing/routers/#certresolver
+  #        certResolver: letsencrypt
+
+  middlewares:
+    csrf:
+      headers:
+        hostsProxyHeaders: ["X-CSRFToken"]
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000
+
+    flower:
+      loadBalancer:
+        servers:
+          - url: http://flower:5555
+
+    cocos:
+      loadBalancer:
+        servers:
+          - url: http://frontend:80
+
+providers:
+  # https://doc.traefik.io/traefik/master/providers/file/
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true

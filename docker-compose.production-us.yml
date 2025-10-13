@@ -1,0 +1,77 @@
+name: 'amway-bee-safe-us'
+
+volumes:
+  postgres_data: {}
+  postgres_data_backups: {}
+  traefik: {}
+  redis_data: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production-us/.django
+      - ./.envs/.production-us/.postgres
+    command: /start
+    restart: unless-stopped
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production-us/.postgres
+    command: postgres -c max_connections=1000 -c shared_buffers=512MB -c work_mem=16MB -c effective_cache_size=2GB
+    restart: unless-stopped
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    ports:
+      - "6432:6432"
+    env_file:
+      - ./.envs/.production-us/.postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production-us/traefik/Dockerfile
+    depends_on:
+      - django
+    volumes:
+      - traefik:/etc/traefik/acme
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    restart: unless-stopped
+
+  redis:
+    image: docker.io/redis:6
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  celeryworker:
+    <<: *django
+    command: /start-celeryworker
+    restart: unless-stopped
+
+  celerybeat:
+    <<: *django
+    command: /start-celerybeat
+    restart: unless-stopped
+
+  flower:
+    <<: *django
+    command: /start-flower
+    restart: unless-stopped

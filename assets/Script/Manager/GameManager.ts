@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from "cc";
+import { _decorator, Component, Enum, Node } from "cc";
 import { ApiClient } from "../Api/ApiClient";
 import { AuthService } from "../Api/AuthService";
 import { UserService } from "../Api/UserService";
@@ -11,9 +11,22 @@ import { LocalizationManager } from "./LocalizationManager";
 import { LocalizedLabel } from "../Utils/LocalizedLabel";
 const { ccclass, property } = _decorator;
 
+enum Environments {
+  STAGING,
+  PRODUCTION_MY,
+  PRODUCTION_US,
+}
+
+export const EDITOR_ENVIRONMENTS = Enum(Environments);
+
 @ccclass("GameManager")
 export class GameManager extends Component {
   private static _instance: GameManager | null = null;
+
+  @property({
+    type: EDITOR_ENVIRONMENTS,
+  })
+  private environment: Environments = Environments.STAGING;
 
   @property({ type: PageManager })
   private pageManager: PageManager | null = null;
@@ -62,7 +75,18 @@ export class GameManager extends Component {
     const defaultHeaders = {
       "Accept-Language": this.languageCode,
     };
-    const BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
+    let BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
+    switch (this.environment) {
+      case Environments.STAGING:
+        BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
+        break;
+      case Environments.PRODUCTION_MY:
+        BASE_API_URL = "https://BeeSafeV3-my.intranet.local/";
+        break;
+      case Environments.PRODUCTION_US:
+        BASE_API_URL = "https://BeeSafeV3-us.intranet.local/";
+        break;
+    }
     this.apiClient = new ApiClient(BASE_API_URL, defaultHeaders);
     this.authService = new AuthService(this.apiClient);
     this.userService = new UserService(this.apiClient);
@@ -87,9 +111,10 @@ export class GameManager extends Component {
   }
 
   public showLanguageSetting() {
-    const data = DataManager.instance.languages.map((x) => {
+    let data = DataManager.instance.languages.map((x) => {
       return { text: x.name, value: x.code };
     });
+    data = data.filter((x) => x.value === "en");
     UIManager.instance.showSelectUI(
       LocalizationManager.instance.getLocalizedString(
         "general.select_your_language",

@@ -1,0 +1,19 @@
+/* admin authoring UI */
+#phishing-canvas-wrap {
+  border: 1px solid #ddd;
+  display: inline-block;
+  background: #fafafa;
+  padding: 6px;
+}
+#phishing-authoring-controls {
+  margin-top: 8px;
+}
+#phishing-authoring-controls button {
+  margin-right: 8px;
+  padding: 6px 10px;
+}
+#phishing-authoring-controls .hint {
+  color: #555;
+  font-size: 13px;
+}
+

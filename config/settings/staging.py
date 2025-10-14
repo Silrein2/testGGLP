@@ -203,7 +203,7 @@ sentry_sdk.init(
 # Tools that generate code samples can use SERVERS to point to the correct domain
 SPECTACULAR_SETTINGS["SERVERS"] = [
     {
-        "url": "https://beesafe.gamekaexternalprojects.com",
+        "url": env("DJANGO_SERVER_URL", default="https://beesafe.gamekaexternalprojects.com"),
         "description": "Staging server",
     },
 ]

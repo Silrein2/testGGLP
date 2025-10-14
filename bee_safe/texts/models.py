@@ -1,4 +1,4 @@
-from contrib import mixins
+from bee_safe.contrib import mixins
 from django.db import models
 from django.utils.translation import gettext as _
 

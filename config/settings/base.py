@@ -368,7 +368,7 @@ SOCIALACCOUNT_FORMS = {"signup": "bee_safe.users.forms.UserSocialSignupForm"}
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
-        "contrib.auth.SwaggerSessionAuthentication",
+        "bee_safe.contrib.auth.SwaggerSessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",

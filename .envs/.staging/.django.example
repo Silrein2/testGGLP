@@ -5,6 +5,7 @@ DJANGO_SETTINGS_MODULE=config.settings.staging
 DJANGO_SECRET_KEY=n3wR3r0lled5ecre7Key1234567890abcDefGhIjKlMnOpQrStUvWxYz
 DJANGO_ADMIN_URL=admin/
 DJANGO_ALLOWED_HOSTS=*
+DJANGO_SERVER_URL=
 
 # Security
 # ------------------------------------------------------------------------------

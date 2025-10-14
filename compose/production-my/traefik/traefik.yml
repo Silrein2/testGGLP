@@ -31,7 +31,7 @@ entryPoints:
 http:
   routers:
     web-cocos-router:
-      rule: "Host(`BeeSafeV3-my.intranet.local`) && PathPrefix(`/`)"
+      rule: "Host(`beesafe25-my.intranet.local`) && PathPrefix(`/`)"
       entryPoints:
         - web
       service: cocos
@@ -40,7 +40,7 @@ http:
     #        certResolver: letsencrypt
 
     web-django-router:
-      rule: "Host(`BeeSafeV3-my.intranet.local`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
+      rule: "Host(`beesafe25-my.intranet.local`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
       entryPoints:
         - web
       middlewares:
@@ -51,7 +51,7 @@ http:
     #        certResolver: letsencrypt
 
     flower-secure-router:
-      rule: "Host(`BeeSafeV3-my.intranet.local`)"
+      rule: "Host(`beesafe25-my.intranet.local`)"
       entryPoints:
         - flower
       service: flower

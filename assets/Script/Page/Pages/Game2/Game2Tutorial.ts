@@ -36,6 +36,7 @@ export class Game2Tutorial extends Component {
     this.onComplete = onComplete;
     this.sequence = 0;
     this.node.active = true;
+    this.game2Bee.node.active = false;
     this.okayButton.interactable = false;
     const uiOpacity = this.optionSpotlight.getComponent(UIOpacity);
     this.showSequenceSpotlight();

@@ -74,9 +74,12 @@ export class DraggableObject extends Component {
     this.node.setPosition(this.initialPosition);
   }
 
-  public moveResetPosition() {
+  public moveResetPosition(onComplete: Func = () => {}) {
     tween(this.node)
       .to(0.4, { position: this.initialPosition }, { easing: "backOut" })
+      .call(() => {
+        onComplete();
+      })
       .start();
   }
 

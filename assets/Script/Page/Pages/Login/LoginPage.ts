@@ -82,7 +82,7 @@ export class LoginPage extends Page {
       "8637a47575328dd08eecd138284889edce3dc504",
     );
     await GameManager.instance.userService.fetchUserState();
-    this.transitionPage(PageStates.DialogueGame1);
+    this.transitionPage(PageStates.DialogueIntro);
     UIManager.instance.showLoading(false);
   }
 

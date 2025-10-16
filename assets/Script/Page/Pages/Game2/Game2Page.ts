@@ -66,7 +66,6 @@ export class Game2Page extends Page {
 
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
-    this.tutorial.node.active = false;
 
     this.questions = [
       {
@@ -160,6 +159,7 @@ export class Game2Page extends Page {
   public onEnter() {
     super.onEnter();
     this.pageManager.targetGamePageState = this.pageState;
+    this.tutorial.node.active = false;
     this.currentScore = 0;
     this.enableTutorial = false;
     this.game2Bee.node.active = false;

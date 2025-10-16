@@ -55,10 +55,13 @@ export class Game3Option extends Component {
     if (this.draggableObject.disabled) return;
     const pos = new Vec2(this.node.worldPositionX, this.node.worldPositionY);
     if (this.slotCollider.worldAABB.contains(pos)) {
-      this.setState(
-        this.data.is_correct ? ButtonStates.Correct : ButtonStates.Wrong,
-      );
-      this.setDisable(true);
+      const correct = this.data.is_correct;
+      this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
+      if (!correct) {
+        this.moveResetPosition();
+      } else {
+        this.setDisable(true);
+      }
       this.game3Page.onDropOption(
         this.data.is_correct,
         this.data.bee_safe_text,
@@ -73,7 +76,9 @@ export class Game3Option extends Component {
   }
 
   public moveResetPosition() {
-    this.draggableObject.moveResetPosition();
+    this.draggableObject.moveResetPosition(() => {
+      this.setState(ButtonStates.Normal);
+    });
   }
 
   public setDisable(disable: boolean) {

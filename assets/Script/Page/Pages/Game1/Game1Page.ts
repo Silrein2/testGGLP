@@ -236,12 +236,12 @@ export class Game1Page extends Page {
       this.matchCount = 0;
     }
     this.currentQuestionType = this.question?.question_type;
-    this.setUI();
     if (this.question?.question_type == null) {
       this.endQuiz();
       return;
     }
     this.questionCount++;
+    this.setUI();
     this.wrongCount = 0;
     this.questionLabel.string = this.question.text;
     if (this.question.question_type === QuestionTypes.MCQ) {
@@ -260,6 +260,7 @@ export class Game1Page extends Page {
             this.question.match_pairs.options_b[index] ?? null,
             this.type2Slots,
             this,
+            10,
           );
         },
       );
@@ -278,6 +279,7 @@ export class Game1Page extends Page {
           this.question.yes_no_answer.statement,
           this.type3Slots,
           this,
+          15,
         );
       });
 

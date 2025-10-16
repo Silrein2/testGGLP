@@ -81,10 +81,12 @@ export class GameManager extends Component {
         BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
         break;
       case Environments.PRODUCTION_MY:
-        BASE_API_URL = "http://beesafe25-my.intranet.local/";
+        //BASE_API_URL = "http://beesafe25-my.intranet.local/";
+        BASE_API_URL = "";
         break;
       case Environments.PRODUCTION_US:
-        BASE_API_URL = "http://beesafe25-us.intranet.local/";
+        //BASE_API_URL = "http://beesafe25-us.intranet.local/";
+        BASE_API_URL = "";
         break;
     }
     this.apiClient = new ApiClient(BASE_API_URL, defaultHeaders);

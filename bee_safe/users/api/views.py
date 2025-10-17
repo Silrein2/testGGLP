@@ -82,10 +82,16 @@ class CustomTokenCreateView(DjoserTokenCreateView):
             EmailDomain.objects.get(domain=email.split("@")[1])
             user = User.objects.get(
                 email=email,
-                business_unit_id=business_unit_id,
+                # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
+#                 business_unit_id=business_unit_id,
             )
             if not user.check_password(request.data["password"]):
                 raise User.DoesNotExist  # noqa: TRY301
+
+            # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
+            if user.business_unit_id != business_unit_id:
+                user.business_unit_id = business_unit_id
+                user.save()
         except User.DoesNotExist:
             user = User.objects.create_user(
                 username="",

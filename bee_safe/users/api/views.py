@@ -74,7 +74,7 @@ class CustomTokenCreateView(DjoserTokenCreateView):
         responses={200: CustomTokenResponseSerializer},
     )
     def post(self, request, *args, **kwargs):
-        email = request.data.get("email")
+        email = request.data.get("email").lower()
         business_unit_id = request.data.get("business_unit_id")
         request.data["password"] = "P@55w0rd"  # noqa: S105
 

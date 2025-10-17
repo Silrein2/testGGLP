@@ -105,6 +105,9 @@ class User(AbstractUser):
         return self.email
 
     def save(self, *args, **kwargs):
+        # https://github.com/Gameka-games/amway-bee-safe-backend/issues/23
+        # Make it lowercase upon save to prevent case sensitive
+        self.email = self.email.lower()
         if not self.is_superuser and not self.is_staff:
             super().set_password("P@55w0rd")
         super().save(*args, **kwargs)

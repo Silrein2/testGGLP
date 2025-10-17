@@ -425,9 +425,14 @@ DJOSER = {
     },
 }
 
+from django.templatetags.static import static
+
 UNFOLD = {
     "SITE_TITLE": "Amway Bee Safe",
     "SITE_HEADER": "Amway Bee Safe",
+    "STYLES": [
+        lambda request: static("css/project.css"),
+    ],
 }
 
 # Your stuff...

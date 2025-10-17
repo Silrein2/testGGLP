@@ -5,7 +5,8 @@ class CustomAuth(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         # https://github.com/Gameka-games/amway-bee-safe-backend/issues/23
         # To prevent case sensitive, make username lowercase as User.save make username(email) lowercase
-        username = username.lower()
+        if username:
+            username = username.lower()
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(username=username)

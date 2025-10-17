@@ -108,15 +108,22 @@ class User(AbstractUser):
         # https://github.com/Gameka-games/amway-bee-safe-backend/issues/23
         # Make it lowercase upon save to prevent case sensitive
         self.email = self.email.lower()
-        if not self.is_superuser and not self.is_staff:
-            super().set_password("P@55w0rd")
+
+        # https://github.com/Gameka-games/amway-bee-safe-backend/issues/25
+        # user probably get confuse with this setup as they change password 1st and set the is_staff/is_superuser later
+        # instead, since FE do not require password, we just skip password check at FE login
+        # if not self.is_superuser and not self.is_staff:
+        #     super().set_password("P@55w0rd")
         super().save(*args, **kwargs)
 
     def set_password(self, raw_password):
-        if self.is_superuser or self.is_staff:
-            super().set_password(raw_password)
-        else:
-            super().set_password("P@55w0rd")
+        super().set_password(raw_password)
+        # https://github.com/Gameka-games/amway-bee-safe-backend/issues/25
+        # reason above
+        # if self.is_superuser or self.is_staff:
+        #     super().set_password(raw_password)
+        # else:
+        #     super().set_password("P@55w0rd")
 
     def reset_quizzes(self):
         return UserStateService(self).reset_quizzes()

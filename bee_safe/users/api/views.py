@@ -85,8 +85,11 @@ class CustomTokenCreateView(DjoserTokenCreateView):
                 # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
 #                 business_unit_id=business_unit_id,
             )
-            if not user.check_password(request.data["password"]):
-                raise User.DoesNotExist  # noqa: TRY301
+
+            # https://github.com/Gameka-games/amway-bee-safe-backend/issues/25
+            # We skip password check
+            # if not user.check_password(request.data["password"]):
+            #     raise User.DoesNotExist  # noqa: TRY301
 
             # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
             if user.business_unit_id != business_unit_id:

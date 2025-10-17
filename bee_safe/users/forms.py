@@ -48,7 +48,7 @@ class UserAdminCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         password = self.cleaned_data.get("password1")
-        user.set_password("P@55w0rd")
+        # user.set_password("P@55w0rd")
         if password:
             user.set_password(password)
         if commit:

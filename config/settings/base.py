@@ -130,6 +130,7 @@ MIGRATION_MODULES = {"sites": "bee_safe.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    "bee_safe.custom_admin.auth.CustomAuth",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -424,9 +425,14 @@ DJOSER = {
     },
 }
 
+from django.templatetags.static import static
+
 UNFOLD = {
     "SITE_TITLE": "Amway Bee Safe",
     "SITE_HEADER": "Amway Bee Safe",
+    "STYLES": [
+        lambda request: static("css/project.css"),
+    ],
 }
 
 # Your stuff...

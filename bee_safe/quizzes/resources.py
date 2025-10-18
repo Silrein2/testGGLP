@@ -92,8 +92,13 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
         if obj.question_type != Question.YES_NO:
             return ""
 
+        text_translation_fields = get_translation_fields("text")
+        translate_fields = map(lambda field: field.replace("text", "statement"), text_translation_fields)
+        yes_no_answer_keys = ["is_yes", *translate_fields]
         try:
-            return json.dumps({"is_yes": obj.yes_no_answer.is_yes}, ensure_ascii=False)
+            return json.dumps({
+                field: getattr(obj.yes_no_answer, field, "") or "" for field in yes_no_answer_keys
+            }, ensure_ascii=False)
         except YesNoAnswer.DoesNotExist:
             return ""
 
@@ -156,13 +161,25 @@ class QuestionResource(mixins.TranslatedModelResourceMixin, resources.ModelResou
         # Import Yes/No Answer
         if hasattr(instance, "_import_yes_no_data") and instance._import_yes_no_data:
             try:
+                # convert text_<langugage> to statement_<langugage>
+                translate_fields = map(lambda field: field.replace("text", "statement"), text_translation_fields)
+
                 yes_no_data = json.loads(instance._import_yes_no_data)
+                yes_no_answer = YesNoAnswer(question=instance)
+
+                # fill in statement with language
+                for field_name in translate_fields:
+                    setattr(yes_no_answer, field_name, yes_no_data.get(field_name, ""))
 
                 is_yes = yes_no_data.get("is_yes")
-                if isinstance(is_yes, bool):
-                    YesNoAnswer.objects.create(question=instance, is_yes=is_yes)
-                else:
-                    raise ValueError("Missing or invalid 'is_yes' in yes_no_answer")
+                yes_no_answer.is_yes = True if is_yes else False
+                yes_no_answer.save()
+
+                # is_yes = yes_no_data.get("is_yes")
+                # if isinstance(is_yes, bool):
+                #     YesNoAnswer.objects.create(question=instance, is_yes=is_yes)
+                # else:
+                #     raise ValueError("Missing or invalid 'is_yes' in yes_no_answer")
             except (json.JSONDecodeError, ValueError):
                 pass
             delattr(instance, "_import_yes_no_data")

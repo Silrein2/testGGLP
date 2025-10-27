@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.db import transaction
 
 
 class UserStateService:
@@ -6,6 +7,7 @@ class UserStateService:
         self.user = user
 
     def get_state(self):
+        # identical to your original method
         return {
             "email": self.user.email,
             "business_unit_id": self.user.business_unit.id,
@@ -36,22 +38,34 @@ class UserStateService:
 
     def reset_quizzes(self):
         QuizQuestion = apps.get_model("quizzes", "QuizQuestion")
-        QuizQuestion.objects.filter(user=self.user).delete()
-
         MatchAnswerProgress = apps.get_model("quizzes", "MatchAnswerProgress")
-        MatchAnswerProgress.objects.filter(user=self.user).delete()
 
-        self.user.current_score_quizzes = 0
-        self.user.total_score_quizzes = 0
-        self.user.total_questions_answered_this_session = 0
+        with transaction.atomic():
+            QuizQuestion.objects.filter(user=self.user).delete()
+            MatchAnswerProgress.objects.filter(user=self.user).delete()
 
-        self.user.save()
+            self.user.refresh_from_db()
+            self.user.current_score_quizzes = 0
+            self.user.total_score_quizzes = 0
+            self.user.total_questions_answered_this_session = 0
+            self.user.save(
+                update_fields=[
+                    "current_score_quizzes",
+                    "total_score_quizzes",
+                    "total_questions_answered_this_session",
+                ]
+            )
 
     def reset_fake_boss(self):
+        self.user.refresh_from_db()
         self.user.total_score_fake_boss = 0
         self.user.total_seconds_fake_boss = 0
-
-        self.user.save()
+        self.user.save(
+            update_fields=[
+                "total_score_fake_boss",
+                "total_seconds_fake_boss",
+            ]
+        )
 
     def reset_session(self):
         self.reset_quizzes()
@@ -59,42 +73,82 @@ class UserStateService:
 
     def reset_state(self):
         self.reset_quizzes()
-
+        self.user.refresh_from_db()
         self.user.times_played_quizzes = 0
-
         self.user.highest_score_quizzes = 0
         self.user.total_seconds_at_highest_score_quizzes = 0
-
+        self.user.best_total_seconds_fake_boss = 0
+        self.user.save(
+            update_fields=[
+                "times_played_quizzes",
+                "highest_score_quizzes",
+                "total_seconds_at_highest_score_quizzes",
+                "best_total_seconds_fake_boss",
+            ]
+        )
         self.reset_fake_boss()
 
-        self.user.best_total_seconds_fake_boss = 0
-
-        self.user.save()
-
     def update_score_quizzes(self, score, seconds, total_score):
-        self.user.current_score_quizzes = score
-        self.user.total_score_quizzes = total_score
-        if total_score > self.user.highest_score_quizzes:
-            self.user.highest_score_quizzes = total_score
-            self.user.total_seconds_at_highest_score_quizzes = seconds
-        self.user.save()
+        from django.db.models import F
+
+        with transaction.atomic():
+            self.user.refresh_from_db()
+            new_total = total_score
+            self.user.current_score_quizzes = score
+            self.user.total_score_quizzes = new_total
+
+            if new_total > self.user.highest_score_quizzes:
+                self.user.highest_score_quizzes = new_total
+                self.user.total_seconds_at_highest_score_quizzes = seconds
+
+            self.user.save(
+                update_fields=[
+                    "current_score_quizzes",
+                    "total_score_quizzes",
+                    "highest_score_quizzes",
+                    "total_seconds_at_highest_score_quizzes",
+                ]
+            )
 
     def update_score_phishing(self, score, seconds, total_score, times_played):
-        self.user.current_score_phishing = score
-        self.user.total_score_phishing = total_score
-        if total_score > self.user.highest_score_phishing:
-            self.user.highest_score_phishing = total_score
-            self.user.total_seconds_at_highest_score_phishing = seconds
+        with transaction.atomic():
+            self.user.refresh_from_db()
+            new_total = total_score
+            self.user.current_score_phishing = score
+            self.user.total_score_phishing = new_total
 
-        self.user.times_played_phishing = times_played
+            if new_total > self.user.highest_score_phishing:
+                self.user.highest_score_phishing = new_total
+                self.user.total_seconds_at_highest_score_phishing = seconds
 
-        self.user.save()
+            self.user.times_played_phishing = times_played
+            self.user.save(
+                update_fields=[
+                    "current_score_phishing",
+                    "total_score_phishing",
+                    "highest_score_phishing",
+                    "total_seconds_at_highest_score_phishing",
+                    "times_played_phishing",
+                ]
+            )
 
     def update_score_fake_boss(self, score, seconds):
-        self.user.total_score_fake_boss = score
-        self.user.total_seconds_fake_boss = seconds
-        self.user.best_total_seconds_fake_boss = min(
-            [s for s in (seconds, self.user.best_total_seconds_fake_boss) if s != 0],
-            default=self.user.best_total_seconds_fake_boss,
-        )
-        self.user.save()
+        with transaction.atomic():
+            self.user.refresh_from_db()
+            self.user.total_score_fake_boss = score
+            self.user.total_seconds_fake_boss = seconds
+            self.user.best_total_seconds_fake_boss = min(
+                [
+                    s
+                    for s in (seconds, self.user.best_total_seconds_fake_boss)
+                    if s != 0
+                ],
+                default=self.user.best_total_seconds_fake_boss,
+            )
+            self.user.save(
+                update_fields=[
+                    "total_score_fake_boss",
+                    "total_seconds_fake_boss",
+                    "best_total_seconds_fake_boss",
+                ]
+            )

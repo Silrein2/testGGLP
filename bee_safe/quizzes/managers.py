@@ -13,7 +13,7 @@ class QuestionManager(models.Manager):
     def get_next_question(self, user):
         QuizQuestion = apps.get_model("quizzes", "QuizQuestion")
 
-        questions = self.get_queryset().all()
+        questions = self.get_queryset().order_by("id").all()
         for question in questions:
             if not QuizQuestion.objects.filter(
                 user=user,

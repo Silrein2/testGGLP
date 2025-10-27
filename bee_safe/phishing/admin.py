@@ -11,7 +11,7 @@ from .models import PhishingIndicator
 
 
 @admin.register(PhishingAnnotatedEmail)
-@admin.register(PhishingAnnotatedEmail, site=custom_admin)
+# @admin.register(PhishingAnnotatedEmail, site=custom_admin)
 class PhishingAnnotatedEmailAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "created_at")
     readonly_fields = ("authoring_tool",)
@@ -79,14 +79,14 @@ class PhishingAnnotatedEmailAdmin(admin.ModelAdmin):
 
 
 @admin.register(PhishingIndicator)
-@admin.register(PhishingIndicator, site=custom_admin)
+# @admin.register(PhishingIndicator, site=custom_admin)
 class PhishingIndicatorAdmin(admin.ModelAdmin):
     list_display = ("id", "email", "label", "x1", "y1", "x2", "y2", "created_at")
     readonly_fields = ("email", "label", "x1", "y1", "x2", "y2", "created_at")
 
 
 @admin.register(PhishingGameResult)
-@admin.register(PhishingGameResult, site=custom_admin)
+# @admin.register(PhishingGameResult, site=custom_admin)
 class PhishingGameResultAdmin(admin.ModelAdmin):
     list_display = ("id", "player", "email", "score", "total_time", "created_at")
     list_filter = ("created_at", "email")

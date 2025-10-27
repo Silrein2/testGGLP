@@ -47,6 +47,7 @@ class QuestionAdmin(ModelAdmin, ImportExportModelAdmin, TabbedTranslationAdmin):
     export_form_class = ExportForm
     inlines = [MatchOptionPairInline]
     list_display = ["text", "question_type"]
+    ordering = ["id"]
     search_fields = ["text"]
 
     def get_inline_instances(self, request, obj=None):

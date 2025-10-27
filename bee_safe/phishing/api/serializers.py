@@ -5,6 +5,13 @@ from bee_safe.phishing.models import PhishingGameResult
 from bee_safe.phishing.models import PhishingIndicator
 
 
+class ScorePhishingSerializer(serializers.Serializer):
+    score = serializers.IntegerField()
+    seconds = serializers.IntegerField()
+    total_score = serializers.IntegerField()
+    times_played = serializers.IntegerField()
+
+
 class PhishingIndicatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhishingIndicator

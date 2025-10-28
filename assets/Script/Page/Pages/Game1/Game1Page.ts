@@ -168,7 +168,7 @@ export class Game1Page extends Page {
     this.pageManager.targetGamePageState = this.pageState;
     this.offlineLogin = GameManager.instance.offlineLogin;
     this.getQuestion();
-    this.setUI();
+    this.setUI(true);
     this.showType(-1);
     this.questionLabel.string = "";
     this.questionCount = 0;
@@ -198,6 +198,8 @@ export class Game1Page extends Page {
     if (!this.offlineLogin) {
       this.loadedQuestion = false;
       await GameManager.instance.quizService.getQuestion();
+      await GameManager.instance.userService.fetchUserState();
+      this.setUI();
       UIManager.instance.showLoading(false);
       this.loadedQuestion = true;
     } else {
@@ -206,12 +208,15 @@ export class Game1Page extends Page {
     }
   }
 
-  private setUI() {
+  private setUI(init: boolean = false) {
     const userState: UserState = DataManager.instance.userState;
     const quizzes: Quizzes = userState.quizzes;
     UIManager.instance.gameUI.updateScore(quizzes.total_score_quizzes);
     UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
-
+    if (init) {
+      UIManager.instance.gameUI.updateScore(0);
+      UIManager.instance.gameUI.updateTotalScore(0);
+    }
     let titleString =
       LocalizationManager.instance.getLocalizedString("general.question") +
       " " +

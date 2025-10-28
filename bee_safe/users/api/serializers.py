@@ -1,7 +1,6 @@
 from djoser.serializers import TokenCreateSerializer as DjoserTokenCreateSerializer
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
-from rest_framework.serializers import ValidationError
 
 from bee_safe.users.models import BusinessUnit
 from bee_safe.users.models import User
@@ -71,10 +70,22 @@ class CustomTokenRequestSerializer(DjoserTokenCreateSerializer):
     email = serializers.EmailField()
     business_unit_id = serializers.IntegerField()
 
-    def validate_business_unit_id(self, value):
-        if not BusinessUnit.objects.filter(id=value).exists():
-            raise ValidationError(_("Invalid business unit ID."))
-        return value
+    def validate(self, attrs):
+        email = attrs.get("email").lower()
+        business_unit_id = attrs.get("business_unit_id")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"email": "User not found."})
+
+        if user.business_unit_id != business_unit_id:
+            raise serializers.ValidationError(
+                {"business_unit_id": "Invalid business unit."},
+            )
+
+        attrs["user"] = user
+        return attrs
 
 
 class CustomTokenResponseSerializer(serializers.Serializer):

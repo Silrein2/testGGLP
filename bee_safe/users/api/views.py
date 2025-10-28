@@ -71,42 +71,43 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
 class CustomTokenCreateView(DjoserTokenCreateView):
     @extend_schema(
         request=CustomTokenRequestSerializer,
-        responses={200: CustomTokenResponseSerializer},
+        responses={200: UserSerializer},
     )
     def post(self, request, *args, **kwargs):
-        email = request.data.get("email").lower()
+        email = request.data.get("email", "").lower().strip()
         business_unit_id = request.data.get("business_unit_id")
-        request.data["password"] = "P@55w0rd"  # noqa: S105
 
-        try:
-            EmailDomain.objects.get(domain=email.split("@")[1])
-            user = User.objects.get(
-                email=email,
-                # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
-#                 business_unit_id=business_unit_id,
+        if not email or not business_unit_id:
+            raise ValidationError(
+                {"detail": "Email and business_unit_id are required."}
             )
 
-            # https://github.com/Gameka-games/amway-bee-safe-backend/issues/25
-            # We skip password check
-            # if not user.check_password(request.data["password"]):
-            #     raise User.DoesNotExist  # noqa: TRY301
+        domain = email.split("@")[-1]
+        if not EmailDomain.objects.filter(domain=domain).exists():
+            raise ValidationError({"email": f"Email domain '{domain}' is not allowed."})
 
-            # https://github.com/Gameka-games/amway-bee-safe-backend/issues/24
-            if user.business_unit_id != business_unit_id:
-                user.business_unit_id = business_unit_id
-                user.save()
-        except User.DoesNotExist:
+        user = User.objects.filter(email=email).first()
+        if not user:
             user = User.objects.create_user(
                 username="",
                 email=email,
-                password=request.data["password"],
                 business_unit_id=business_unit_id,
             )
+        else:
+            if user.business_unit_id is None:
+                raise ValidationError(
+                    {"business_unit_id": "User has no assigned business unit."}
+                )
+
+            if str(user.business_unit_id) != str(business_unit_id):
+                raise ValidationError(
+                    {
+                        "business_unit_id": f"This email belongs to a different business unit ({user.business_unit_id})."
+                    }
+                )
+
         serializer = CustomTokenRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        if user.business_unit.id != serializer.validated_data["business_unit_id"]:
-            raise ValidationError({"business_unit_id": ["Invalid business unit ID."]})
 
         token, _ = Token.objects.get_or_create(user=user)
 
@@ -117,10 +118,6 @@ class CustomTokenCreateView(DjoserTokenCreateView):
 
         threading.Timer(0.1, mark_not_first_login).start()
 
-        data = {
-            "auth_token": token.key,
-        }
-        serializer = UserSerializer(user.state, context={"request": request})
-        data.update(serializer.data)
-
-        return Response(data, status=200)
+        data = {"auth_token": token.key}
+        data.update(UserSerializer(user.state, context={"request": request}).data)
+        return Response(data, status=status.HTTP_200_OK)

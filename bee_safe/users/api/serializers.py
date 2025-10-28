@@ -66,22 +66,29 @@ class UserSerializer(serializers.ModelSerializer[User]):
 
 
 @extend_schema_serializer(exclude_fields=["password"])
-class CustomTokenRequestSerializer(DjoserTokenCreateSerializer):
+class CustomTokenRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
     business_unit_id = serializers.IntegerField()
 
     def validate(self, attrs):
-        email = attrs.get("email").lower()
-        business_unit_id = attrs.get("business_unit_id")
+        email = attrs["email"].lower().strip()
+        business_unit_id = attrs["business_unit_id"]
 
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise serializers.ValidationError({"email": "User not found."})
 
-        if user.business_unit_id != business_unit_id:
+        if user.business_unit_id is None:
             raise serializers.ValidationError(
-                {"business_unit_id": "Invalid business unit."},
+                {"business_unit_id": "User has no assigned business unit."}
+            )
+
+        if str(user.business_unit_id) != str(business_unit_id):
+            raise serializers.ValidationError(
+                {
+                    "business_unit_id": f"Invalid business unit ID. Expected {user.business_unit_id}."
+                },
             )
 
         attrs["user"] = user

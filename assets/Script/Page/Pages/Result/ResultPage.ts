@@ -28,11 +28,11 @@ export class ResultPage extends Page {
     let bestTime = 0;
     switch (this.pageManager.targetGamePageState) {
       case PageStates.Game1:
-        currentScore = userState.quizzes.current_score_quizzes;
+        currentScore = userState.quizzes.total_score_quizzes;
         bestTime = userState.quizzes.total_seconds_at_highest_score_quizzes;
         break;
       case PageStates.Game2:
-        currentScore = userState.phishing.current_score_phishing;
+        currentScore = userState.phishing.total_score_phishing;
         bestTime = userState.phishing.total_seconds_at_highest_score_phishing;
         break;
       case PageStates.Game3:

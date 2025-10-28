@@ -26,8 +26,8 @@ export class GameSelectionPage extends Page {
     this.totalScoreLabel.string = userState.total_score_all.toString();
 
     const gameTotalScores = [
-      userState.quizzes.total_score_quizzes,
-      userState.phishing.total_score_phishing,
+      userState.quizzes.highest_score_quizzes,
+      userState.phishing.highest_score_phishing,
       userState.fake_boss.total_score_fake_boss,
     ];
     this.gameSelectionButtons.forEach(

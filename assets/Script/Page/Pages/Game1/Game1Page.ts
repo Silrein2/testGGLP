@@ -209,7 +209,7 @@ export class Game1Page extends Page {
   private setUI() {
     const userState: UserState = DataManager.instance.userState;
     const quizzes: Quizzes = userState.quizzes;
-    UIManager.instance.gameUI.updateScore(quizzes.current_score_quizzes);
+    UIManager.instance.gameUI.updateScore(quizzes.total_score_quizzes);
     UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
 
     let titleString =

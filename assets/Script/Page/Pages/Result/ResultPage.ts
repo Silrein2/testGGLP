@@ -25,19 +25,19 @@ export class ResultPage extends Page {
     super.onEnter();
     const userState: UserState = DataManager.instance.userState;
     let currentScore = 0;
-    let bestTime = 0;
+    let highestScore = 0;
     switch (this.pageManager.targetGamePageState) {
       case PageStates.Game1:
         currentScore = userState.quizzes.total_score_quizzes;
-        bestTime = userState.quizzes.total_seconds_at_highest_score_quizzes;
+        highestScore = userState.quizzes.highest_score_quizzes;
         break;
       case PageStates.Game2:
         currentScore = userState.phishing.total_score_phishing;
-        bestTime = userState.phishing.total_seconds_at_highest_score_phishing;
+        highestScore = userState.phishing.highest_score_phishing;
         break;
       case PageStates.Game3:
         currentScore = userState.fake_boss.total_score_fake_boss;
-        bestTime = userState.fake_boss.best_total_seconds_fake_boss;
+        highestScore = userState.fake_boss.total_score_fake_boss;
         break;
     }
 
@@ -46,7 +46,7 @@ export class ResultPage extends Page {
       GameManager.instance.timer.getElapsedTime(),
       true,
     );
-    this.bestTimeResultScore.init(bestTime, true);
+    this.bestTimeResultScore.init(highestScore, false);
   }
 
   private onClickClose() {

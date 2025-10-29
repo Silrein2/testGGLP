@@ -23,19 +23,21 @@ export class GameSelectionPage extends Page {
     const userState: UserState = DataManager.instance.userState;
     this.selectedGameIndex = -1;
     this.onClickGame(null, -1);
-    this.totalScoreLabel.string = userState.total_score_all.toString();
 
     const gameTotalScores = [
       userState.quizzes.highest_score_quizzes,
       userState.phishing.highest_score_phishing,
       userState.fake_boss.total_score_fake_boss,
     ];
+    let totalScore = 0;
     this.gameSelectionButtons.forEach(
       (gameSelectionButton: GameSelectionButton, index: number) => {
         const score = gameTotalScores[index];
         gameSelectionButton.init(score);
+        totalScore += score;
       },
     );
+    this.totalScoreLabel.string = totalScore.toString();
   }
 
   public onClickGame(event: Event, gameIndex: number) {

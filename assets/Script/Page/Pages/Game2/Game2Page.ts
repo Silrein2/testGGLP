@@ -195,8 +195,8 @@ export class Game2Page extends Page {
 
   private setUI() {
     const userState: UserState = DataManager.instance.userState;
-    UIManager.instance.gameUI.updateScore(this.currentScore);
-    UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
+    //UIManager.instance.gameUI.updateScore(this.currentScore);
+    UIManager.instance.gameUI.updateTotalScore(this.currentScore);
   }
 
   private async endQuiz() {

@@ -211,10 +211,10 @@ export class Game1Page extends Page {
   private setUI(init: boolean = false) {
     const userState: UserState = DataManager.instance.userState;
     const quizzes: Quizzes = userState.quizzes;
-    UIManager.instance.gameUI.updateScore(quizzes.total_score_quizzes);
-    UIManager.instance.gameUI.updateTotalScore(userState.total_score_all);
+    //UIManager.instance.gameUI.updateScore(quizzes.total_score_quizzes);
+    UIManager.instance.gameUI.updateTotalScore(quizzes.total_score_quizzes);
     if (init) {
-      UIManager.instance.gameUI.updateScore(0);
+      //UIManager.instance.gameUI.updateScore(0);
       UIManager.instance.gameUI.updateTotalScore(0);
     }
     let titleString =

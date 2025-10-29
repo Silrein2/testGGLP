@@ -85,4 +85,5 @@ export default {
     "In this game, you need to drag and drop all the red flags to the email",
   "game_2.tutorial_next":
     "If you think you have identified all of the flags, click on Next for the next email.",
+  "general.best_score_achieved": "Best Score Achieved",
 };

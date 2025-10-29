@@ -128,7 +128,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "environment": 2,
+    "environment": 0,
     "pageManager": {
       "__id__": 4
     },
@@ -19091,9 +19091,6 @@
     "__prefab": null,
     "topNodes": [
       {
-        "__id__": 805
-      },
-      {
         "__id__": 815
       }
     ],
@@ -23555,7 +23552,7 @@
         "__id__": 810
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 813
@@ -23969,7 +23966,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -397.6379999999999,
+      "x": -777.132,
       "y": 660.6610000000001,
       "z": 0
     },
@@ -43651,7 +43648,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 340.30792236328125,
+      "width": 429.087890625,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -43681,7 +43678,7 @@
       "b": 16,
       "a": 255
     },
-    "_string": "Best Time Spent",
+    "_string": "Best Score Achieved",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 46,
@@ -43736,7 +43733,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "key": "general.best_time_spent",
+    "key": "general.best_score_achieved",
     "_id": "3eSSW6maRAyYg40bzW9Hm9"
   },
   {

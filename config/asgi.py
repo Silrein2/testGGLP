@@ -1,32 +1,39 @@
+"""
+ASGI config for bee_safe project.
+
+It exposes the ASGI callable as a module-level variable named ``application``.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/dev/howto/deployment/asgi/
+
+"""
+
 import os
 import sys
 from pathlib import Path
 
-from django.conf import settings
 from django.core.asgi import get_asgi_application
-from starlette.staticfiles import StaticFiles
 
+# This allows easy placement of apps within the interior
+# bee_safe directory.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR / "bee_safe"))
+
+# If DJANGO_SETTINGS_MODULE is unset, default to the local settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
+# This application object is used by any ASGI server configured to use this file.
 django_application = get_asgi_application()
 
-media_app = StaticFiles(directory=settings.MEDIA_ROOT, html=True)
+# Import websocket application here, so apps from django_application are loaded first
+from config.websocket import websocket_application  # noqa: E402
 
 
 async def application(scope, receive, send):
     if scope["type"] == "http":
-        path = scope.get("path", "")
-        if path.startswith(settings.MEDIA_URL):
-            # Strip the MEDIA_URL prefix
-            scope["path"] = path[len(settings.MEDIA_URL) :]
-            await media_app(scope, receive, send)
-        else:
-            await django_application(scope, receive, send)
+        await django_application(scope, receive, send)
     elif scope["type"] == "websocket":
-        from config.websocket import websocket_application
-
         await websocket_application(scope, receive, send)
     else:
-        raise NotImplementedError(f"Unknown scope type {scope['type']}")
+        msg = f"Unknown scope type {scope['type']}"
+        raise NotImplementedError(msg)

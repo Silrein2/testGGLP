@@ -33,20 +33,3 @@ class PhishingIndicator(models.Model):
 
     def __str__(self):
         return f"{self.label} [{self.x1:.3f},{self.y1:.3f}→{self.x2:.3f},{self.y2:.3f}]"
-
-
-class PhishingGameResult(models.Model):
-    player = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    email = models.ForeignKey(
-        PhishingAnnotatedEmail, null=True, blank=True, on_delete=models.SET_NULL
-    )
-    score = models.IntegerField()
-    total_time = models.FloatField(help_text="seconds")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ("-score", "-created_at")
-
-    def __str__(self):
-        who = self.player.username if self.player else "Anonymous"
-        return f"{who} — {self.score} pts"

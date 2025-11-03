@@ -54,9 +54,10 @@ DEBUG_TOOLBAR_CONFIG = {
         "debug_toolbar.panels.profiling.ProfilingPanel",
     ],
     "SHOW_TEMPLATE_CONTEXT": True,
+    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
 }
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#internal-ips
-INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
+INTERNAL_IPS = ["127.0.0.1", "10.0.2.2", "172.18.0.9"]
 if env("USE_DOCKER") == "yes":
     import socket
 

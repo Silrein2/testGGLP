@@ -1,19 +1,21 @@
 import json
 
 from django.contrib import admin
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
+from modeltranslation.admin import TabbedTranslationAdmin
+from unfold.admin import ModelAdmin
 
 from bee_safe.custom_admin.admin import custom_admin
-
-from .models import PhishingAnnotatedEmail
-from .models import PhishingGameResult
-from .models import PhishingIndicator
+from bee_safe.phishing.models import PhishingAnnotatedEmail
+from bee_safe.phishing.models import PhishingIndicator
+from config.settings.base import LANGUAGES
 
 
 @admin.register(PhishingAnnotatedEmail)
-# @admin.register(PhishingAnnotatedEmail, site=custom_admin)
-class PhishingAnnotatedEmailAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "created_at")
+@admin.register(PhishingAnnotatedEmail, site=custom_admin)
+class PhishingAnnotatedEmailAdmin(ModelAdmin):
+    list_display = ("title", "created_at")
     readonly_fields = ("authoring_tool",)
     fields = ("title", "image", "authoring_tool")
 
@@ -25,22 +27,73 @@ class PhishingAnnotatedEmailAdmin(admin.ModelAdmin):
         css = {"all": ("phishing/css/admin_phishing_authoring.css",)}
 
     def authoring_tool(self, obj):
+        from django.utils.html import escape
+        from django.utils.safestring import mark_safe
+        import json
+
+        # Access the PhishingIndicator model from the object's indicators manager
+        IndicatorModel = obj.indicators.model
+
         if not obj.pk or not obj.image:
             return mark_safe(
                 "<p><em>Upload and save the image first to enable authoring tool.</em></p>"
             )
-        existing = list(obj.indicators.values("x1", "y1", "x2", "y2", "label"))
+
+        # 1. Dynamically identify all translated label fields (e.g., 'label_en', 'label_fr')
+        # This finds fields that start with 'label_' and are not the base 'label'
+        translation_fields = [
+            f.name
+            for f in IndicatorModel._meta.fields
+            if f.name.startswith("label_") and f.name != "label"
+        ]
+
+        # 2. Extract language codes from the field names (e.g., 'label_en' -> 'en')
+        lang_codes = [field.split("label_")[1] for field in translation_fields]
+
+        # 3. Define the list of fields to fetch
+        fetch_fields = ["x1", "y1", "x2", "y2"] + translation_fields
+
+        # 4. Fetch the data from the database
+        existing_data = list(obj.indicators.values(*fetch_fields))
+
+        # 5. Restructure the fetched data into the required 'labelTranslations' format for the JS
+        existing = []
+        for item in existing_data:
+            translations = {}
+            for field_name in translation_fields:
+                # Map the database field (e.g., 'label_en') to the language code ('en')
+                code = field_name.split("label_")[1]
+                translations[code] = item.get(field_name, "")
+
+            existing.append(
+                {
+                    "x1": item["x1"],
+                    "y1": item["y1"],
+                    "x2": item["x2"],
+                    "y2": item["y2"],
+                    "labelTranslations": translations,
+                }
+            )
+
+        json_existing = json.dumps(existing)
+        json_languages = json.dumps(lang_codes)  # Use dynamically derived codes
+
+        # Use the restructured JSON data in the HTML output
         html = f"""
         <div id="phishing-authoring-root">
-          <div id="phishing-canvas-wrap" data-image-url="{obj.image.url}" data-indicators='{json.dumps(existing)}'>
-            <canvas id="phishing-canvas"></canvas>
-          </div>
-          <div id="phishing-authoring-controls">
-            <button type="button" id="phishing-new-rect">New Box</button>
-            <button type="button" id="phishing-clear">Clear All</button>
-            <span class="hint">Double-click a rect to edit label. Select and press Delete to remove.</span>
-          </div>
-          <input type="hidden" id="phishing-indicators-hidden" name="phishing_indicators" value='{json.dumps(existing)}'>
+            <div id="phishing-canvas-wrap"
+                data-image-url="{obj.image.url}"
+                data-indicators="{escape(json_existing)}"
+                data-languages='{json_languages}'>
+                <canvas id="phishing-canvas"></canvas>
+            </div>
+            <div id="phishing-authoring-controls">
+                <button type="button" id="phishing-new-rect">New Box</button>
+                <button type="button" id="phishing-clear">Clear All</button>
+                <span class="hint">Double-click a rect to edit labels. Select and press Delete to remove.</span>
+            </div>
+            <input type="hidden" id="phishing-indicators-hidden" name="phishing_indicators"
+                value='{escape(json_existing)}'>
         </div>
         """
         return mark_safe(html)
@@ -48,46 +101,38 @@ class PhishingAnnotatedEmailAdmin(admin.ModelAdmin):
     authoring_tool.short_description = "Authoring tool (draw boxes & labels)"
 
     def save_model(self, request, obj, form, change):
-        """
-        Save the PhishingAnnotatedEmail; then parse hidden field "phishing_indicators"
-        and sync PhishingIndicator rows.
-        """
         super().save_model(request, obj, form, change)
 
         raw = request.POST.get("phishing_indicators")
-        if raw is None:
+        if not raw:
             return
 
         try:
             parsed = json.loads(raw)
         except Exception:
-            parsed = []
+            return
 
         PhishingIndicator.objects.filter(email=obj).delete()
-        to_create = [
-            PhishingIndicator(
+
+        new_indicators = []
+        for i in parsed:
+            translations = i.get("labelTranslations", {})
+            indicator = PhishingIndicator(
                 email=obj,
-                x1=float(i.get("x1", 0.0)),
-                y1=float(i.get("y1", 0.0)),
-                x2=float(i.get("x2", 0.0)),
-                y2=float(i.get("y2", 0.0)),
-                label=i.get("label", ""),
+                x1=i.get("x1", 0.0),
+                y1=i.get("y1", 0.0),
+                x2=i.get("x2", 0.0),
+                y2=i.get("y2", 0.0),
             )
-            for i in parsed
-        ]
-        PhishingIndicator.objects.bulk_create(to_create)
+            for lang, _ in LANGUAGES:
+                setattr(indicator, f"label_{lang}", translations.get(lang, ""))
+            new_indicators.append(indicator)
+
+        PhishingIndicator.objects.bulk_create(new_indicators)
 
 
 @admin.register(PhishingIndicator)
-# @admin.register(PhishingIndicator, site=custom_admin)
-class PhishingIndicatorAdmin(admin.ModelAdmin):
+@admin.register(PhishingIndicator, site=custom_admin)
+class PhishingIndicatorAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ("id", "email", "label", "x1", "y1", "x2", "y2", "created_at")
     readonly_fields = ("email", "label", "x1", "y1", "x2", "y2", "created_at")
-
-
-@admin.register(PhishingGameResult)
-# @admin.register(PhishingGameResult, site=custom_admin)
-class PhishingGameResultAdmin(admin.ModelAdmin):
-    list_display = ("id", "player", "email", "score", "total_time", "created_at")
-    list_filter = ("created_at", "email")
-    search_fields = ("player__username",)

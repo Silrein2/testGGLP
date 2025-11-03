@@ -1,19 +1,145 @@
-/* admin authoring UI */
+/* --- Base Canvas Wrap & Controls --- */
 #phishing-canvas-wrap {
-  border: 1px solid #ddd;
-  display: inline-block;
-  background: #fafafa;
-  padding: 6px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    background: #fafafa;
+    padding: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Soft shadow */
+    border-radius: 4px;
 }
 #phishing-authoring-controls {
-  margin-top: 8px;
+    margin-top: 12px;
+    display: flex; /* Align buttons and hint horizontally */
+    align-items: center;
 }
 #phishing-authoring-controls button {
-  margin-right: 8px;
-  padding: 6px 10px;
+    margin-right: 12px;
+    padding: 8px 16px;
+    background-color: #3b82f6; /* A nice admin blue */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+#phishing-authoring-controls button:hover {
+    background-color: #2563eb;
+}
+#phishing-authoring-controls #phishing-clear {
+    background-color: #f43f5e; /* Red for clear */
+}
+#phishing-authoring-controls #phishing-clear:hover {
+    background-color: #e11d48;
 }
 #phishing-authoring-controls .hint {
-  color: #555;
-  font-size: 13px;
+    color: #555;
+    font-size: 13px;
+    margin-left: auto; /* Push the hint to the right */
 }
 
+/* --- Modal Backdrop (New) --- */
+.phishing-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+}
+
+/* --- Modal Container --- */
+.phishing-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 450px;
+    max-width: 90vw;
+    border: 1px solid #e5e7eb;
+}
+
+/* --- Tabs --- */
+.phishing-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.phishing-tab-btn {
+    padding: 10px 15px;
+    cursor: pointer;
+    border: none;
+    border-bottom: 3px solid transparent; /* Used for active state */
+    background: transparent;
+    font-weight: 500;
+    color: #4b5563;
+    transition: all 0.2s;
+}
+.phishing-tab-btn:hover {
+    color: #1f2937;
+    background-color: #f9fafb;
+}
+.phishing-tab-btn.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background-color: #f9fafb;
+}
+
+/* --- Tab Content / Input Field --- */
+.phishing-tab-content {
+    padding: 15px 0 0;
+}
+.phishing-input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    margin-bottom: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 14px;
+    /* --- FIX FOR TEXT FAINTNESS --- */
+    color: #1f2937; /* Ensures dark, visible text */
+    background-color: #ffffff; /* Ensures white background */
+}
+.phishing-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+    outline: none;
+}
+
+/* --- Button Group --- */
+.phishing-modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+}
+.phishing-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s, opacity 0.2s;
+    margin-left: 10px;
+}
+.phishing-btn-save {
+    background: #10b981; /* A friendly green for saving */
+    color: white;
+}
+.phishing-btn-save:hover {
+    background: #059669;
+}
+.phishing-btn-cancel {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+.phishing-btn-cancel:hover {
+    background: #d1d5db;
+}

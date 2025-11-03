@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from bee_safe.phishing.models import PhishingAnnotatedEmail
-from bee_safe.phishing.models import PhishingGameResult
 from bee_safe.phishing.models import PhishingIndicator
 
 
@@ -24,11 +23,3 @@ class PhishingAnnotatedEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhishingAnnotatedEmail
         fields = ["id", "title", "image", "created_at", "indicators"]
-
-
-class PhishingGameResultSerializer(serializers.ModelSerializer):
-    player_name = serializers.CharField(source="player.username", read_only=True)
-
-    class Meta:
-        model = PhishingGameResult
-        fields = ["id", "player_name", "score", "total_time", "email", "created_at"]

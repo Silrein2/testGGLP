@@ -1,7 +1,6 @@
 """
 ASGI config for Bee Safe project.
 Serves Django, WebSocket, static, and media files all from the same ASGI app.
-No external Nginx or CDN required.
 """
 
 import mimetypes
@@ -12,38 +11,33 @@ from pathlib import Path
 import aiofiles
 from django.conf import settings
 from django.core.asgi import get_asgi_application
-from whitenoise import ASGIStaticFiles
+from whitenoise import WhiteNoise
 
-# --- Base setup ---------------------------------------------------------------
+# --- Base setup ---
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR / "bee_safe"))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
-# --- Core ASGI apps -----------------------------------------------------------
+# --- Core ASGI apps ---
 django_application = get_asgi_application()
 
-# Load WebSocket application (after Django)
-from config.websocket import websocket_application  # noqa: E402
-
-# --- Optional static serving (WhiteNoise for ASGI) ----------------------------
-# Handles /static/
-django_application = ASGIStaticFiles(
+# Wrap Django ASGI app with WhiteNoise for static files
+django_application = WhiteNoise(
     django_application,
     root=settings.STATIC_ROOT,
     prefix=settings.STATIC_URL,
 )
 
+# Load WebSocket app
+from config.websocket import websocket_application  # noqa: E402
 
-# --- Async media file server --------------------------------------------------
+
+# --- Async media file server ---
 async def media_application(scope, receive, send):
-    """
-    Serve user-uploaded media files asynchronously from MEDIA_ROOT.
-    """
     path = scope.get("path", "")
     rel_path = path[len(settings.MEDIA_URL) :].lstrip("/")
     file_path = Path(settings.MEDIA_ROOT) / rel_path
 
-    # Validate path
     if not file_path.exists() or not file_path.is_file():
         await send(
             {
@@ -52,12 +46,7 @@ async def media_application(scope, receive, send):
                 "headers": [(b"content-type", b"text/plain; charset=utf-8")],
             },
         )
-        await send(
-            {
-                "type": "http.response.body",
-                "body": b"File not found",
-            },
-        )
+        await send({"type": "http.response.body", "body": b"File not found"})
         return
 
     content_type, _ = mimetypes.guess_type(str(file_path))
@@ -86,14 +75,8 @@ async def media_application(scope, receive, send):
     await send({"type": "http.response.body", "body": b"", "more_body": False})
 
 
-# --- Main ASGI router ---------------------------------------------------------
+# --- Main ASGI router ---
 async def application(scope, receive, send):
-    """
-    Route ASGI requests:
-    - HTTP /media/*  → async file streaming
-    - HTTP others    → Django (via WhiteNoise)
-    - WebSocket      → websocket_application
-    """
     if scope["type"] == "http":
         path = scope.get("path", "")
         if path.startswith(settings.MEDIA_URL):

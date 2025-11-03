@@ -79,23 +79,20 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 )
 
 
-GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
-GS_DEFAULT_ACL = "publicRead"
+# GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
+# GS_DEFAULT_ACL = "publicRead"
 # STATIC & MEDIA
 # ------------------------
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "location": "media",
-            "file_overwrite": False,
-        },
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
+    # 'staticfiles' uses Whitenoise's storage, which handles compression and caching for local static files
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
+MEDIA_URL = "/media/"
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -203,7 +200,9 @@ sentry_sdk.init(
 # Tools that generate code samples can use SERVERS to point to the correct domain
 SPECTACULAR_SETTINGS["SERVERS"] = [
     {
-        "url": env("DJANGO_SERVER_URL", default="https://beesafe.gamekaexternalprojects.com"),
+        "url": env(
+            "DJANGO_SERVER_URL", default="https://beesafe.gamekaexternalprojects.com"
+        ),
         "description": "Production server",
     },
 ]
@@ -215,6 +214,6 @@ SECURE_PROXY_SSL_HEADER = None
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
-SECURE_CROSS_ORIGIN_OPENER_POLICY = 'unsafe-none'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "unsafe-none"
 CSRF_COOKIE_NAME = "csrftoken"
 SESSION_COOKIE_NAME = "sessionid"

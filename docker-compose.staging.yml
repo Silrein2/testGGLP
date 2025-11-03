@@ -2,6 +2,7 @@ volumes:
   staging_postgres_data: {}
   staging_postgres_data_backups: {}
   staging_traefik: {}
+  staging_django_media: {}
 
   staging_redis_data: {}
 
@@ -12,6 +13,8 @@ services:
       dockerfile: ./compose/staging/django/Dockerfile
 
     image: bee_safe_staging_django
+    volumes:
+      - staging_django_media:/app/bee_safe/media
     depends_on:
       - postgres
       - redis
@@ -82,3 +85,13 @@ services:
     image: bee_safe_staging_flower
     command: /start-flower
     restart: unless-stopped
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/staging/nginx/Dockerfile
+    image: bee_safe_staging_nginx
+    depends_on:
+      - django
+    volumes:
+      - staging_django_media:/usr/share/nginx/media:ro

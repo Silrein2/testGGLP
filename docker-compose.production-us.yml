@@ -1,9 +1,10 @@
-name: 'amway-bee-safe-us'
+name: "amway-bee-safe-us"
 
 volumes:
   postgres_data: {}
   postgres_data_backups: {}
   traefik: {}
+  django_media: {}
   redis_data: {}
 
 services:
@@ -11,6 +12,8 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
+    volumes:
+      - django_media:/app/bee_safe/media
     depends_on:
       - postgres
       - redis
@@ -74,3 +77,13 @@ services:
     <<: *django
     command: /start-flower
     restart: unless-stopped
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: bee_safe_production_nginx
+    depends_on:
+      - django
+    volumes:
+      - django_media:/usr/share/nginx/media:ro

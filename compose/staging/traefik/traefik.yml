@@ -40,13 +40,23 @@ http:
         certResolver: letsencrypt
 
     web-django-router:
-      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/media`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (PathPrefix(`/api`) || PathPrefix(`/admin`) || PathPrefix(`/site`) || PathPrefix(`/static`) || PathPrefix(`/auth`) || PathPrefix(`/docs`))"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
       service: django
       priority: 100
+      tls:
+        certResolver: letsencrypt
+
+    web-media-router:
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) && PathPrefix(`/media/`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: django-media
       tls:
         certResolver: letsencrypt
 
@@ -74,6 +84,11 @@ http:
       loadBalancer:
         servers:
           - url: http://flower:5555
+
+    django-media:
+      loadBalancer:
+        servers:
+          - url: http://nginx:80
 
     cocos:
       loadBalancer:

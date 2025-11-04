@@ -82,7 +82,6 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/nginx/Dockerfile
-    image: bee_safe_production_nginx
     depends_on:
       - django
     volumes:

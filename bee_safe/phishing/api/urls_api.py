@@ -14,5 +14,5 @@ urlpatterns = [
         view=ScoreView.as_view(),
         name="score-phishing",
     ),
-    path("api/phishing/", include(router.urls)),
+    path("", include(router.urls)),
 ]

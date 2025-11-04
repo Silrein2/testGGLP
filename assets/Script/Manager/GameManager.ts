@@ -113,10 +113,10 @@ export class GameManager extends Component {
   }
 
   public showLanguageSetting() {
-    let data = DataManager.instance.languages.map((x) => {
+    const data = DataManager.instance.languages.map((x) => {
       return { text: x.name, value: x.code };
     });
-    data = data.filter((x) => x.value === "en");
+
     UIManager.instance.showSelectUI(
       LocalizationManager.instance.getLocalizedString(
         "general.select_your_language",

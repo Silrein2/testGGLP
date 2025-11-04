@@ -31,7 +31,14 @@ certificatesResolvers:
 http:
   routers:
     web-cocos-router:
-      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (Path(`/`) || !PathPrefix(`/api`, `/admin`, `/site`, `/static`, `/auth`, `/docs`, `/media`))"
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) &&
+        !PathPrefix(`/api/`) &&
+        !PathPrefix(`/admin/`) &&
+        !PathPrefix(`/site/`) &&
+        !PathPrefix(`/static/`) &&
+        !PathPrefix(`/auth/`) &&
+        !PathPrefix(`/docs/`) &&
+        !PathPrefix(`/media/`)"
       entryPoints:
         - web-secure
       service: cocos

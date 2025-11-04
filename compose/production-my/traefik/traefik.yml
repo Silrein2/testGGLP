@@ -31,11 +31,18 @@ entryPoints:
 http:
   routers:
     web-cocos-router:
-      rule: "Host(`beesafe25-my.intranet.local`) && PathPrefix(`/`) && !PathPrefix(`/api`, `/admin`, `/site`, `/static`, `/auth`, `/docs`, `/media`)"
+      rule: "Host(`beesafe25-my.intranet.local`) &&
+        !PathPrefix(`/api/`) &&
+        !PathPrefix(`/admin/`) &&
+        !PathPrefix(`/site/`) &&
+        !PathPrefix(`/static/`) &&
+        !PathPrefix(`/auth/`) &&
+        !PathPrefix(`/docs/`) &&
+        !PathPrefix(`/media/`)"
       entryPoints:
         - web
       service: cocos
-      priority: 1
+      priority: 90
     #      tls:
     #        certResolver: letsencrypt
 

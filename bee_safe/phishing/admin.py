@@ -36,7 +36,7 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
 
     class Media:
         js = (
-            "https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js",
+            "phishing/js/fabric.min.js",
             "phishing/js/admin_phishing_authoring.js",
         )
         css = {"all": ("phishing/css/admin_phishing_authoring.css",)}

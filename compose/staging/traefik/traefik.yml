@@ -31,11 +31,11 @@ certificatesResolvers:
 http:
   routers:
     web-cocos-router:
-      rule: "Host(`beesafe.gamekaexternalprojects.com`) && PathPrefix(`/`) && !PathPrefix(`/api`, `/admin`, `/site`, `/static`, `/auth`, `/docs`, `/media`)"
+      rule: "Host(`beesafe.gamekaexternalprojects.com`) && (Path(`/`) || !PathPrefix(`/api`, `/admin`, `/site`, `/static`, `/auth`, `/docs`, `/media`))"
       entryPoints:
         - web-secure
       service: cocos
-      priority: 1
+      priority: 90
       tls:
         certResolver: letsencrypt
 

@@ -20,10 +20,17 @@ class PhishingIndicatorInline(TabularInline, TranslationTabularInline):
     fields = ("label",)
     verbose_name = _("Wrong label")
     verbose_name_plural = _("Wrong labels")
+    can_delete = True
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(x1__lte=0.0, y1__lte=0.0, x2__lte=0.0, y2__lte=0.0)
+
+        return qs.filter(
+            x1__lte=0.0,
+            y1__lte=0.0,
+            x2__lte=0.0,
+            y2__lte=0.0,
+        )
 
 
 @admin.register(PhishingAnnotatedEmail)
@@ -44,7 +51,6 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
     def authoring_tool(self, obj):
         import json
 
-        # Access the PhishingIndicator model from the object's indicators manager
         IndicatorModel = obj.indicators.model
 
         if not obj.pk or not obj.image:
@@ -52,29 +58,22 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
                 "<p><em>Upload and save the image first to enable authoring tool.</em></p>",
             )
 
-        # 1. Dynamically identify all translated label fields (e.g., 'label_en', 'label_fr')
-        # This finds fields that start with 'label_' and are not the base 'label'
         translation_fields = [
             f.name
             for f in IndicatorModel._meta.fields
             if f.name.startswith("label_") and f.name != "label"
         ]
 
-        # 2. Extract language codes from the field names (e.g., 'label_en' -> 'en')
         lang_codes = [field.split("label_")[1] for field in translation_fields]
 
-        # 3. Define the list of fields to fetch
         fetch_fields = ["x1", "y1", "x2", "y2"] + translation_fields
 
-        # 4. Fetch the data from the database
         existing_data = list(obj.indicators.values(*fetch_fields))
 
-        # 5. Restructure the fetched data into the required 'labelTranslations' format for the JS
         existing = []
         for item in existing_data:
             translations = {}
             for field_name in translation_fields:
-                # Map the database field (e.g., 'label_en') to the language code ('en')
                 code = field_name.split("label_")[1]
                 translations[code] = item.get(field_name, "")
 
@@ -89,9 +88,8 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
             )
 
         json_existing = json.dumps(existing)
-        json_languages = json.dumps(lang_codes)  # Use dynamically derived codes
+        json_languages = json.dumps(lang_codes)
 
-        # Use the restructured JSON data in the HTML output
         html = f"""
         <div id="phishing-authoring-root">
             <div id="phishing-canvas-wrap"
@@ -113,8 +111,14 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
 
     authoring_tool.short_description = "Authoring tool (draw boxes & labels)"
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change, formsets=None):
+        if formsets is None:
+            formsets = []
+
         super().save_model(request, obj, form, change)
+
+        for formset in formsets:
+            self.save_formset(request, form, obj, formset)
 
         raw = request.POST.get("phishing_indicators")
         if not raw:
@@ -125,7 +129,12 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
         except Exception:
             return
 
-        PhishingIndicator.objects.filter(email=obj).delete()
+        PhishingIndicator.objects.filter(email=obj).exclude(
+            x1=0.0,
+            y1=0.0,
+            x2=0.0,
+            y2=0.0,
+        ).delete()
 
         new_indicators = []
         for i in parsed:

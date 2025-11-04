@@ -20,6 +20,19 @@
       try {
         // Crucially, this JSON must contain "labelTranslations": { "en": "...", "fr": "..." }
         existing = JSON.parse(wrap.dataset.indicators || "[]");
+
+        // 🛑 CRITICAL MODIFICATION (A): Filter out non-visual indicators immediately.
+        // This ensures the JS tool only ever operates on visual data (x1, y1, x2, y2 > 0).
+        existing = existing.filter(item => {
+          const x1 = item.x1 || 0;
+          const y1 = item.y1 || 0;
+          const x2 = item.x2 || 0;
+          const y2 = item.y2 || 0;
+          // We keep only the objects that occupy a visual space (i.e., not all zeros).
+          return !(x1 === 0 && y1 === 0 && x2 === 0 && y2 === 0);
+        });
+        // --------------------------------------------------------------------------
+
       } catch (e) {
         existing = [];
         console.warn("phishing: invalid data-indicators JSON, falling back to []", e);
@@ -105,14 +118,17 @@
 
       // --- Load existing rectangles ---
       function loadExistingRects() {
+        // Because we filtered 'existing' above (Modification A), this loop
+        // only processes visual rectangles.
         existing.forEach(item => {
           const x1 = (item.x1 || 0) * naturalWidth;
           const y1 = (item.y1 || 0) * naturalHeight;
           const x2 = (item.x2 || 0) * naturalWidth;
           const y2 = (item.y2 || 0) * naturalHeight;
 
+          // This check is redundant now but harmless.
           const isAllZero = x1 === 0 && y1 === 0 && x2 === 0 && y2 === 0;
-          if (isAllZero) return; // don't render, keep for persistence
+          if (isAllZero) return;
 
           createRectOnCanvas(x1, y1, x2 - x1, y2 - y1, item.labelTranslations || {}, false);
         });
@@ -138,6 +154,9 @@
           };
         });
 
+        // 🛑 CRITICAL MODIFICATION (B): Remove all logic related to 'zeroOnes' merging.
+        // The saved data will now ONLY contain visual rectangles.
+        /*
         // 🩷 Keep any existing items that are all-zero (not on canvas)
         const zeroOnes = existing.filter(item => {
           const x1 = item.x1 || 0;
@@ -152,6 +171,13 @@
 
         hiddenInput.value = JSON.stringify(merged);
         existing = merged; // update master copy
+        */
+
+        // Use only the visible data to update the hidden input
+        hiddenInput.value = JSON.stringify(visibleData);
+        existing = visibleData; // update master copy
+        // --------------------------------------------------------
+
       }
 
       // --- Open modal for editing translations ---

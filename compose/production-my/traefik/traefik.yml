@@ -54,8 +54,8 @@ http:
       rule: "Host(`beesafe25-my.intranet.local`) && PathPrefix(`/media/`)"
       entryPoints:
         - web-secure
-      middlewares:
-        - csrf
+      # middlewares:
+      #   - csrf
       service: django-media
       tls:
         certResolver: letsencrypt

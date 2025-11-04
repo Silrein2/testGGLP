@@ -57,6 +57,7 @@ http:
       # middlewares:
       #   - csrf
       service: django-media
+      priority: 200
       tls:
         certResolver: letsencrypt
 

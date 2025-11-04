@@ -21,10 +21,10 @@ class PhishingIndicator(models.Model):
     email = models.ForeignKey(
         PhishingAnnotatedEmail, on_delete=models.CASCADE, related_name="indicators"
     )
-    x1 = models.FloatField(help_text="Normalized left (0..1)")
-    y1 = models.FloatField(help_text="Normalized top (0..1)")
-    x2 = models.FloatField(help_text="Normalized right (0..1)")
-    y2 = models.FloatField(help_text="Normalized bottom (0..1)")
+    x1 = models.FloatField(help_text="Normalized left (0..1)", default=0.0)
+    y1 = models.FloatField(help_text="Normalized top (0..1)", default=0.0)
+    x2 = models.FloatField(help_text="Normalized right (0..1)", default=0.0)
+    y2 = models.FloatField(help_text="Normalized bottom (0..1)", default=0.0)
     label = models.CharField(max_length=200, help_text="Label text for this indicator")
     created_at = models.DateTimeField(auto_now_add=True)
 

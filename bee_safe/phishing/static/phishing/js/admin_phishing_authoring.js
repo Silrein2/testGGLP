@@ -105,33 +105,53 @@
 
       // --- Load existing rectangles ---
       function loadExistingRects() {
-        existing.forEach(function (item) {
+        existing.forEach(item => {
           const x1 = (item.x1 || 0) * naturalWidth;
           const y1 = (item.y1 || 0) * naturalHeight;
-          const x2 = (item.x2 || 1) * naturalWidth;
-          const y2 = (item.y2 || 1) * naturalHeight;
-          // Pass the labelTranslations object loaded from data-indicators
+          const x2 = (item.x2 || 0) * naturalWidth;
+          const y2 = (item.y2 || 0) * naturalHeight;
+
+          const isAllZero = x1 === 0 && y1 === 0 && x2 === 0 && y2 === 0;
+          if (isAllZero) return; // don't render, keep for persistence
+
           createRectOnCanvas(x1, y1, x2 - x1, y2 - y1, item.labelTranslations || {}, false);
         });
       }
 
       // --- Update hidden input ---
       function updateHiddenInput() {
-        const objs = canvas.getObjects().filter(o => o.type === "rect");
-        const out = objs.map(r => {
-          const leftNatural = r.left / displayScale;
-          const topNatural = r.top / displayScale;
-          const wNatural = (r.width * (r.scaleX || 1)) / displayScale;
-          const hNatural = (r.height * (r.scaleY || 1)) / displayScale;
+        // gather visible rects from canvas
+        const visibleRects = canvas.getObjects().filter(o => o.type === "rect");
+
+        const visibleData = visibleRects.map(r => {
+          const leftNatural = (r.left || 0) / displayScale;
+          const topNatural = (r.top || 0) / displayScale;
+          const wNatural = ((r.width || 0) * (r.scaleX || 1)) / displayScale;
+          const hNatural = ((r.height || 0) * (r.scaleY || 1)) / displayScale;
+
           return {
             x1: leftNatural / naturalWidth,
             y1: topNatural / naturalHeight,
             x2: (leftNatural + wNatural) / naturalWidth,
             y2: (topNatural + hNatural) / naturalHeight,
-            labelTranslations: r.labelTranslations // Export the full translations
+            labelTranslations: r.labelTranslations || {},
           };
         });
-        hiddenInput.value = JSON.stringify(out);
+
+        // 🩷 Keep any existing items that are all-zero (not on canvas)
+        const zeroOnes = existing.filter(item => {
+          const x1 = item.x1 || 0;
+          const y1 = item.y1 || 0;
+          const x2 = item.x2 || 0;
+          const y2 = item.y2 || 0;
+          return x1 === 0 && y1 === 0 && x2 === 0 && y2 === 0;
+        });
+
+        // merge visible + zero ones
+        const merged = [...visibleData, ...zeroOnes];
+
+        hiddenInput.value = JSON.stringify(merged);
+        existing = merged; // update master copy
       }
 
       // --- Open modal for editing translations ---
@@ -274,7 +294,7 @@
       });
 
       document.addEventListener("keydown", function (e) {
-        if (e.key === "Delete" || e.key === "Backspace") {
+        if (e.key === "Delete") {
           const active = canvas.getActiveObject();
           if (active && active.type === "rect") {
             if (active.associatedText) canvas.remove(active.associatedText);

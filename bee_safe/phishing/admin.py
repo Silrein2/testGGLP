@@ -3,13 +3,27 @@ import json
 from django.contrib import admin
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TabbedTranslationAdmin
+from modeltranslation.admin import TranslationTabularInline
 from unfold.admin import ModelAdmin
+from unfold.admin import TabularInline
 
 from bee_safe.custom_admin.admin import custom_admin
 from bee_safe.phishing.models import PhishingAnnotatedEmail
 from bee_safe.phishing.models import PhishingIndicator
 from config.settings.base import LANGUAGES
+
+
+class PhishingIndicatorInline(TabularInline, TranslationTabularInline):
+    model = PhishingIndicator
+    fields = ("label",)
+    verbose_name = _("Wrong label")
+    verbose_name_plural = _("Wrong labels")
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(x1__lte=0.0, y1__lte=0.0, x2__lte=0.0, y2__lte=0.0)
 
 
 @admin.register(PhishingAnnotatedEmail)
@@ -18,6 +32,7 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
     list_display = ("title", "created_at")
     readonly_fields = ("authoring_tool",)
     fields = ("title", "image", "authoring_tool")
+    inlines = [PhishingIndicatorInline]
 
     class Media:
         js = (
@@ -27,8 +42,6 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
         css = {"all": ("phishing/css/admin_phishing_authoring.css",)}
 
     def authoring_tool(self, obj):
-        from django.utils.html import escape
-        from django.utils.safestring import mark_safe
         import json
 
         # Access the PhishingIndicator model from the object's indicators manager
@@ -36,7 +49,7 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
 
         if not obj.pk or not obj.image:
             return mark_safe(
-                "<p><em>Upload and save the image first to enable authoring tool.</em></p>"
+                "<p><em>Upload and save the image first to enable authoring tool.</em></p>",
             )
 
         # 1. Dynamically identify all translated label fields (e.g., 'label_en', 'label_fr')
@@ -72,7 +85,7 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
                     "x2": item["x2"],
                     "y2": item["y2"],
                     "labelTranslations": translations,
-                }
+                },
             )
 
         json_existing = json.dumps(existing)

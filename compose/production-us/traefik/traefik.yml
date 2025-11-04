@@ -31,7 +31,7 @@ entryPoints:
 http:
   routers:
     web-cocos-router:
-      rule: "Host(`beesafe25-us.intranet.local`) && PathPrefix(`/`)"
+      rule: "Host(`beesafe25-us.intranet.local`) && PathPrefix(`/`) && !PathPrefix(`/api`, `/admin`, `/site`, `/static`, `/auth`, `/docs`, `/media`)"
       entryPoints:
         - web
       service: cocos

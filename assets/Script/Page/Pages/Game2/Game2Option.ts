@@ -45,11 +45,11 @@ export class Game2Option extends Component {
     this.draggableObject.node.off(DRAG_END_EVENT, this.onDragEnd, this);
   }
 
-  public init(data: any, slots: Game2Slot[], game2Page: Game2Page) {
+  public init(data: string, slots: Game2Slot[], game2Page: Game2Page) {
     this.game2Page = game2Page;
     this.container = game2Page.optionLayout.node;
     this.data = data;
-    this.label.string = data.text;
+    this.label.string = data;
     this.slots = slots;
   }
 
@@ -74,7 +74,7 @@ export class Game2Option extends Component {
       slot.collider.apply();
       if (slot.collider.worldAABB.contains(pos)) {
         collided = true;
-        if (slot.data == (this.data.id as number)) {
+        if (slot.data == this.data) {
           correct = true;
         }
       }

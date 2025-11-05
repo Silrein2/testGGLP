@@ -18,8 +18,12 @@ import { Game2Tutorial } from "./Game2Tutorial";
 import { Game2Bee } from "./Game2Bee";
 import { LocalizationManager } from "../../../Manager/LocalizationManager";
 import { Game2Question } from "./Game2Question";
-import { shuffleArray } from "../../../Utils/Utils";
-import { DataManager, UserState } from "../../../Manager/DataManager";
+import { shuffleArray, waitForCondition } from "../../../Utils/Utils";
+import {
+  DataManager,
+  PhishingEmail,
+  UserState,
+} from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Page")
@@ -27,11 +31,17 @@ export class Game2Page extends Page {
   @property({ type: Layout })
   public questionLayout: Layout | null = null;
 
+  @property({ type: Prefab })
+  private questionPrefab: Prefab | null = null;
+
   @property({ type: Layout })
   public optionLayout: Layout | null = null;
 
   @property({ type: Prefab })
   private optionPrefab: Prefab | null = null;
+
+  @property({ type: Prefab })
+  public slotPrefab: Prefab | null = null;
 
   @property({ type: Game2Tutorial })
   private tutorial: Game2Tutorial | null = null;
@@ -58,16 +68,18 @@ export class Game2Page extends Page {
   private game2QuizTransition: Game2QuizTransition | null = null;
   private firstQuestion: boolean = false;
 
+  private question: PhishingEmail | null = null;
   private currentQuestionIndex: number = 0;
-
-  private questions: any[] = [];
+  private questions: PhishingEmail[] = [];
+  private loadedQuestion: boolean = false;
   private currentScore: number = 0;
   private enableTutorial: boolean = false;
+  private questionsLoadedCount: number = 0;
 
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
 
-    this.questions = [
+    /*this.questions = [
       {
         question: this.game2Questions[0],
         options: [
@@ -149,7 +161,7 @@ export class Game2Page extends Page {
           { id: 11, text: "Trigger strong emotion" },
         ],
       },
-    ];
+    ];*/
   }
 
   protected setPageState() {
@@ -166,24 +178,30 @@ export class Game2Page extends Page {
     this.showGame(false);
     this.firstQuestion = true;
     this.currentQuestionIndex = 0;
+    this.questionsLoadedCount = 0;
     this.setUI();
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
+    this.getQuestion();
   }
 
   public onPostEnterTransition() {
     super.onPostEnterTransition();
     UIManager.instance.showScoreStartUI(
       this.pageState,
-      async () => {
+      async (tutorial: boolean = false) => {
+        if (!this.loadedQuestion || !this.allQuestionLoaded()) {
+          UIManager.instance.showLoading(true);
+          await waitForCondition(this.loadedQuestion);
+          await waitForCondition(this.allQuestionLoaded());
+        }
+        UIManager.instance.showLoading(false);
         this.game2Bee.setText("Q1", true);
+        this.enableTutorial = tutorial;
         this.setQuestion();
-        GameManager.instance.timer.startTimer();
-      },
-      () => {
-        this.game2Bee.setText("Q1", true);
-        this.setQuestion();
-        this.enableTutorial = true;
+        if (!tutorial) {
+          GameManager.instance.timer.startTimer();
+        }
       },
     );
   }
@@ -191,6 +209,14 @@ export class Game2Page extends Page {
   public onExit() {
     super.onExit();
     UIManager.instance.showGameUI(false);
+  }
+
+  private async getQuestion() {
+    this.loadedQuestion = false;
+    await GameManager.instance.quizService.getPhishingEmail();
+    this.createQuestion();
+    UIManager.instance.showLoading(false);
+    this.loadedQuestion = true;
   }
 
   private setUI() {
@@ -211,14 +237,31 @@ export class Game2Page extends Page {
     this.transitionPage(PageStates.Result);
   }
 
+  private createQuestion() {
+    this.questions = DataManager.instance.phishingEmails;
+
+    for (const game2Question of this.game2Questions) {
+      game2Question.node.destroy();
+    }
+    this.game2Questions = [];
+    for (let i = 0; i < this.questions.length; i++) {
+      const questionNode = instantiate(this.questionPrefab) as Node;
+      this.questionLayout.node.addChild(questionNode);
+      const game2Question = questionNode.getComponent(Game2Question);
+      game2Question.init(this.questions[i], this);
+      this.game2Questions.push(game2Question);
+    }
+  }
+
   private setQuestion() {
+    this.question = this.questions[this.currentQuestionIndex];
     this.currentScore = Math.max(0, this.currentScore);
     this.setUI();
     if (this.currentQuestionIndex >= this.questions.length) {
       this.endQuiz();
       return;
     }
-    const question = this.questions[this.currentQuestionIndex];
+    const question = this.game2Questions[this.currentQuestionIndex];
     this.showGame(true);
     for (const option of this.options) {
       option.node.destroy();
@@ -227,15 +270,17 @@ export class Game2Page extends Page {
     this.optionLayout.enabled = true;
 
     for (let i = 0; i < this.questions.length; i++) {
-      this.questions[i].question.node.active = i === this.currentQuestionIndex;
+      this.game2Questions[i].node.active = i === this.currentQuestionIndex;
     }
-
-    const shuffledOptions = shuffleArray(question.options);
+    const optionLabels = this.question.indicators.map((x) => {
+      return x.label;
+    });
+    const shuffledOptions = shuffleArray(optionLabels);
     for (let i = 0; i < shuffledOptions.length; i++) {
       const optionNode = instantiate(this.optionPrefab) as Node;
       this.optionLayout.node.addChild(optionNode);
       const game2Option = optionNode.getComponent(Game2Option);
-      game2Option.init(shuffledOptions[i], question.question.slots, this);
+      game2Option.init(shuffledOptions[i], question.slots, this);
       this.options.push(game2Option);
     }
 
@@ -309,5 +354,13 @@ export class Game2Page extends Page {
       nodes.push(option.node);
     }
     return nodes;
+  }
+
+  public onGame2QuestionLoaded() {
+    this.questionsLoadedCount++;
+  }
+
+  private allQuestionLoaded(): boolean {
+    return this.questionsLoadedCount >= this.questions.length;
   }
 }

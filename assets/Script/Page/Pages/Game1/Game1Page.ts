@@ -183,6 +183,7 @@ export class Game1Page extends Page {
         UIManager.instance.showLoading(true);
         await waitForCondition(this.loadedQuestion);
       }
+      UIManager.instance.showLoading(false);
       this.setQuestion();
       GameManager.instance.timer.startTimer();
     });
@@ -200,10 +201,8 @@ export class Game1Page extends Page {
       await GameManager.instance.quizService.getQuestion();
       await GameManager.instance.userService.fetchUserState();
       this.setUI();
-      UIManager.instance.showLoading(false);
       this.loadedQuestion = true;
     } else {
-      UIManager.instance.showLoading(false);
       this.loadedQuestion = true;
     }
   }

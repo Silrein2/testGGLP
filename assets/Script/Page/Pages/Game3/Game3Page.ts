@@ -143,6 +143,7 @@ export class Game3Page extends Page {
           UIManager.instance.showLoading(true);
           await waitForCondition(this.loadedQuestion);
         }
+        UIManager.instance.showLoading(false);
         this.setQuestion();
         this.showGame(true);
         GameManager.instance.timer.startTimer();
@@ -158,7 +159,6 @@ export class Game3Page extends Page {
   private async getQuestion() {
     this.loadedQuestion = false;
     await GameManager.instance.quizService.getFakeBossQuestion();
-    UIManager.instance.showLoading(false);
     this.loadedQuestion = true;
   }
 

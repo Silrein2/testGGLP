@@ -95,6 +95,23 @@ export interface FakeBossAnswerOption {
   is_correct: boolean;
 }
 
+export interface PhishingEmail {
+  id: number;
+  title: string;
+  image: string;
+  created_at: string;
+  indicators: PhishingIndicator[];
+}
+
+export interface PhishingIndicator {
+  id: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  label: string;
+}
+
 export const QUESTION_CHANGED = "question-changed";
 
 @ccclass("DataManager")
@@ -106,6 +123,7 @@ export class DataManager extends Component {
   public texts: Text[] = [];
   public userState: UserState | null = null;
   public question: Question | null = null;
+  public phishingEmails: PhishingEmail[] = [];
   public fakeBossQuestions: FakeBossQuestion[] = [];
 
   public static get instance(): DataManager {
@@ -142,6 +160,10 @@ export class DataManager extends Component {
   public setQuestion(question: Question) {
     this.question = question;
     this.node.emit(QUESTION_CHANGED, question);
+  }
+
+  public setPhishingEmails(phishingEmails: PhishingEmail[]) {
+    this.phishingEmails = phishingEmails;
   }
 
   public setFakeBossQuestions(fakeBossQuestions: FakeBossQuestion[]) {

@@ -21,13 +21,8 @@ export class ScoreStartUI extends PopupUI {
   private tutorialButton: Node | null = null;
 
   private onComplete: Function | null = null;
-  private onTutorial: Function | null = null;
 
-  public show(
-    gamePageState: PageStates,
-    onComplete: Function,
-    onTutorial: Function = () => {},
-  ) {
+  public show(gamePageState: PageStates, onComplete: Function) {
     const userState: UserState = DataManager.instance.userState;
 
     let gameName = "";
@@ -61,7 +56,6 @@ export class ScoreStartUI extends PopupUI {
     this.highScoreLabel.string = currentScore.toString();
     this.timeLabel.string = timeString(bestTime);
     this.onComplete = onComplete;
-    this.onTutorial = onTutorial;
     this.onShow();
   }
 
@@ -70,6 +64,6 @@ export class ScoreStartUI extends PopupUI {
   }
 
   private onClickTutorial() {
-    this.onClose(this.onTutorial);
+    this.onClose(() => this.onComplete(true));
   }
 }

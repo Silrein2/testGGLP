@@ -1,6 +1,7 @@
 import {
   DataManager,
   FakeBossQuestion,
+  PhishingEmail,
   Question,
   UserState,
 } from "../Manager/DataManager";
@@ -42,6 +43,7 @@ export interface FakeBossScoreRequest {
 export class QuizService {
   private apiClient: ApiClient;
   private questionEndpoint: string = "api/quizzes/question/";
+  private phishingEmailEndpoint: string = "api/phishing/emails/";
   private phishingScoreEndpoint: string = "api/phishing/score/";
   private fakeBossQuestionEndpoint: string = "api/fake-boss/question/";
   private fakeBossScoreEndpoint: string = "api/fake-boss/score/";
@@ -85,6 +87,19 @@ export class QuizService {
       if (responseData.next_question != null) {
         DataManager.instance.setQuestion(responseData.next_question);
       }
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async getPhishingEmail(): Promise<PhishingEmail[]> {
+    try {
+      const responseData = await this.apiClient.get<PhishingEmail[]>(
+        this.phishingEmailEndpoint,
+      );
+      DataManager.instance.setPhishingEmails(responseData);
       return responseData;
     } catch (error) {
       console.error(error);

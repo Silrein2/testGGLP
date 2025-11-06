@@ -21,4 +21,3 @@ urlpatterns = [
         name="phishing-emails",
     ),
 ]
-

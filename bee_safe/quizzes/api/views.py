@@ -167,7 +167,7 @@ class QuestionView(APIView):
 
         if not question:
             user = request.user
-            user.reset_session()
+            user.reset_quizzes()
             question = Question.objects.get_next_question(user=request.user)
             # return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -263,8 +263,11 @@ export class Game2Page extends Page {
     }
     const question = this.game2Questions[this.currentQuestionIndex];
     this.showGame(true);
+
     for (const option of this.options) {
-      option.node.destroy();
+      if (option.node && option.node.isValid) {
+        option.node.destroy();
+      }
     }
     this.options = [];
     this.optionLayout.enabled = true;
@@ -283,7 +286,6 @@ export class Game2Page extends Page {
       game2Option.init(shuffledOptions[i], question.slots, this);
       this.options.push(game2Option);
     }
-
     for (const scrollView of this.scrollViews) {
       scrollView.scrollToTop(0.01);
     }

@@ -144,7 +144,6 @@ class UserStateService:
         score,
         seconds,
         total_score,
-        increment_times_played=False,
     ):
         with transaction.atomic():
             self.user.refresh_from_db()
@@ -156,19 +155,12 @@ class UserStateService:
                 self.user.highest_score_phishing = new_total
                 self.user.total_seconds_at_highest_score_phishing = seconds
 
-            self.user.times_played_phishing = (
-                self.user.times_played_phishing + 1
-                if increment_times_played
-                else self.user.times_played_phishing
-            )
-
             self.user.save(
                 update_fields=[
                     "current_score_phishing",
                     "total_score_phishing",
                     "highest_score_phishing",
                     "total_seconds_at_highest_score_phishing",
-                    "times_played_phishing",
                 ],
             )
 

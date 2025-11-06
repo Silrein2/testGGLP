@@ -34,4 +34,8 @@ class PhishingAnnotatedEmailAnswerSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     answer = PhishingIndicatorAnswerSerializer()
     seconds_spent = serializers.IntegerField()
-    is_last_email = serializers.BooleanField(default=False)
+
+
+class PhishingAnnnotatedEmailStartEndSerializer(serializers.Serializer):
+    start = serializers.BooleanField(default=False)
+    end = serializers.BooleanField(default=False)

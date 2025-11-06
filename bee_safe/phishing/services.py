@@ -11,7 +11,12 @@ class PhishingEmailAnswerService:
     def __init__(self, user):
         self.user = user
 
-    def submit_answer(self, email_id, indicator_id, seconds_spent, is_last_email=False):
+    def submit_answer(
+        self,
+        email_id,
+        indicator_id,
+        seconds_spent,
+    ):
         is_correct = False
 
         with transaction.atomic():
@@ -59,7 +64,6 @@ class PhishingEmailAnswerService:
                 answer.score,
                 seconds_spent,
                 total_score,
-                is_last_email,
             )
 
         return is_correct

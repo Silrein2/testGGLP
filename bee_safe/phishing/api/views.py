@@ -6,6 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from bee_safe.phishing.api.serializers import PhishingAnnnotatedEmailStartEndSerializer
 from bee_safe.phishing.api.serializers import PhishingAnnotatedEmailAnswerSerializer
 from bee_safe.phishing.api.serializers import PhishingAnnotatedEmailSerializer
 from bee_safe.phishing.api.serializers import ScorePhishingSerializer
@@ -26,7 +27,6 @@ class ScoreView(APIView):
             serializer.validated_data["score"],
             serializer.validated_data["seconds"],
             serializer.validated_data["total_score"],
-            serializer.validated_data["times_played"],
         )
         user_serializer = UserSerializer(user.state, context={"request": request})
         return Response(user_serializer.data)
@@ -91,9 +91,7 @@ class PhishingAnnotatedEmailView(APIView):
     )
     @extend_schema(request=PhishingAnnotatedEmailAnswerSerializer)
     def post(self, request):
-        """
-        Submit an indicator. If `is_last_email` is `true`, the user's times played will increase by 1.
-        """
+        """Submit an indicator."""
 
         serializer = PhishingAnnotatedEmailAnswerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -102,9 +100,43 @@ class PhishingAnnotatedEmailView(APIView):
             serializer.validated_data["id"],
             serializer.validated_data["answer"]["id"],
             serializer.validated_data["seconds_spent"],
-            serializer.validated_data["is_last_email"],
         )
         response = {}
         response.update(user.state)
         response["phishing"].update({"is_correct": is_correct})
+        return Response(response)
+
+
+class PhishingAnnotatedEmailStartEndView(APIView):
+    authentication_classes = [TokenAuthentication]
+
+    @extend_schema(request=PhishingAnnnotatedEmailStartEndSerializer)
+    def post(self, request):
+        """
+        Tells the backend if a user has started or ended a Phishing game.
+
+        Must be called first before any indicator is submitted.
+        Must be called last after all indicators are submitted.
+
+        `Start` and `end` cannot be `true` at the same time.
+        """
+
+        serializer = PhishingAnnnotatedEmailStartEndSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        start = serializer.validated_data["start"]
+        end = serializer.validated_data["end"]
+
+        user = request.user
+        response = {}
+
+        if start and not end:
+            user.reset_phishing()
+            response.update({"start": True})
+
+        if end and not start:
+            user.times_played_phishing += 1
+            user.save(update_fields=["times_played_phishing"])
+            response.update({"end": True})
+
+        response.update(user.state)
         return Response(response)

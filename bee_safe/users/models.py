@@ -128,6 +128,12 @@ class User(AbstractUser):
     def reset_quizzes(self):
         return UserStateService(self).reset_quizzes()
 
+    def reset_phishing(self):
+        return UserStateService(self).reset_phishing()
+
+    def reset_fake_boss(self):
+        return UserStateService(self).reset_fake_boss()
+
     def reset_state(self):
         return UserStateService(self).reset_state()
 

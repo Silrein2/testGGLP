@@ -35412,7 +35412,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 743.3557434082031,
+      "x": 743.1923294189063,
       "y": 0,
       "z": 0
     },
@@ -35451,8 +35451,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 9.899993896484375,
-      "height": 75.6
+      "width": 9.897811767967504,
+      "height": 75.60000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -35484,7 +35484,7 @@
     "_string": "|",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 38.12837837837838,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -35552,7 +35552,7 @@
     "_alignFlags": 32,
     "_target": null,
     "_left": 0,
-    "_right": -10,
+    "_right": -9.997817871483129,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -35581,8 +35581,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 743.2557373046875,
-      "height": 75.6
+      "width": 743.0923233153907,
+      "height": 75.60000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -35614,7 +35614,7 @@
     "_string": "Defense against Deepfake meeting agenda...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 38.12837837837838,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -35783,8 +35783,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 169.13394165039062,
-      "height": 75.6
+      "width": 169.12212132114732,
+      "height": 75.60000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -35816,7 +35816,7 @@
     "_string": "Bee Boss",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 42,
+    "_actualFontSize": 44.48310810810811,
     "_fontSize": 42,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -35934,8 +35934,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 279.63592529296875,
-      "height": 75.6
+      "width": 279.6164204233951,
+      "height": 75.60000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -35967,7 +35967,7 @@
     "_string": "+90152558795",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 42,
+    "_actualFontSize": 44.48310810810811,
     "_fontSize": 42,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -36085,8 +36085,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 169.847900390625,
-      "height": 75.6
+      "width": 169.83607572954045,
+      "height": 75.60000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -36118,7 +36118,7 @@
     "_string": "Calling...",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 42,
+    "_actualFontSize": 44.48310810810811,
     "_fontSize": 42,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -37941,8 +37941,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 899.3839111328125,
-      "height": 100.8
+      "width": 899.3475472238835,
+      "height": 100.80000000000001
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -37974,7 +37974,7 @@
     "_string": "Behavioral Inconsistency",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 76,
+    "_actualFontSize": 80.49324324324326,
     "_fontSize": 76,
     "_fontFamily": "Arial",
     "_lineHeight": 80,
@@ -38272,7 +38272,7 @@
     "_string": "I lost my phone, wallet and credit card. I am borrowing my friend's phone",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 42,
+    "_actualFontSize": 44.48310810810811,
     "_fontSize": 42,
     "_fontFamily": "Arial",
     "_lineHeight": 60,
@@ -38590,7 +38590,7 @@
     "_string": "Suspicious Activity",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 31,
+    "_actualFontSize": 32,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -38884,7 +38884,7 @@
     "_string": "Suspicious Activity",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 31,
+    "_actualFontSize": 32,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -39178,7 +39178,7 @@
     "_string": "Suspicious Activity",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 31,
+    "_actualFontSize": 32,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -39472,7 +39472,7 @@
     "_string": "Suspicious Activity",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 31,
+    "_actualFontSize": 32,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -39817,7 +39817,7 @@
     "_string": "Review 1st Video",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26,
+    "_actualFontSize": 27,
     "_fontSize": 26,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -41483,8 +41483,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 90.92997741699219,
-      "height": 63
+      "width": 90.92361240904106,
+      "height": 62.99999999999999
     }
   },
   {
@@ -42848,6 +42848,9 @@
     },
     "game3Message": {
       "__id__": 1462
+    },
+    "fakeBossLabel": {
+      "__id__": 1300
     },
     "optionNormalSpriteFrame": {
       "__uuid__": "2020e6d3-a4e9-475b-ba5f-b5fbc6f2d925@f9941",

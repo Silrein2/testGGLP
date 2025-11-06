@@ -13,6 +13,7 @@ import {
 } from "cc";
 import { TypewriterEffect } from "../../../Utils/TypewriterEffect";
 import { Game3Page } from "./Game3Page";
+import { LocalizationManager } from "../../../Manager/LocalizationManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game3Review")
@@ -40,12 +41,9 @@ export class Game3Review extends Component {
   onLoad() {
     this.typewriterEffect = new TypewriterEffect();
     this.gameNextUIOpacity = this.gameNextButton.node.getComponent(UIOpacity);
-
-    this.currentScript = [
-      "I am travelling soon and you need to send me an update on Project XYZ",
-      "Please send it to me by today because I need it for my discussions",
-      "If you have any questions, you know how to reach me at my mobile number.",
-    ];
+    this.currentScript = LocalizationManager.instance.getLocalizedStringArray(
+      "dialogue.game_3.real_bee_boss",
+    );
   }
 
   public init(game3Page: Game3Page) {

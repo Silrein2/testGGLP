@@ -49,6 +49,9 @@ export class Game3Page extends Page {
   @property({ type: Game3Message })
   public game3Message: Game3Message | null = null;
 
+  @property({ type: Label })
+  private fakeBossLabel: Label | null = null;
+
   @property({ type: SpriteFrame })
   public optionNormalSpriteFrame: SpriteFrame | null = null;
 
@@ -121,6 +124,10 @@ export class Game3Page extends Page {
     this.gameScreen.active = false;
     this.sectionLabel.string =
       LocalizationManager.instance.getLocalizedString("general.welcome");
+    this.fakeBossLabel.string =
+      LocalizationManager.instance.getLocalizedStringArray(
+        "dialogue.game_3.fake_bee_boss",
+      )[0];
     this.currentQuestionIndex = 0;
     this.currentScore = 0;
     UIManager.instance.showGameUI(true);

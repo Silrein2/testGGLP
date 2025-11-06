@@ -68,7 +68,7 @@ class User(AbstractUser):
     total_seconds_at_highest_score_quizzes = models.PositiveIntegerField(default=0)
     times_played_quizzes = models.PositiveIntegerField(default=0)
 
-    current_score_phishing = models.PositiveIntegerField(default=0)
+    current_score_phishing = models.IntegerField(default=0)
     total_score_phishing = models.PositiveIntegerField(default=0)
     highest_score_phishing = models.PositiveIntegerField(default=0)
     total_seconds_at_highest_score_phishing = models.PositiveIntegerField(default=0)

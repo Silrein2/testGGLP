@@ -2,6 +2,7 @@ from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from .views import PhishingAnnotatedEmailAnswerView
 from .views import PhishingEmailViewSet
 from .views import ScoreView
 
@@ -15,4 +16,8 @@ urlpatterns = [
         name="score-phishing",
     ),
     path("", include(router.urls)),
+    path(
+        "answer/",
+        view=PhishingAnnotatedEmailAnswerView.as_view(),
+    ),
 ]

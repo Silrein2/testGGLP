@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from bee_safe.phishing.models import PhishingAnnotatedEmail
+from bee_safe.phishing.models import PhishingAnnotatedEmailAnswer
 from bee_safe.phishing.models import PhishingIndicator
 
 
@@ -23,3 +24,14 @@ class PhishingAnnotatedEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhishingAnnotatedEmail
         fields = ["id", "title", "image", "created_at", "indicators"]
+
+
+class PhishingIndicatorAnswerSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+
+class PhishingAnnotatedEmailAnswerSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    answer = PhishingIndicatorAnswerSerializer()
+    seconds_spent = serializers.IntegerField()
+    is_last_email = serializers.BooleanField(default=False)

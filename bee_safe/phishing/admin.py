@@ -11,6 +11,7 @@ from unfold.admin import TabularInline
 
 from bee_safe.custom_admin.admin import custom_admin
 from bee_safe.phishing.models import PhishingAnnotatedEmail
+from bee_safe.phishing.models import PhishingAnnotatedEmailAnswer
 from bee_safe.phishing.models import PhishingIndicator
 from config.settings.base import LANGUAGES
 
@@ -154,7 +155,11 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
 
 
 @admin.register(PhishingIndicator)
-@admin.register(PhishingIndicator, site=custom_admin)
 class PhishingIndicatorAdmin(ModelAdmin, TabbedTranslationAdmin):
     list_display = ("id", "email", "label", "x1", "y1", "x2", "y2", "created_at")
     readonly_fields = ("email", "label", "x1", "y1", "x2", "y2", "created_at")
+
+
+@admin.register(PhishingAnnotatedEmailAnswer)
+class PhishingAnnotatedEmailAnswer(ModelAdmin):
+    model = PhishingAnnotatedEmailAnswer

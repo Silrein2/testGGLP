@@ -157,6 +157,7 @@ class UserAdmin(
     ]
     actions = [
         "run_reset_quizzes_scores",
+        "run_reset_phishing_scores",
         "run_reset_fake_boss_scores",
         "run_reset_user_states",
     ]
@@ -167,6 +168,13 @@ class UserAdmin(
     def run_reset_quizzes_scores(self, request, queryset):
         for user in queryset:
             user.reset_quizzes()
+
+    @action(
+        description="Reset Phishing scores",
+    )
+    def run_reset_phishing_scores(self, request, queryset):
+        for user in queryset:
+            user.reset_phishing()
 
     @action(
         description="Reset Fake Boss scores",

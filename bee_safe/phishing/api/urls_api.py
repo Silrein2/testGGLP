@@ -1,18 +1,24 @@
 from django.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import PhishingEmailViewSet
-from .views import ScoreView
+from bee_safe.phishing.api.views import PhishingAnnotatedEmailView
+from bee_safe.phishing.api.views import ScoreView
 
 router = DefaultRouter()
-router.register(r"emails", PhishingEmailViewSet, basename="phishing-email")
 
 urlpatterns = [
+    path("", include(router.urls)),
     path(
         "score/",
         view=ScoreView.as_view(),
         name="score-phishing",
     ),
-    path("", include(router.urls)),
+    path(
+        "emails/",
+        view=PhishingAnnotatedEmailView.as_view(),
+        name="phishing-emails",
+    ),
 ]
+

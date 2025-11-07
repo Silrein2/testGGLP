@@ -39,17 +39,24 @@ class PhishingEmailAnswerService:
                 user=self.user,
                 indicator=indicator,
             )
-            if (
-                indicator.x1 <= 0.0
-                and indicator.y1 <= 0.0
-                and indicator.x2 <= 0.0
-                and indicator.y2 <= 0.0
-            ):
-                answer.score = -25
-                is_correct = False
-            else:
+            tolerance = 0.03
+            if PhishingIndicator.objects.filter(
+                email=email,
+                x1__gte=indicator.x1 - tolerance,
+                x1__lte=indicator.x1 + tolerance,
+                y1__gte=indicator.y1 - tolerance,
+                y1__lte=indicator.y1 + tolerance,
+                x2__gte=indicator.x2 - tolerance,
+                x2__lte=indicator.x2 + tolerance,
+                y2__gte=indicator.y2 - tolerance,
+                y2__lte=indicator.y2 + tolerance,
+                label=indicator.label,
+            ).exists():
                 answer.score = 100
                 is_correct = True
+            else:
+                answer.score = -25
+                is_correct = False
 
             answer.save()
 

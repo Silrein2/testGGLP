@@ -15,6 +15,10 @@ class PhishingEmailAnswerService:
         self,
         email_id,
         indicator_id,
+        x1,
+        y1,
+        x2,
+        y2,
         seconds_spent,
     ):
         is_correct = False
@@ -52,8 +56,18 @@ class PhishingEmailAnswerService:
                 y2__lte=indicator.y2 + tolerance,
                 label=indicator.label,
             ).exists():
-                answer.score = 100
-                is_correct = True
+                if (
+                    indicator_id == indicator.id
+                    and abs(x1 - indicator.x1) < tolerance
+                    and abs(y1 - indicator.y1) < tolerance
+                    and abs(x2 - indicator.x2) < tolerance
+                    and abs(y2 - indicator.y2) < tolerance
+                ):
+                    answer.score = 100
+                    is_correct = True
+                else:
+                    answer.score = -25
+                    is_correct = False
             else:
                 answer.score = -25
                 is_correct = False

@@ -96,10 +96,17 @@ class PhishingAnnotatedEmailView(APIView):
         serializer = PhishingAnnotatedEmailAnswerSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = request.user
+
+        data = serializer.validated_data
+        answer = data["answer"]
         is_correct = PhishingEmailAnswerService(user).submit_answer(
-            serializer.validated_data["id"],
-            serializer.validated_data["answer"]["id"],
-            serializer.validated_data["seconds_spent"],
+            data["id"],
+            answer["id"],
+            answer["x1"],
+            answer["y1"],
+            answer["x2"],
+            answer["y2"],
+            data["seconds_spent"],
         )
         response = {}
         response.update(user.state)

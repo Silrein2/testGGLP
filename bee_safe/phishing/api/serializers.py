@@ -28,6 +28,10 @@ class PhishingAnnotatedEmailSerializer(serializers.ModelSerializer):
 
 class PhishingIndicatorAnswerSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+    x1 = serializers.FloatField()
+    y1 = serializers.FloatField()
+    x2 = serializers.FloatField()
+    y2 = serializers.FloatField()
 
 
 class PhishingAnnotatedEmailAnswerSerializer(serializers.Serializer):

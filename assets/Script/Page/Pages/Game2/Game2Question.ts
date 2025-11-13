@@ -13,6 +13,7 @@ import {
 import { Game2Slot } from "./Game2Slot";
 import { PhishingEmail, PhishingIndicator } from "../../../Manager/DataManager";
 import { Game2Page } from "./Game2Page";
+import { GameManager } from "../../../Manager/GameManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Question")
@@ -24,6 +25,10 @@ export class Game2Question extends Component {
   public options: string[] = [];
   public slots: Game2Slot[] = [];
 
+  onLoad() {
+    this.slots = this.node.getComponentsInChildren(Game2Slot);
+  }
+
   public init(data: PhishingEmail, game2Page: Game2Page) {
     this.sprite = this.node.getComponent(Sprite);
     this.uiTransform = this.node.getComponent(UITransform);
@@ -34,7 +39,10 @@ export class Game2Question extends Component {
   }
 
   private loadRemoteImage(url: string) {
-    assetManager.loadRemote(url, ImageAsset, (err, image: ImageAsset) => {
+    let baseUrl = GameManager.instance.baseUrl;
+    baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : url;
+    const imageUrl = baseUrl + url;
+    assetManager.loadRemote(imageUrl, ImageAsset, (err, image: ImageAsset) => {
       if (err) {
         return;
       }

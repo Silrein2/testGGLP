@@ -18,6 +18,7 @@ import {
 } from "../../../Utils/DraggableObject";
 import { ButtonStates } from "../../Enums";
 import { Game2Slot } from "./Game2Slot";
+import { PhishingIndicator } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Game2Option")
@@ -30,7 +31,7 @@ export class Game2Option extends Component {
   private resetTween: Tween<Node> | null = null;
 
   public draggableObject: DraggableObject | null = null;
-  public data: any | null = null;
+  public data: PhishingIndicator | null = null;
 
   onLoad() {
     this.sprite = this.node.getComponent(Sprite);
@@ -45,11 +46,15 @@ export class Game2Option extends Component {
     this.draggableObject.node.off(DRAG_END_EVENT, this.onDragEnd, this);
   }
 
-  public init(data: string, slots: Game2Slot[], game2Page: Game2Page) {
+  public init(
+    data: PhishingIndicator,
+    slots: Game2Slot[],
+    game2Page: Game2Page,
+  ) {
     this.game2Page = game2Page;
     this.container = game2Page.optionLayout.node;
     this.data = data;
-    this.label.string = data;
+    this.label.string = data.label;
     this.slots = slots;
   }
 
@@ -74,14 +79,18 @@ export class Game2Option extends Component {
       slot.collider.apply();
       if (slot.collider.worldAABB.contains(pos)) {
         collided = true;
-        if (slot.data == this.data) {
+        if (slot.data == this.data.label) {
           correct = true;
         }
       }
     });
     if (collided) {
       this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
-      this.game2Page.onDropOption(correct);
+      this.game2Page.onDropOption(
+        correct,
+        this.data,
+        this.getPositionRatio(this.slots[0].node.parent),
+      );
       if (!correct) {
         this.moveResetPosition();
       } else {
@@ -120,6 +129,26 @@ export class Game2Option extends Component {
     const parentUITransform = this.node.parent.getComponent(UITransform);
     const parentLocalPos = parentUITransform.convertToNodeSpaceAR(worldPos);
     return parentLocalPos;
+  }
+
+  private getPositionRatio(emailNode: Node): Vec2 {
+    const _emailBoundingBox = emailNode
+      .getComponent(UITransform)
+      .getBoundingBox();
+    const emailBoundingBox = {
+      x: emailNode.worldPositionX,
+      y: emailNode.worldPositionY,
+      width: _emailBoundingBox.width,
+      height: _emailBoundingBox.height,
+    };
+    const emailLeft = emailBoundingBox.x - emailBoundingBox.width / 2;
+    const emailBottom = emailBoundingBox.y - emailBoundingBox.height;
+    const distanceX = this.node.worldPositionX - emailLeft;
+    const distanceY = this.node.worldPositionY - emailBottom;
+    const ratioX = distanceX / emailBoundingBox.width;
+    const ratioY = distanceY / emailBoundingBox.height;
+
+    return new Vec2(ratioX, 1 - ratioY);
   }
 
   public setState(state: ButtonStates) {

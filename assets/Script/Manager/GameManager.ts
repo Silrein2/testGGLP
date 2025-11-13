@@ -45,6 +45,7 @@ export class GameManager extends Component {
   public userService: UserService | null = null;
   public quizService: QuizService | null = null;
 
+  private _baseUrl: string = "";
   private languageCode: string = "en";
   private localizedLabels: LocalizedLabel[] = [];
 
@@ -75,21 +76,20 @@ export class GameManager extends Component {
     const defaultHeaders = {
       "Accept-Language": this.languageCode,
     };
-    let BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
     switch (this.environment) {
       case Environments.STAGING:
-        BASE_API_URL = "https://beesafe.gamekaexternalprojects.com/";
+        this._baseUrl = "https://beesafe.gamekaexternalprojects.com/";
         break;
       case Environments.PRODUCTION_MY:
-        //BASE_API_URL = "http://beesafe25-my.intranet.local/";
-        BASE_API_URL = "";
+        //this.baseUrl = "http://beesafe25-my.intranet.local/";
+        this._baseUrl = "";
         break;
       case Environments.PRODUCTION_US:
-        //BASE_API_URL = "http://beesafe25-us.intranet.local/";
-        BASE_API_URL = "";
+        //this.baseUrl = "http://beesafe25-us.intranet.local/";
+        this._baseUrl = "";
         break;
     }
-    this.apiClient = new ApiClient(BASE_API_URL, defaultHeaders);
+    this.apiClient = new ApiClient(this.baseUrl, defaultHeaders);
     this.authService = new AuthService(this.apiClient);
     this.userService = new UserService(this.apiClient);
     this.quizService = new QuizService(this.apiClient);
@@ -148,5 +148,9 @@ export class GameManager extends Component {
 
   private onClickHome() {
     this.pageManager.transitionToHomePage();
+  }
+
+  public get baseUrl(): string {
+    return this._baseUrl;
   }
 }

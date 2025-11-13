@@ -7,6 +7,7 @@ import {
   Prefab,
   ScrollView,
   SpriteFrame,
+  Vec2,
 } from "cc";
 import { PageStates } from "../../Enums";
 import { Page } from "../../Page";
@@ -21,7 +22,9 @@ import { Game2Question } from "./Game2Question";
 import { shuffleArray, waitForCondition } from "../../../Utils/Utils";
 import {
   DataManager,
+  Phishing,
   PhishingEmail,
+  PhishingIndicator,
   UserState,
 } from "../../../Manager/DataManager";
 const { ccclass, property } = _decorator;
@@ -79,89 +82,84 @@ export class Game2Page extends Page {
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
 
-    /*this.questions = [
+    this.questions = [
       {
-        question: this.game2Questions[0],
-        options: [
-          { id: 1, text: "Too Good To Be True" },
-          { id: 2, text: "Suspicious Attachment" },
-          { id: 3, text: "Curiosity-piquing Subject" },
-          { id: 4, text: "Suspicious Email Address" },
-          { id: 5, text: "External Email Warning" },
-          { id: 6, text: "Triggered strong emotion" },
-          { id: 7, text: "Generic Greeting" },
-          { id: 8, text: "Unusual Request" },
-          { id: 9, text: "Sense of Urgency" },
-          { id: 10, text: "Unexpected Email" },
-          { id: 11, text: "Suspicious Link" },
+        indicators: [
+          { id: 1, label: "Too Good To Be True" },
+          { id: 2, label: "Suspicious Attachment" },
+          { id: 3, label: "Curiosity-piquing Subject" },
+          { id: 4, label: "Suspicious Email Address" },
+          { id: 5, label: "External Email Warning" },
+          { id: 6, label: "Triggered Strong Emotion" },
+          { id: 7, label: "Generic Greeting" },
+          { id: 8, label: "Unusual Request" },
+          { id: 9, label: "Sense of Urgency" },
+          { id: 10, label: "Unexpected Email" },
+          { id: 11, label: "Suspicious Link" },
         ],
       },
       {
-        question: this.game2Questions[1],
-        options: [
-          { id: 1, text: "Too Good To Be True" },
-          { id: 2, text: "Suspicious Attachment" },
-          { id: 3, text: "Curiosity-piquing Subject" },
-          { id: 4, text: "Suspicious Email Address" },
-          { id: 5, text: "External Email Warning" },
-          { id: 6, text: "Pretend to be Amway" },
-          { id: 7, text: "Generic Greeting" },
-          { id: 8, text: "Unusual Request" },
-          { id: 9, text: "Sense of Urgency" },
-          { id: 10, text: "Unexpected Email" },
-          { id: 11, text: "Suspicious Link" },
+        indicators: [
+          { id: 1, label: "Too Good To Be True" },
+          { id: 2, label: "Suspicious Attachment" },
+          { id: 3, label: "Curiosity-piquing Subject" },
+          { id: 4, label: "Suspicious Email Address" },
+          { id: 5, label: "External Email Warning" },
+          { id: 6, label: "Pretend to be Amway" },
+          { id: 7, label: "Generic Greeting" },
+          { id: 8, label: "Unusual Request" },
+          { id: 9, label: "Sense of Urgency" },
+          { id: 10, label: "Unexpected Email" },
+          { id: 11, label: "Suspicious Link" },
         ],
       },
       {
-        question: this.game2Questions[2],
-        options: [
-          { id: 1, text: "Too Good To Be True" },
-          { id: 2, text: "Suspicious Attachment" },
-          { id: 3, text: "Curiosity-piquing Subject" },
-          { id: 4, text: "Suspicious Email Address" },
-          { id: 5, text: "External Email Warning" },
-          { id: 6, text: "Pretend to be Amway" },
-          { id: 7, text: "Generic Greeting" },
-          { id: 8, text: "Unusual Request" },
-          { id: 9, text: "Sense of Urgency" },
-          { id: 10, text: "Unexpected Email" },
-          { id: 11, text: "Suspicious Link" },
-          { id: 12, text: "Trigger Fear Emotion" },
+        indicators: [
+          { id: 1, label: "Too Good To Be True" },
+          { id: 2, label: "Suspicious Attachment" },
+          { id: 3, label: "Curiosity-piquing Subject" },
+          { id: 4, label: "Suspicious Email Address" },
+          { id: 5, label: "External Email Warning" },
+          { id: 6, label: "Pretend to be Amway" },
+          { id: 7, label: "Generic Greeting" },
+          { id: 8, label: "Unusual Request" },
+          { id: 9, label: "Sense of Urgency" },
+          { id: 10, label: "Unexpected Email" },
+          { id: 11, label: "Suspicious Link" },
+          { id: 12, label: "Triggered Fear Emotion" },
         ],
       },
       {
-        question: this.game2Questions[3],
-        options: [
-          { id: 1, text: "Too Good To Be True" },
-          { id: 2, text: "Suspicious Attachment" },
-          { id: 3, text: "Suspicious Email Address" },
-          { id: 4, text: "External Email Warning" },
-          { id: 5, text: "Pretend to be Amway" },
-          { id: 6, text: "Generic Greeting" },
-          { id: 7, text: "Unusual Request" },
-          { id: 8, text: "Sense of Urgency" },
-          { id: 9, text: "Unexpected Email" },
-          { id: 10, text: "Suspicious Link" },
-          { id: 11, text: "Trigger Nervous Emotion" },
+        indicators: [
+          { id: 1, label: "Too Good To Be True" },
+          { id: 2, label: "Suspicious Attachment" },
+          { id: 3, label: "Suspicious Email Address" },
+          { id: 4, label: "External Email Warning" },
+          { id: 5, label: "Pretend to be Amway" },
+          { id: 6, label: "Generic Greeting" },
+          { id: 7, label: "Unusual Request" },
+          { id: 8, label: "Sense of Urgency" },
+          { id: 9, label: "Unexpected Email" },
+          { id: 10, label: "Suspicious Link" },
+          { id: 11, label: "Triggered Nervous Emotion" },
         ],
       },
       {
-        question: this.game2Questions[4],
-        options: [
-          { id: 1, text: "Too Good To Be True" },
-          { id: 2, text: "Suspicious Attachment" },
-          { id: 3, text: "Suspicious Email Address" },
-          { id: 4, text: "External Email Warning" },
-          { id: 5, text: "Asking for sensitive information" },
-          { id: 6, text: "Generic Greeting" },
-          { id: 7, text: "Unusual Request" },
-          { id: 8, text: "Sense of Urgency" },
-          { id: 9, text: "Unexpected Email" },
-          { id: 10, text: "Suspicious Link" },
-          { id: 11, text: "Trigger strong emotion" },
+        indicators: [
+          { id: 1, label: "Too Good To Be True" },
+          { id: 2, label: "Suspicious Attachment" },
+          { id: 3, label: "Suspicious Email Address" },
+          { id: 4, label: "External Email Warning" },
+          { id: 5, label: "Asking For Sensitive Information" },
+          { id: 6, label: "Generic Greeting" },
+          { id: 7, label: "Unusual Request" },
+          { id: 8, label: "Sense of Urgency" },
+          { id: 9, label: "Unexpected Email" },
+          { id: 10, label: "Suspicious Link" },
+          { id: 11, label: "Triggered Strong Emotion" },
         ],
       },
-    ];*/
+    ];
   }
 
   protected setPageState() {
@@ -190,11 +188,11 @@ export class Game2Page extends Page {
     UIManager.instance.showScoreStartUI(
       this.pageState,
       async (tutorial: boolean = false) => {
-        if (!this.loadedQuestion || !this.allQuestionLoaded()) {
+        /*if (!this.loadedQuestion || !this.allQuestionLoaded()) {
           UIManager.instance.showLoading(true);
           await waitForCondition(this.loadedQuestion);
           await waitForCondition(this.allQuestionLoaded());
-        }
+        }*/
         UIManager.instance.showLoading(false);
         this.game2Bee.setText("Q1", true);
         this.enableTutorial = tutorial;
@@ -213,19 +211,22 @@ export class Game2Page extends Page {
 
   private async getQuestion() {
     this.loadedQuestion = false;
-    await GameManager.instance.quizService.getPhishingEmail();
-    this.createQuestion();
+    //await GameManager.instance.quizService.getPhishingEmail();
+    //this.createQuestion();
     UIManager.instance.showLoading(false);
     this.loadedQuestion = true;
   }
 
   private setUI() {
     const userState: UserState = DataManager.instance.userState;
+    const phishing: Phishing = userState.phishing;
     //UIManager.instance.gameUI.updateScore(this.currentScore);
     UIManager.instance.gameUI.updateTotalScore(this.currentScore);
+    //UIManager.instance.gameUI.updateTotalScore(phishing.total_score_phishing);
   }
 
   private async endQuiz() {
+    this.setBlockInput(true);
     GameManager.instance.timer.stopTimer();
     const userState: UserState = DataManager.instance.userState;
     await GameManager.instance.quizService.submitPhishingScore(
@@ -234,6 +235,7 @@ export class Game2Page extends Page {
       this.currentScore,
       userState.phishing.times_played_phishing++,
     );
+    this.setBlockInput(false);
     this.transitionPage(PageStates.Result);
   }
 
@@ -275,10 +277,7 @@ export class Game2Page extends Page {
     for (let i = 0; i < this.questions.length; i++) {
       this.game2Questions[i].node.active = i === this.currentQuestionIndex;
     }
-    const optionLabels = this.question.indicators.map((x) => {
-      return x.label;
-    });
-    const shuffledOptions = shuffleArray(optionLabels);
+    const shuffledOptions = shuffleArray(this.question.indicators);
     for (let i = 0; i < shuffledOptions.length; i++) {
       const optionNode = instantiate(this.optionPrefab) as Node;
       this.optionLayout.node.addChild(optionNode);
@@ -311,7 +310,24 @@ export class Game2Page extends Page {
     );
   }
 
-  public onDropOption(correct: boolean) {
+  public async onDropOption(
+    correct: boolean,
+    phishingIndicator: PhishingIndicator,
+    positionRatio: Vec2,
+  ) {
+    /*const answer = {
+      id: phishingIndicator.id,
+      x1: positionRatio.x,
+      y1: positionRatio.y,
+      x2: positionRatio.x,
+      y2: positionRatio.y,
+    };
+    const response = await GameManager.instance.quizService.submitPhishingEmail(
+      this.question.id,
+      answer,
+      GameManager.instance.timer.getElapsedTime(),
+    );*/
+
     const feedbackText = correct
       ? ""
       : LocalizationManager.instance.getLocalizedString("game_1.think_twice");

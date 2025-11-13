@@ -301,8 +301,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 989.0000000000001,
-      "y": 739.9999999999999,
+      "x": 989,
+      "y": 740,
       "z": 0
     },
     "_lrot": {
@@ -387,7 +387,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 739.9999999999999,
+    "_orthoHeight": 740,
     "_near": 0,
     "_far": 2000,
     "_color": {
@@ -431,8 +431,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1978.0000000000002,
-      "height": 1479.9999999999998
+      "width": 1978,
+      "height": 1480
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -662,7 +662,7 @@
     "_string": "WELCOME!",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 84.72972972972974,
+    "_actualFontSize": 80,
     "_fontSize": 80,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -922,7 +922,7 @@
     "_string": "Key in your Amway email and respective \nlocation.",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 38.12837837837838,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1321,7 +1321,7 @@
     "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 21.182432432432435,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1423,8 +1423,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 235.53215608490328,
-      "height": 50.400000000000006
+      "width": 235.5839385986328,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1456,7 +1456,7 @@
     "_string": "Email Address",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.12837837837838,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2617,8 +2617,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144.29222308923943,
-      "height": 50.400000000000006
+      "width": 144.323974609375,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2650,7 +2650,7 @@
     "_string": "Location",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 38.12837837837838,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2798,7 +2798,7 @@
     "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 39,
+    "_actualFontSize": 37,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3280,8 +3280,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 107.00849118757475,
-      "height": 62.99999999999999
+      "width": 107.01594543457031,
+      "height": 63
     }
   },
   {
@@ -3611,8 +3611,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 317.8336697567783,
-      "height": 62.99999999999999
+      "width": 317.85589599609375,
+      "height": 63
     }
   },
   {
@@ -3796,8 +3796,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 82.88043105811403,
-      "height": 50.400000000000006
+      "width": 73.949951171875,
+      "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3826,10 +3826,10 @@
       "b": 255,
       "a": 255
     },
-    "_string": "v1.0.0",
+    "_string": "v1.0.1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 31.773648648648653,
+    "_actualFontSize": 30,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -27442,7 +27442,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": -1,
+    "data": "",
     "_id": "4515XbvdRHVb+F6dYnyye9"
   },
   {
@@ -27556,7 +27556,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 3,
+    "data": "Curiosity-piquing Subject",
     "_id": "b3AJOQeKxO9p2xqzE3mzZp"
   },
   {
@@ -27670,7 +27670,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 4,
+    "data": "Suspicious Email Address",
     "_id": "f7lcR31OdEb41259jZ4hoM"
   },
   {
@@ -27784,7 +27784,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 5,
+    "data": "External Email Warning",
     "_id": "e3XLu0RCtBhJfjIYNwJEXC"
   },
   {
@@ -27898,7 +27898,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 8,
+    "data": "Unusual Request",
     "_id": "bcHmsObXhH5I923I4BjoZV"
   },
   {
@@ -28012,7 +28012,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 11,
+    "data": "Suspicious Link",
     "_id": "8ao5WwhTVLdIH+H1PEaK2a"
   },
   {
@@ -28269,7 +28269,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": -1,
+    "data": "",
     "_id": "85Yz/MrlZKhITgENYgLLZ1"
   },
   {
@@ -28383,7 +28383,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 3,
+    "data": "Curiosity-piquing Subject",
     "_id": "1aljLA/zZOhptsC1x69Wuu"
   },
   {
@@ -28497,7 +28497,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 4,
+    "data": "Suspicious Email Address",
     "_id": "beMcx55KtLgaEJ6pbFSQFS"
   },
   {
@@ -28611,7 +28611,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 5,
+    "data": "External Email Warning",
     "_id": "baGly7s4FMuJygD4/6b2mD"
   },
   {
@@ -28725,7 +28725,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 6,
+    "data": "Pretend to be Amway",
     "_id": "56wxOCaQlOubx8J4mWRp54"
   },
   {
@@ -28839,7 +28839,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 11,
+    "data": "Suspicious Link",
     "_id": "c9xJ//JpVMbqpYVRHBxnqL"
   },
   {
@@ -29096,7 +29096,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": -1,
+    "data": "",
     "_id": "d4cv+Mx9pIqpCUS91Dd2hM"
   },
   {
@@ -29210,7 +29210,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 3,
+    "data": "Curiosity-piquing Subject",
     "_id": "9bwXEAEktP5rk+jNPAzXqS"
   },
   {
@@ -29324,7 +29324,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 4,
+    "data": "Suspicious Email Address",
     "_id": "7e0YkuP59AB7baWq6KJwfx"
   },
   {
@@ -29438,7 +29438,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 5,
+    "data": "External Email Warning",
     "_id": "fc1PpIazVFK6le4NuHpdEw"
   },
   {
@@ -29552,7 +29552,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 12,
+    "data": "Triggered Fear Emotion",
     "_id": "bb/b880OpAX6Lt8shOQVZN"
   },
   {
@@ -29666,7 +29666,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 11,
+    "data": "Suspicious Link",
     "_id": "3654ZUWMpPcJn/XsAaki2R"
   },
   {
@@ -29926,7 +29926,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": -1,
+    "data": "",
     "_id": "8bLtFsPq9LA5qO8O26CSLa"
   },
   {
@@ -30040,7 +30040,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 7,
+    "data": "Unusual Request",
     "_id": "f8yodkIb9F+Yp8IkwYVyy5"
   },
   {
@@ -30154,7 +30154,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 3,
+    "data": "Suspicious Email Address",
     "_id": "d4PzFLk41De7UdqX9AP7G3"
   },
   {
@@ -30268,7 +30268,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 4,
+    "data": "External Email Warning",
     "_id": "65xv+lhvxJO422WK9m0nNE"
   },
   {
@@ -30382,7 +30382,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 11,
+    "data": "Triggered Nervous Emotion",
     "_id": "b2bOzchF1M5bVGyR8cFbku"
   },
   {
@@ -30496,7 +30496,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 10,
+    "data": "Suspicious Link",
     "_id": "09E1X8gRpB05xRAjsli75k"
   },
   {
@@ -30610,7 +30610,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 8,
+    "data": "Sense of Urgency",
     "_id": "c6wFjoefpDMJj5/HhjppM1"
   },
   {
@@ -30867,7 +30867,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": -1,
+    "data": "",
     "_id": "01xCFjkcFKDYgS+qQ+KUzD"
   },
   {
@@ -30981,7 +30981,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 3,
+    "data": "Suspicious Email Address",
     "_id": "cdue+5ehRIabZlQfp0cDAL"
   },
   {
@@ -31095,7 +31095,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 4,
+    "data": "External Email Warning",
     "_id": "11FbOoJjlL1qBLV/d7aST4"
   },
   {
@@ -31209,7 +31209,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 6,
+    "data": "Generic Greeting",
     "_id": "3bchlk+bZOYLdSHK76drL5"
   },
   {
@@ -31323,7 +31323,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 8,
+    "data": "Sense of Urgency",
     "_id": "6faNZLDMNFMpPX4ljVw9iA"
   },
   {
@@ -31437,7 +31437,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "data": 10,
+    "data": "Suspicious Link",
     "_id": "edUJlmVLVIVYpdPZamLZCB"
   },
   {
@@ -32636,8 +32636,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 86.47192889005183,
-      "height": 62.99999999999999
+      "width": 86.47798156738281,
+      "height": 63
     }
   },
   {
@@ -33233,7 +33233,7 @@
     "_string": "Welcome!",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 38,
+    "_actualFontSize": 36,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -35271,7 +35271,23 @@
     "game2Bee": {
       "__id__": 1152
     },
-    "game2Questions": [],
+    "game2Questions": [
+      {
+        "__id__": 951
+      },
+      {
+        "__id__": 979
+      },
+      {
+        "__id__": 1007
+      },
+      {
+        "__id__": 1039
+      },
+      {
+        "__id__": 1067
+      }
+    ],
     "scrollViews": [
       {
         "__id__": 918

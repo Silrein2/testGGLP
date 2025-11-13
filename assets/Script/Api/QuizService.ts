@@ -2,6 +2,7 @@ import {
   DataManager,
   FakeBossQuestion,
   PhishingEmail,
+  PhishingEmailAnswer,
   Question,
   UserState,
 } from "../Manager/DataManager";
@@ -26,6 +27,12 @@ export interface QuestionRequest {
   answer: MCQAnswer | MatchAnswer | YesNoAnswer;
   seconds_spent: number;
   wrong_count: number;
+}
+
+export interface PhishingEmailRequest {
+  id: number;
+  answer: PhishingEmailAnswer;
+  seconds_spent: number;
 }
 
 export interface PhisingScoreRequest {
@@ -100,6 +107,29 @@ export class QuizService {
         this.phishingEmailEndpoint,
       );
       DataManager.instance.setPhishingEmails(responseData);
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async submitPhishingEmail(
+    id: number,
+    answer: PhishingEmailAnswer,
+    secondSpent: number,
+  ): Promise<UserState> {
+    try {
+      const requestData: PhishingEmailRequest = {
+        id: id,
+        answer: answer,
+        seconds_spent: secondSpent,
+      };
+      const responseData = await this.apiClient.post<UserState>(
+        this.phishingEmailEndpoint,
+        requestData,
+      );
+      DataManager.instance.setUserState(responseData);
       return responseData;
     } catch (error) {
       console.error(error);

@@ -21,6 +21,10 @@ export class Game2Slot extends Component {
   private uiTransform: UITransform | null = null;
   private graphics: Graphics | null = null;
 
+  onLoad() {
+    this.collider = this.node.getComponent(BoxCollider2D);
+  }
+
   public init(data: PhishingIndicator, parentUITransform: UITransform) {
     this.collider = this.node.getComponent(BoxCollider2D);
     this.uiTransform = this.node.getComponent(UITransform);

@@ -60,7 +60,7 @@ http:
     web-media-router:
       rule: "Host(`beesafe25-my.intranet.local`) && PathPrefix(`/media/`)"
       entryPoints:
-        - web-secure
+        - web
       # middlewares:
       #   - csrf
       service: django-media

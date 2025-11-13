@@ -86,5 +86,3 @@ services:
       - django
     volumes:
       - django_media:/usr/share/nginx/media:ro
-    ports:
-      - "0.0.0.0:8081:80"

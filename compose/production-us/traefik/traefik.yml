@@ -65,8 +65,8 @@ http:
       #   - csrf
       service: django-media
       priority: 200
-      tls:
-        certResolver: letsencrypt
+      # tls:
+      #   certResolver: letsencrypt
 
     flower-secure-router:
       rule: "Host(`beesafe25-us.intranet.local`)"

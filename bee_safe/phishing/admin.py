@@ -148,7 +148,10 @@ class PhishingAnnotatedEmailAdmin(ModelAdmin):
                 y2=i.get("y2", 0.0),
             )
             for lang, _ in LANGUAGES:
-                setattr(indicator, f"label_{lang}", translations.get(lang, ""))
+                normalized = lang.replace("-", "_")  # <-- FIX
+                setattr(
+                    indicator, f"label_{normalized}", translations.get(normalized, "")
+                )
             new_indicators.append(indicator)
 
         PhishingIndicator.objects.bulk_create(new_indicators)

@@ -32,12 +32,6 @@ class PhishingEmailAnswerService:
                 PhishingIndicator.DoesNotExist,
             ):
                 raise ValidationError("Invalid email or indicator.")
-            if PhishingAnnotatedEmailAnswer.objects.filter(
-                email=email,
-                user=self.user,
-                indicator=indicator,
-            ).exists():
-                raise ValidationError("Indicator for this email already submitted.")
             answer, _ = PhishingAnnotatedEmailAnswer.objects.get_or_create(
                 email=email,
                 user=self.user,
@@ -63,6 +57,14 @@ class PhishingEmailAnswerService:
                     and abs(x2 - indicator.x2) < tolerance
                     and abs(y2 - indicator.y2) < tolerance
                 ):
+                    if PhishingAnnotatedEmailAnswer.objects.filter(
+                        email=email,
+                        user=self.user,
+                        indicator=indicator,
+                    ).exists():
+                        raise ValidationError(
+                            "The correct indicator for this email already submitted.",
+                        )
                     answer.score = 100
                     is_correct = True
                 else:

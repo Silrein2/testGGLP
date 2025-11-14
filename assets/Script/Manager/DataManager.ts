@@ -38,6 +38,7 @@ export interface Phishing {
   highest_score_phishing: number;
   total_seconds_at_highest_score_phishing: number;
   times_played_phishing: number;
+  is_correct: boolean;
 }
 
 export interface FakeBoss {

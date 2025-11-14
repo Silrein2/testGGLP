@@ -128,7 +128,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "environment": 0,
+    "environment": 2,
     "pageManager": {
       "__id__": 4
     },
@@ -662,7 +662,7 @@
     "_string": "WELCOME!",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 80,
+    "_actualFontSize": 81.32432432432432,
     "_fontSize": 80,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -922,7 +922,7 @@
     "_string": "Key in your Amway email and respective \nlocation.",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 36,
+    "_actualFontSize": 36.59594594594595,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1321,7 +1321,7 @@
     "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 20,
+    "_actualFontSize": 20.33108108108108,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1423,7 +1423,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 235.5839385986328,
+      "width": 235.5456498343511,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1456,7 +1456,7 @@
     "_string": "Email Address",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 36.59594594594595,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2617,7 +2617,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144.323974609375,
+      "width": 144.3004815306684,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2650,7 +2650,7 @@
     "_string": "Location",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 36,
+    "_actualFontSize": 36.59594594594595,
     "_fontSize": 36,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3280,8 +3280,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 107.01594543457031,
-      "height": 63
+      "width": 107.00274907698778,
+      "height": 62.999999999999986
     }
   },
   {
@@ -3611,8 +3611,8 @@
     ],
     "value": {
       "__type__": "cc.Size",
-      "width": 317.85589599609375,
-      "height": 63
+      "width": 317.8166655632062,
+      "height": 62.999999999999986
     }
   },
   {
@@ -3796,7 +3796,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 73.949951171875,
+      "width": 80.50247126459163,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -3826,10 +3826,10 @@
       "b": 255,
       "a": 255
     },
-    "_string": "v1.0.1",
+    "_string": "v1.0.2",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 30,
+    "_actualFontSize": 30.49662162162162,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,

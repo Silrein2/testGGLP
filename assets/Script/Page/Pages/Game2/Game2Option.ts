@@ -85,18 +85,7 @@ export class Game2Option extends Component {
       }
     });
     if (collided) {
-      this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
-      this.game2Page.onDropOption(
-        correct,
-        this.data,
-        this.getPositionRatio(this.slots[0].node.parent),
-      );
-      if (!correct) {
-        this.moveResetPosition();
-      } else {
-        this.setParent(this.slots[0].node.parent);
-        this.setDisable(true);
-      }
+      this.game2Page.onDropOption(correct, this);
     } else {
       this.moveResetPosition();
     }
@@ -121,6 +110,16 @@ export class Game2Option extends Component {
       .start();
   }
 
+  public setAnswerPosition(correct: boolean) {
+    this.setState(correct ? ButtonStates.Correct : ButtonStates.Wrong);
+    if (!correct) {
+      this.moveResetPosition();
+    } else {
+      this.setParent(this.emailNode);
+      this.setDisable(true);
+    }
+  }
+
   public getInitialPosition(): Vec3 {
     const containerLocalPos = this.draggableObject.initialPosition;
     const containerUITransform = this.container.getComponent(UITransform);
@@ -131,13 +130,13 @@ export class Game2Option extends Component {
     return parentLocalPos;
   }
 
-  private getPositionRatio(emailNode: Node): Vec2 {
-    const _emailBoundingBox = emailNode
+  private getPositionRatio(): Vec2 {
+    const _emailBoundingBox = this.emailNode
       .getComponent(UITransform)
       .getBoundingBox();
     const emailBoundingBox = {
-      x: emailNode.worldPositionX,
-      y: emailNode.worldPositionY,
+      x: this.emailNode.worldPositionX,
+      y: this.emailNode.worldPositionY,
       width: _emailBoundingBox.width,
       height: _emailBoundingBox.height,
     };
@@ -149,6 +148,10 @@ export class Game2Option extends Component {
     const ratioY = distanceY / emailBoundingBox.height;
 
     return new Vec2(ratioX, 1 - ratioY);
+  }
+
+  private get emailNode(): Node {
+    return this.slots[0].node.parent;
   }
 
   public setState(state: ButtonStates) {

@@ -145,6 +145,7 @@ export class Game3Page extends Page {
     if (this.isIntro) {
       this.game3Intro.init(this, this.pageManager.stateEnterTransitionDuration);
     } else {
+      this.setBlockInput(false);
       UIManager.instance.showScoreStartUI(this.pageState, async () => {
         if (!this.loadedQuestion) {
           UIManager.instance.showLoading(true);
@@ -186,6 +187,7 @@ export class Game3Page extends Page {
       text,
       () => this.startGame(),
       () => {
+        this.setBlockInput(true);
         this.game3PageTransition.onEnter();
       },
     );
@@ -204,6 +206,7 @@ export class Game3Page extends Page {
   }
 
   private async endQuiz() {
+    this.setBlockInput(true);
     GameManager.instance.timer.stopTimer();
     await GameManager.instance.quizService.submitFakeBossScore(
       this.currentScore,
@@ -217,7 +220,9 @@ export class Game3Page extends Page {
         ) +
         "</size>\n\n" +
         LocalizationManager.instance.getLocalizedString("game_3.summary_body"),
-      () => {},
+      () => {
+        this.setBlockInput(false);
+      },
       () => {
         this.transitionPage(PageStates.Result);
       },

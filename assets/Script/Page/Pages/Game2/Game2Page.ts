@@ -82,7 +82,7 @@ export class Game2Page extends Page {
   onLoad() {
     this.game2QuizTransition = this.node.getComponent(Game2QuizTransition);
 
-    this.questions = [
+    /*this.questions = [
       {
         indicators: [
           { id: 1, label: "Too Good To Be True" },
@@ -159,7 +159,7 @@ export class Game2Page extends Page {
           { id: 11, label: "Triggered Strong Emotion" },
         ],
       },
-    ];
+    ];*/
   }
 
   protected setPageState() {
@@ -177,7 +177,7 @@ export class Game2Page extends Page {
     this.firstQuestion = true;
     this.currentQuestionIndex = 0;
     this.questionsLoadedCount = 0;
-    this.setUI();
+    this.setUI(true);
     GameManager.instance.timer.resetTimer();
     UIManager.instance.showGameUI(true);
     this.getQuestion();
@@ -188,11 +188,11 @@ export class Game2Page extends Page {
     UIManager.instance.showScoreStartUI(
       this.pageState,
       async (tutorial: boolean = false) => {
-        /*if (!this.loadedQuestion || !this.allQuestionLoaded()) {
+        if (!this.loadedQuestion || !this.allQuestionLoaded()) {
           UIManager.instance.showLoading(true);
           await waitForCondition(this.loadedQuestion);
           await waitForCondition(this.allQuestionLoaded());
-        }*/
+        }
         UIManager.instance.showLoading(false);
         this.game2Bee.setText("Q1", true);
         this.enableTutorial = tutorial;
@@ -211,30 +211,36 @@ export class Game2Page extends Page {
 
   private async getQuestion() {
     this.loadedQuestion = false;
-    //await GameManager.instance.quizService.getPhishingEmail();
-    //this.createQuestion();
+    await GameManager.instance.quizService.getPhishingEmail();
+    await GameManager.instance.quizService.submitPhishingEmailStartEnd(true);
+    await GameManager.instance.userService.fetchUserState();
+    this.createQuestion();
     UIManager.instance.showLoading(false);
     this.loadedQuestion = true;
   }
 
-  private setUI() {
+  private setUI(init: boolean = false) {
     const userState: UserState = DataManager.instance.userState;
     const phishing: Phishing = userState.phishing;
     //UIManager.instance.gameUI.updateScore(this.currentScore);
-    UIManager.instance.gameUI.updateTotalScore(this.currentScore);
-    //UIManager.instance.gameUI.updateTotalScore(phishing.total_score_phishing);
+    //UIManager.instance.gameUI.updateTotalScore(this.currentScore);
+    UIManager.instance.gameUI.updateTotalScore(phishing.total_score_phishing);
+    if (init) {
+      UIManager.instance.gameUI.updateTotalScore(0);
+    }
   }
 
   private async endQuiz() {
     this.setBlockInput(true);
     GameManager.instance.timer.stopTimer();
     const userState: UserState = DataManager.instance.userState;
-    await GameManager.instance.quizService.submitPhishingScore(
+    await GameManager.instance.quizService.submitPhishingEmailStartEnd(false);
+    /*await GameManager.instance.quizService.submitPhishingScore(
       this.currentScore,
       GameManager.instance.timer.getElapsedTime(),
       this.currentScore,
       userState.phishing.times_played_phishing++,
-    );
+    );*/
     this.setBlockInput(false);
     this.transitionPage(PageStates.Result);
   }
@@ -311,23 +317,40 @@ export class Game2Page extends Page {
   }
 
   public async onDropOption(
-    correct: boolean,
-    phishingIndicator: PhishingIndicator,
-    positionRatio: Vec2,
+    correctIndicator: boolean,
+    game2Option: Game2Option,
   ) {
-    /*const answer = {
-      id: phishingIndicator.id,
-      x1: positionRatio.x,
-      y1: positionRatio.y,
-      x2: positionRatio.x,
-      y2: positionRatio.y,
-    };
-    const response = await GameManager.instance.quizService.submitPhishingEmail(
-      this.question.id,
-      answer,
-      GameManager.instance.timer.getElapsedTime(),
-    );*/
-
+    this.setBlockInput(true);
+    const answer = correctIndicator
+      ? {
+          id: game2Option.data.id,
+          x1: game2Option.data.x1,
+          y1: game2Option.data.y1,
+          x2: game2Option.data.x2,
+          y2: game2Option.data.y2,
+        }
+      : {
+          id: game2Option.data.id,
+          x1: -1,
+          y1: -1,
+          x2: -1,
+          y2: -1,
+        };
+    let correct = false;
+    try {
+      const response =
+        await GameManager.instance.quizService.submitPhishingEmail(
+          this.question.id,
+          answer,
+          GameManager.instance.timer.getElapsedTime(),
+        );
+      correct = response.phishing.is_correct;
+    } catch (error) {
+      if (error.statusCode == 400) {
+        correct = false;
+      }
+    }
+    game2Option.setAnswerPosition(correct);
     const feedbackText = correct
       ? ""
       : LocalizationManager.instance.getLocalizedString("game_1.think_twice");
@@ -336,6 +359,7 @@ export class Game2Page extends Page {
     const correctScore = 100;
     const wrongScore = -25;
     this.currentScore += correct ? correctScore : wrongScore;
+    this.setBlockInput(false);
   }
 
   private onClickSafe() {

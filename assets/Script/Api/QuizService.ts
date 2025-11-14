@@ -51,6 +51,8 @@ export class QuizService {
   private apiClient: ApiClient;
   private questionEndpoint: string = "api/quizzes/question/";
   private phishingEmailEndpoint: string = "api/phishing/emails/";
+  private phishingEmailStartEndEndpoint: string =
+    "api/phishing/emails/start-end";
   private phishingScoreEndpoint: string = "api/phishing/score/";
   private fakeBossQuestionEndpoint: string = "api/fake-boss/question/";
   private fakeBossScoreEndpoint: string = "api/fake-boss/score/";
@@ -130,6 +132,24 @@ export class QuizService {
         requestData,
       );
       DataManager.instance.setUserState(responseData);
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async submitPhishingEmailStartEnd(isStart: boolean) {
+    try {
+      const requestData = isStart
+        ? {
+            start: true,
+          }
+        : { end: true };
+      const responseData = await this.apiClient.post<UserState>(
+        this.phishingEmailStartEndEndpoint,
+        requestData,
+      );
       return responseData;
     } catch (error) {
       console.error(error);

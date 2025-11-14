@@ -64,7 +64,6 @@ class PhishingEmailAnswerService:
             answer.save()
 
             total_score = PhishingAnnotatedEmailAnswer.objects.filter(
-                email=email,
                 user=self.user,
             ).aggregate(total_score=Sum("score"))["total_score"]
             total_score = max(0, total_score)

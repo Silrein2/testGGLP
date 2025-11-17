@@ -5,6 +5,8 @@ services:
     build:
       context: ../..
       dockerfile: Docker/production-us/Dockerfile
+    ports:
+      - "8080:80"
     networks:
       - amway-bee-safe-us_default
     restart: always

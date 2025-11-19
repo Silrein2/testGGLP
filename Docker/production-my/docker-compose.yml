@@ -10,9 +10,9 @@ services:
     ports:
       - "8080:80"
     networks:
-      - amway-bee-safe-my_default
+      - amway-bee-safe-my
     restart: always
 
 networks:
-  amway-bee-safe-my_default:
-    external: true
+  amway-bee-safe-my:
+    driver: bridge

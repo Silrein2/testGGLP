@@ -7,8 +7,6 @@ services:
       dockerfile: Docker/production-us/Dockerfile
     image: bee_safe_frontend
     container_name: bee_safe_frontend
-    ports:
-      - "8080:80"
     networks:
       - amway-bee-safe-us
     restart: always

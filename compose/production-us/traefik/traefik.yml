@@ -101,7 +101,7 @@ http:
     cocos:
       loadBalancer:
         servers:
-          - url: http://frontend:80
+          - url: http://bee_safe_frontend:80
 
 providers:
   # https://doc.traefik.io/traefik/master/providers/file/

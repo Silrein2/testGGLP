@@ -55,6 +55,9 @@ services:
       - traefik:/etc/traefik/acme
     ports:
       - "0.0.0.0:8081:80"
+    networks:
+      - traefik-network-my
+      - amway-bee-safe-my
     restart: unless-stopped
 
   redis:
@@ -86,3 +89,9 @@ services:
       - django
     volumes:
       - django_media:/usr/share/nginx/media:ro
+
+networks:
+  traefik-network-my:
+    driver: bridge
+  amway-bee-safe-my:
+    driver: bridge

@@ -44,7 +44,7 @@ export class Game2Question extends Component {
 
   private loadRemoteImage(url: string) {
     let baseUrl = GameManager.instance.baseUrl;
-    baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : url;
+    baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
     const imageUrl = baseUrl + url;
     assetManager.loadRemote(imageUrl, ImageAsset, (err, image: ImageAsset) => {
       if (err) {

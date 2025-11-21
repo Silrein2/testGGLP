@@ -188,10 +188,9 @@ export class Game2Page extends Page {
     UIManager.instance.showScoreStartUI(
       this.pageState,
       async (tutorial: boolean = false) => {
-        if (!this.loadedQuestion || !this.allQuestionLoaded()) {
+        if (!this.loadedQuestion) {
           UIManager.instance.showLoading(true);
           await waitForCondition(this.loadedQuestion);
-          await waitForCondition(this.allQuestionLoaded());
         }
         UIManager.instance.showLoading(false);
         this.game2Bee.setText("Q1", true);

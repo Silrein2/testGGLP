@@ -4,6 +4,7 @@ import {
   Component,
   ImageAsset,
   instantiate,
+  Label,
   Node,
   Size,
   Sprite,
@@ -18,6 +19,9 @@ const { ccclass, property } = _decorator;
 
 @ccclass("Game2Question")
 export class Game2Question extends Component {
+  @property({ type: Label })
+  public errorLabel: Label | null = null;
+
   private sprite: Sprite | null = null;
   private uiTransform: UITransform | null = null;
   private data: PhishingEmail | null = null;
@@ -44,10 +48,14 @@ export class Game2Question extends Component {
     const imageUrl = baseUrl + url;
     assetManager.loadRemote(imageUrl, ImageAsset, (err, image: ImageAsset) => {
       if (err) {
+        this.errorLabel.node.active = true;
+        this.errorLabel.string =
+          "Download Failed: The system was unable to retrieve the requested email content.";
         return;
       }
 
       const spriteFrame = SpriteFrame.createWithImage(image);
+      this.errorLabel.node.active = false;
       this.sprite.spriteFrame = spriteFrame;
       this.setQuestion();
       this.game2Page.onGame2QuestionLoaded();

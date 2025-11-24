@@ -130,8 +130,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 86.64598083496094,
-      "height": 63
+      "width": 330,
+      "height": 85
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -169,12 +169,12 @@
     "_string": "Play",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 42,
+    "_actualFontSize": 43,
     "_fontSize": 42,
     "_fontFamily": "Arial",
     "_lineHeight": 50,
-    "_overflow": 0,
-    "_enableWrapText": false,
+    "_overflow": 2,
+    "_enableWrapText": true,
     "_font": {
       "__uuid__": "adc0fb9a-8294-47a9-9b63-d8ecae6e2eca",
       "__expectedType__": "cc.TTFFont"

@@ -15,19 +15,19 @@ export class AuthService {
   }
 
   public async login(email: string, businessUnitId): Promise<AuthToken> {
-    try {
-      const requestData: AuthRequest = {
-        email: email,
-        business_unit_id: businessUnitId,
-      };
-      const responseData = await this.apiClient.post<AuthToken>(
-        this.loginEndpoint,
-        requestData,
-      );
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    // try {
+    //   const requestData: AuthRequest = {
+    //     email: email,
+    //     business_unit_id: businessUnitId,
+    //   };
+    //   const responseData = await this.apiClient.post<AuthToken>(
+    //     this.loginEndpoint,
+    //     requestData,
+    //   );
+    //   return responseData;
+    // } catch (error) {
+    //   console.error(error);
+    //   throw error;
+    // }
   }
 }

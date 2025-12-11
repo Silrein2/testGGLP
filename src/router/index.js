@@ -10,13 +10,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/user-dashboard'
     },
-    {
-      path: '/login',
-      name: 'LoginPage',
-      component: Login
-    },
+    // {
+    //   path: '/login',
+    //   name: 'LoginPage',
+    //   component: Login
+    // },
     {
       path: '/main',
       name: 'MainPage',

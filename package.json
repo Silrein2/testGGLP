@@ -13,7 +13,7 @@
   "dependencies": {
     "@gsap/react": "^2.1.1",
     "css-loader": "^7.1.2",
-    "firebase": "^11.7.1",
+    "firebase": "^11.10.0",
     "gsap": "^3.12.5",
     "pinia": "^2.1.7",
     "primevue": "^4.0.4",

@@ -485,24 +485,24 @@ export default {
   },
   async beforeCreate() {
     //for checking if user entered URL with valid email or not
-    this.userEmail = localStorage.getItem('userEmail') //local storage
+    // this.userEmail = localStorage.getItem('userEmail') //local storage
 
     // console.log('Local Storage Email:', localStorage.getItem('userEmail'))
     // console.log('User Email from localStorage:', this.userEmail)
 
-    if (this.userEmail) {
-      const docRef = doc(db, 'Score', this.userEmail)
-      const docSnap = await getDoc(docRef)
-      if (!docSnap.exists()) {
-        this.$router.push('/login')
-      } else {
-        this.getUserDetails(docSnap.data())
-      }
-    } else {
-      this.$router.push('/login')
-    }
+    // if (this.userEmail) {
+    //   const docRef = doc(db, 'Score', this.userEmail)
+    //   const docSnap = await getDoc(docRef)
+    //   if (!docSnap.exists()) {
+    //     this.$router.push('/login')
+    //   } else {
+    //     this.getUserDetails(docSnap.data())
+    //   }
+    // } else {
+    //   this.$router.push('/login')
+    // }
 
-    this.userEmail = localStorage.getItem('userEmail') //called this back because after declaring docSnap, the userEmail suddenly becomes empty. This is a workaround
+    // this.userEmail = localStorage.getItem('userEmail') //called this back because after declaring docSnap, the userEmail suddenly becomes empty. This is a workaround
   },
   mounted() {
     this.getFirestoreVariables()

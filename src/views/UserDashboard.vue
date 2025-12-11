@@ -198,13 +198,13 @@ export default {
     }
   },
   created() {
-    const storedEmail = localStorage.getItem('userEmail')
-    if (storedEmail) {
-      this.email = storedEmail
-      this.extractUsername(storedEmail)
-    } else {
-      this.$router.push('/login') // Redirect if no email found
-    }
+    // const storedEmail = localStorage.getItem('userEmail')
+    // if (storedEmail) {
+    //   this.email = storedEmail
+    //   this.extractUsername(storedEmail)
+    // } else {
+    //   this.$router.push('/login') // Redirect if no email found
+    // }
   },
   mounted() {
     this.$setBackgroundImage()

@@ -12,7 +12,7 @@
             <span style="font-size: 1vw"
               >Hello, <span class="username">{{ username }}</span></span
             >
-            <span style="font-size: 0.8vw; color: dimgray">Ready for your next challenge?</span>
+            <span style="font-size: 0.8vw; color: white">Ready for your next challenge?</span>
           </div>
         </div>
         <div class="group-two">
@@ -52,8 +52,8 @@
       </div>
 
       <div class="stats-content">
-        <h1 class="text-shadow" style="font-size: 2.5vw">Choose your workplace journey</h1>
-        <div class="text-shadow" style="color: #5e5f60; font-weight: 500; font-size: 1.2vw">
+        <h1 class="text-shadow" style="font-size: 2.5vw; color:white">Choose your workplace journey</h1>
+        <div class="text-shadow" style="color: white; font-weight: 500; font-size: 1.2vw">
           <p>{{ calculateStoryLength() }} dealing with a unique workplace situation.</p>
           <p>Select a character to begin your interactive learning experience.</p>
         </div>
@@ -152,7 +152,7 @@
 <script>
 import { db } from '@/firebase'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
-import { logoutIcon, gamesIcon, highscoreIcon, lastscoreIcon } from '@/assets/GUI/icons/icons'
+import { gamesIcon, highscoreIcon, lastscoreIcon, logoutIcon2 } from '@/assets/GUI/icons/icons'
 import { timerIcon } from '@/assets/GUI/icons/icons'
 
 import { defaultAvatar } from '@/assets/GUI/avatars/avatars'
@@ -160,6 +160,8 @@ import { fadeIn, fadeOut } from '@/utils/animation'
 
 import { clickSound } from '@/assets/Sound/SFX/sfx'
 import audioService from '@/utils/audioService'
+
+const DEFAULT_EMAIL = 'userTest@email.com'
 
 export default {
   name: 'UserDashboard',
@@ -173,7 +175,7 @@ export default {
       selectedStory: '',
       stories: [],
 
-      logoutIcon: logoutIcon,
+      logoutIcon: logoutIcon2,
       gamesIcon: gamesIcon,
       highscoreIcon: highscoreIcon,
       lastscoreIcon: lastscoreIcon,
@@ -198,13 +200,20 @@ export default {
     }
   },
   created() {
-    // const storedEmail = localStorage.getItem('userEmail')
-    // if (storedEmail) {
-    //   this.email = storedEmail
-    //   this.extractUsername(storedEmail)
-    // } else {
-    //   this.$router.push('/login') // Redirect if no email found
-    // }
+    const storedEmail = localStorage.getItem('userEmail')
+    
+    if (storedEmail) {
+      this.email = storedEmail
+    } else {
+      console.log(`No user email found in localStorage. Using default user: ${DEFAULT_EMAIL}`)
+      this.email = DEFAULT_EMAIL
+    }
+
+    if (this.email) {
+      this.extractUsername(this.email)
+    } else {
+      this.$router.push('/login') 
+    }
   },
   mounted() {
     this.$setBackgroundImage()
@@ -405,7 +414,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background-color: white;
+  /* background-color: white; */
+
+  color: white;
 
   border-radius: 8px;
   padding: 20px;

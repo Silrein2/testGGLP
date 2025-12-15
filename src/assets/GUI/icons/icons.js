@@ -13,6 +13,8 @@ import lastscoreIcon from './last_score_01.svg'
 import logoutIcon from './logout_01.svg'
 import scoreIcon from './score_01.svg'
 
+import logoutIcon2 from './logout_02.png'
+
 import starIcon from './stars_01.svg'
 import timerIcon from './timer_01.svg'
 
@@ -54,5 +56,6 @@ export {
   empathyIcon,
   unionGreenIcon,
   unionRedIcon,
-  backArrowIcon
+  backArrowIcon,
+  logoutIcon2
 }

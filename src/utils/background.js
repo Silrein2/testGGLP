@@ -1,4 +1,4 @@
-import { backgroundImage, swirlImage } from '@/assets/GUI/backgroundGui'
+import { backgroundImage } from '@/assets/GUI/backgroundGui'
 
 export function setBackgroundImage() {
   const backgroundElement = document.getElementById('background-container')
@@ -18,18 +18,18 @@ export function setBackgroundImage() {
   backgroundElement.style.backgroundPosition = 'center'
   backgroundElement.style.backgroundRepeat = 'no-repeat'
 
-  const swirlElement = document.createElement('img')
-  swirlElement.src = swirlImage
-  swirlElement.style.position = 'absolute'
-  swirlElement.style.top = '50%'
-  swirlElement.style.right = '0'
-  swirlElement.style.transform = 'translateY(-50%)'
-  swirlElement.style.width = '20%'
-  swirlElement.style.zIndex = '0'
+  // const swirlElement = document.createElement('img')
+  // swirlElement.src = swirlImage
+  // swirlElement.style.position = 'absolute'
+  // swirlElement.style.top = '50%'
+  // swirlElement.style.right = '0'
+  // swirlElement.style.transform = 'translateY(-50%)'
+  // swirlElement.style.width = '20%'
+  // swirlElement.style.zIndex = '0'
 
-  swirlElement.style.pointerEvents = 'none'
+  // swirlElement.style.pointerEvents = 'none'
 
-  backgroundElement.appendChild(swirlElement)
+  // backgroundElement.appendChild(swirlElement)
 }
 
 export function setBackgroundImageAdmin() {

@@ -17,5 +17,5 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PAYBACK_COPYCAT }}
-          projectId: payback-copycat
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GGLP_2D4CD }}
+          projectId: gglp-2d4cd

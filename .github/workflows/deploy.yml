@@ -1,54 +1,54 @@
-name: deploy-frontend
+# name: deploy-frontend
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events for all branches
-  push:
-    branches: ["*"]
-  pull_request:
-    branches: ["*"]
+# # Controls when the workflow will run
+# on:
+#   # Triggers the workflow on push or pull request events for all branches
+#   push:
+#     branches: ["*"]
+#   pull_request:
+#     branches: ["*"]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Building image
-        run: |
-          docker compose -f Docker/docker-compose.yml build --force-rm
+#       - name: Building image
+#         run: |
+#           docker compose -f Docker/docker-compose.yml build --force-rm
 
-      - name: Export images to files
-        run: |
-          docker save bee_safe_frontend:latest > bee_safe_frontend.tar
+#       - name: Export images to files
+#         run: |
+#           docker save bee_safe_frontend:latest > bee_safe_frontend.tar
 
-      - name: Copy images to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ vars.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          source: "*.tar"
-          target: ~/bee_safe-images
-          timeout: 10m
+#       - name: Copy images to server
+#         uses: appleboy/scp-action@master
+#         with:
+#           host: ${{ vars.STAGING_HOST }}
+#           username: ${{ secrets.STAGING_USER }}
+#           key: ${{ secrets.STAGING_SSH_KEY }}
+#           source: "*.tar"
+#           target: ~/bee_safe-images
+#           timeout: 10m
 
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ vars.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          script: |
-            cd ~/bee_safe-images
-            docker load < bee_safe_frontend.tar
-            cd ~/bee_safe-frontend
-            docker compose -f Docker/docker-compose.yml up -d --force-recreate
-            docker container prune -f
-            docker rmi $(docker images -f "dangling=true" -q)
+#       - name: Deploy
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ vars.STAGING_HOST }}
+#           username: ${{ secrets.STAGING_USER }}
+#           key: ${{ secrets.STAGING_SSH_KEY }}
+#           script: |
+#             cd ~/bee_safe-images
+#             docker load < bee_safe_frontend.tar
+#             cd ~/bee_safe-frontend
+#             docker compose -f Docker/docker-compose.yml up -d --force-recreate
+#             docker container prune -f
+#             docker rmi $(docker images -f "dangling=true" -q)
 
-concurrency: deploy-frontend
+# concurrency: deploy-frontend

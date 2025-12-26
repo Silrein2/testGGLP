@@ -530,7 +530,7 @@
         "__id__": 168
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 171
@@ -7790,11 +7790,11 @@
       "__id__": 193
     },
     "beeSmileSprite": {
-      "__uuid__": "499d81ec-4ecd-4491-bd9c-79a6cb383501@f9941",
+      "__uuid__": "f5dd252e-960e-4eb0-8108-032819cd8fd8@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "beeShockedSprite": {
-      "__uuid__": "c03a6190-cf2c-428b-a697-e08c4ec3a851@f9941",
+      "__uuid__": "f5dd252e-960e-4eb0-8108-032819cd8fd8@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "beeBad1": {
@@ -7857,7 +7857,7 @@
         "__id__": 403
       }
     ],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 433

@@ -58,9 +58,12 @@ export class LoginPage extends Page {
   }
 
   start() {
-    this.offlineLogin = GameManager.instance.offlineLogin;
+    // this.offlineLogin = GameManager.instance.offlineLogin;
+    this.offlineLogin = true;
     if (!this.offlineLogin) this.getBusinessUnits();
     this.getAuthToken();
+
+    console.log(this.offlineLogin);
   }
 
   private getBusinessUnits() {

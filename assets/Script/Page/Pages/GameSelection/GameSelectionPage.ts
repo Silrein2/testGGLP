@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, tween, Vec3 } from "cc";
+import { _decorator, Component, Label, Node, tween, Vec3, WebView } from "cc";
 import { Page } from "../../Page";
 import { ButtonStates, PageStates } from "../../Enums";
 import { GameSelectionButton } from "./GameSelectionButton";
@@ -63,7 +63,7 @@ export class GameSelectionPage extends Page {
         this.pageManager.targetGamePageState = PageStates.Game2;
         break;
       case 2:
-        this.pageManager.targetGamePageState = PageStates.Game3;
+        this.pageManager.targetGamePageState = PageStates.ExternalGame3;
         break;
     }
     this.transitionPage(PageStates.DialogueGame1);

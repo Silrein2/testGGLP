@@ -38,7 +38,7 @@ export class GameManager extends Component {
   public canvas: Node | null = null;
 
   @property
-  public offlineLogin: boolean = false;
+  public offlineLogin: boolean = true;
 
   private apiClient: ApiClient | null = null;
   public authService: AuthService | null = null;

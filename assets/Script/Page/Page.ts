@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from "cc";
+import { _decorator, Component, Node, WebView } from "cc";
 import { State } from "./State";
 import { PageStates } from "./Enums";
 import { PageManager } from "./PageManager";
@@ -47,11 +47,18 @@ export class Page extends State {
 
   public onPostExitTransition() {
     this.pageManager.enableBlockInput(false);
+
+    if (this.targetPage === PageStates.ExternalGame3) {
+      window.location.replace("https://google.com");
+      return;
+    }
+
     this.pageManager.transitionState(this.targetPage);
   }
 
   public transitionPage(page: PageStates) {
     this.targetPage = page;
+
     if (this.pageTransition && this.pageTransition.exitTransitionEnabled) {
       this.pageManager.enableBlockInput(true);
       this.pageTransition.onExit();
@@ -63,4 +70,15 @@ export class Page extends State {
   public setBlockInput(enable: boolean) {
     this.pageManager.enableBlockInput(enable);
   }
+
+//   private openExternalURLInNode(url: string) {
+//     const webViewNode = new Node("WebView");
+//     const webView = webViewNode.addComponent(WebView);
+//     webView.url = url;
+
+//     webViewNode.setPosition(0, 0, 0);
+//     webViewNode.setScale(1, 1, 1);
+
+//     this.node.addChild(webViewNode);
+//   }
 }

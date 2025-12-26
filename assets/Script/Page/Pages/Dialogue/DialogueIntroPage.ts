@@ -33,7 +33,8 @@ export class DialogueIntroPage extends DialoguePage {
     this.dialogueScript = [
       {
         speaker:
-          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          // LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          "Joehari Syah",
         portrait: this.beeSmileSprite,
         text: LocalizationManager.instance.getLocalizedString(
           "intro.dialogue_line_1",
@@ -43,7 +44,8 @@ export class DialogueIntroPage extends DialoguePage {
       },
       {
         speaker:
-          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          // LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          "Joehari Syah",
         portrait: this.beeShockedSprite,
         text: LocalizationManager.instance.getLocalizedString(
           "intro.dialogue_line_1",
@@ -53,7 +55,8 @@ export class DialogueIntroPage extends DialoguePage {
       },
       {
         speaker:
-          LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          // LocalizationManager.instance.getLocalizedString("general.bee_safe"),
+          "Joehari Syah",
         portrait: this.beeSmileSprite,
         text: LocalizationManager.instance.getLocalizedString(
           "intro.dialogue_line_2",

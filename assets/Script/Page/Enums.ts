@@ -8,6 +8,7 @@ export enum PageStates {
   Game2,
   Game3,
   Result,
+  ExternalGame3,
 }
 
 export enum ButtonStates {

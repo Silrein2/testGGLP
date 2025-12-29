@@ -1,0 +1,6 @@
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  location: asia-southeast1 
+scripts:
+  start: gunicorn GGLP.wsgi:application --bind 0.0.0.0:$PORT
